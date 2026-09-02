@@ -1,0 +1,2802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>GOPAL Report — USD Pro Bot</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg:#07101a;
+  --bg2:#0b1825;
+  --bg3:#0f2035;
+  --card:#0c1b2e;
+  --border:#1a3050;
+  --accent:#00d4ff;
+  --green:#00e896;
+  --red:#ff3d5a;
+  --gold:#ffd700;
+  --orange:#ff7a3d;
+  --text:#ddeeff;
+  --muted:#5a7fa0;
+  --s1:#00d4ff;
+  --s2:#00e896;
+  --s3:#ff7a3d;
+  --s4:#ffd700;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Rajdhani',sans-serif;
+  font-size:15px;
+  line-height:1.5;
+}
+
+/* ── GRID BG ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;z-index:0;
+}
+
+/* ── HEADER ── */
+.hdr{
+  position:relative;z-index:1;
+  background:linear-gradient(135deg,#07101a 0%,#0d1f35 60%,#07101a 100%);
+  padding:28px 20px 22px;
+  border-bottom:1px solid var(--border);
+  text-align:center;
+}
+.hdr-glow{
+  position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:600px;height:200px;
+  background:radial-gradient(ellipse,rgba(0,212,255,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hdr h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(38px,8vw,68px);
+  letter-spacing:6px;
+  background:linear-gradient(135deg,#00d4ff 0%,#00e896 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;
+}
+.hdr-sub{
+  font-size:12px;letter-spacing:3px;color:var(--muted);
+  text-transform:uppercase;margin-top:4px;
+}
+.hdr-badges{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px;
+}
+.badge{
+  padding:4px 14px;border-radius:20px;font-size:11px;font-family:'JetBrains Mono',monospace;
+  letter-spacing:1px;border:1px solid;
+}
+.badge-b{background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.35);color:var(--accent);}
+.badge-g{background:rgba(0,232,150,.1);border-color:rgba(0,232,150,.35);color:var(--green);}
+.badge-o{background:rgba(255,215,0,.1);border-color:rgba(255,215,0,.35);color:var(--gold);}
+
+/* ── NAV ── */
+.nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(11,24,37,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  display:flex;overflow-x:auto;
+  scrollbar-width:none;
+}
+.nav::-webkit-scrollbar{display:none;}
+.nav-btn{
+  flex-shrink:0;
+  padding:13px 18px;
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:12px;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--muted);border:none;background:transparent;
+  border-bottom:2px solid transparent;cursor:pointer;
+  white-space:nowrap;transition:all .2s;
+}
+.nav-btn:hover{color:var(--text);}
+.nav-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* ── SECTION ── */
+.sec{display:none;padding:24px 16px;position:relative;z-index:1;max-width:1200px;margin:0 auto;}
+.sec.active{display:block;}
+@media(min-width:768px){.sec{padding:32px 32px;}}
+
+/* ── SECTION TITLE ── */
+.stitle{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:22px;letter-spacing:4px;color:var(--accent);
+  margin-bottom:20px;display:flex;align-items:center;gap:10px;
+}
+.stitle::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--accent),transparent);}
+
+/* ── KPI GRID ── */
+.kpi-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;margin-bottom:24px;
+}
+@media(min-width:480px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:768px){.kpi-grid{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:1100px){.kpi-grid.six{grid-template-columns:repeat(6,1fr);}}
+.kpi{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+  position:relative;overflow:hidden;
+}
+.kpi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--kc,var(--accent));
+}
+.kpi-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:5px;}
+.kpi-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;line-height:1;}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;font-family:'JetBrains Mono',monospace;}
+.pos{color:var(--green);}
+.neg{color:var(--red);}
+.acc{color:var(--accent);}
+.gld{color:var(--gold);}
+
+/* ── CHART BOX ── */
+.cbox{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:18px;margin-bottom:20px;
+}
+.cbox-title{
+  font-size:11px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);margin-bottom:14px;
+}
+.chart-wrap{position:relative;}
+
+/* ── TWO COL ── */
+.two-col{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:768px){.two-col{grid-template-columns:1fr 1fr;}}
+
+/* ── TABLE ── */
+.tbl-wrap{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;margin-bottom:20px;
+}
+.tbl-wrap table{width:100%;border-collapse:collapse;font-size:12px;font-family:'JetBrains Mono',monospace;}
+.tbl-wrap th{
+  background:var(--bg3);color:var(--muted);
+  font-size:10px;font-family:'Rajdhani',sans-serif;letter-spacing:1.5px;
+  text-transform:uppercase;padding:10px 12px;text-align:left;
+  font-weight:700;white-space:nowrap;
+}
+.tbl-wrap td{padding:8px 12px;border-bottom:1px solid rgba(26,48,80,.5);white-space:nowrap;}
+.tbl-wrap tr:last-child td{border-bottom:none;}
+.tbl-wrap tr:hover td{background:rgba(0,212,255,.03);}
+.td-date{color:var(--text);}
+.td-num{color:var(--muted);}
+.td-pos{color:var(--green);}
+.td-neg{color:var(--red);}
+.td-win{
+  background:rgba(0,232,150,.12);color:var(--green);
+  border-radius:4px;font-size:10px;font-family:'Rajdhani',monospace;
+  letter-spacing:1px;font-weight:700;
+}
+.td-loss{
+  background:rgba(255,61,90,.12);color:var(--red);
+  border-radius:4px;font-size:10px;font-family:'Rajdhani',monospace;
+  letter-spacing:1px;font-weight:700;
+}
+
+/* ── STRATEGY CARDS ── */
+.s-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;margin-bottom:24px;
+}
+@media(min-width:900px){.s-grid{grid-template-columns:repeat(4,1fr);}}
+.s-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.s-card-header{
+  padding:12px 14px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.s-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;}
+.s-tf{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.07);
+}
+.s-body{padding:12px 14px;}
+.s-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);
+  font-size:12px;
+}
+.s-row span:first-child{color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:11px;letter-spacing:.5px;}
+
+/* ── CORR MATRIX ── */
+.corr-wrap{overflow-x:auto;}
+.corr-tbl{border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:13px;min-width:300px;}
+.corr-tbl td,.corr-tbl th{padding:10px 16px;text-align:center;border:1px solid var(--border);}
+.corr-tbl th{background:var(--bg3);color:var(--muted);font-size:11px;letter-spacing:1px;}
+
+/* ── PAIR GRID ── */
+.pair-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;margin-bottom:20px;
+}
+@media(min-width:768px){.pair-grid{grid-template-columns:repeat(3,1fr);}}
+.pair-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+}
+.pair-title{
+  font-family:'Bebas Neue',sans-serif;font-size:18px;
+  letter-spacing:2px;margin-bottom:10px;color:var(--text);
+}
+.best-tag{
+  display:inline-block;padding:1px 8px;
+  background:rgba(0,232,150,.15);border:1px solid var(--green);
+  border-radius:6px;font-size:9px;color:var(--green);
+  letter-spacing:1px;margin-left:6px;vertical-align:middle;
+}
+.p-row{display:flex;justify-content:space-between;font-size:12px;font-family:'JetBrains Mono',monospace;padding:3px 0;}
+.p-row span:first-child{color:var(--muted);}
+
+/* ── WHY SECTION ── */
+.why-grid{
+  display:grid;
+  grid-template-columns:1fr;gap:12px;
+}
+@media(min-width:600px){.why-grid{grid-template-columns:1fr 1fr;}}
+@media(min-width:1000px){.why-grid{grid-template-columns:1fr 1fr 1fr;}}
+.why-card{
+  background:var(--card);border:1px solid var(--border);
+  border-left:3px solid var(--wc,var(--accent));
+  border-radius:10px;padding:16px 18px;
+}
+.why-title{font-weight:700;font-size:14px;letter-spacing:1px;margin-bottom:6px;color:var(--wc,var(--accent));}
+.why-text{font-size:13px;color:var(--muted);line-height:1.65;}
+
+/* ── FOOTER ── */
+.footer{
+  text-align:center;padding:24px 16px;
+  border-top:1px solid var(--border);
+  color:var(--muted);font-size:11px;letter-spacing:1px;
+  position:relative;z-index:1;margin-top:10px;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+
+/* ── MOBILE TABLE SCROLL ── */
+.tbl-wrap{overflow-x:auto;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-glow"></div>
+  <h1>GOPAL Report</h1>
+  <div class="hdr-sub">USD Pro Bot · Combined Strategy Report · XAUUSD</div>
+  <div class="hdr-badges">
+    <span class="badge badge-b">Period: May 2025 – May 2026</span>
+    <span class="badge badge-g">4 Strategies Combined</span>
+    <span class="badge badge-o">Capital: $5,000</span>
+    <span class="badge badge-b">96% Real Ticks Quality</span>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" onclick="showTab('overview',this)">Overview</button>
+  <button class="nav-btn" onclick="showTab('equity',this)">Equity &amp; DD</button>
+  <button class="nav-btn" onclick="showTab('monthly',this)">Monthly</button>
+  <button class="nav-btn" onclick="showTab('weekly',this)">Weekly</button>
+  <button class="nav-btn" onclick="showTab('daily',this)">Daily</button>
+  <button class="nav-btn" onclick="showTab('strategies',this)">Strategies</button>
+  <button class="nav-btn" onclick="showTab('correlation',this)">Correlation</button>
+  <button class="nav-btn" onclick="showTab('why',this)">Why This Bot</button>
+</nav>
+
+<!-- ═══════════ OVERVIEW ═══════════ -->
+<section id="overview" class="sec active">
+  <div class="stitle">Combined Performance Overview</div>
+
+  <div class="kpi-grid six">
+    <div class="kpi" style="--kc:var(--green)">
+      <div class="kpi-lbl">Total Net Profit</div>
+      <div class="kpi-val pos">$7,118.64</div>
+      <div class="kpi-sub">All 4 strategies</div>
+    </div>
+    <div class="kpi" style="--kc:var(--green)">
+      <div class="kpi-lbl">% Return (₹5K)</div>
+      <div class="kpi-val pos">+142.37%</div>
+      <div class="kpi-sub">On $5,000 capital</div>
+    </div>
+    <div class="kpi" style="--kc:var(--red)">
+      <div class="kpi-lbl">Max Drawdown $</div>
+      <div class="kpi-val neg">-$1,717.92</div>
+      <div class="kpi-sub">Combined equity DD</div>
+    </div>
+    <div class="kpi" style="--kc:var(--red)">
+      <div class="kpi-lbl">Max DD %</div>
+      <div class="kpi-val neg">-34.36%</div>
+      <div class="kpi-sub">On $5,000 base</div>
+    </div>
+    <div class="kpi" style="--kc:var(--gold)">
+      <div class="kpi-lbl">Avg Monthly</div>
+      <div class="kpi-val gld">$547.59</div>
+      <div class="kpi-sub">+10.95%/month</div>
+    </div>
+    <div class="kpi" style="--kc:var(--accent)">
+      <div class="kpi-lbl">Avg Weekly</div>
+      <div class="kpi-val acc">$134.31</div>
+      <div class="kpi-sub">+2.69%/week</div>
+    </div>
+    <div class="kpi" style="--kc:var(--accent)">
+      <div class="kpi-lbl">Total Trades</div>
+      <div class="kpi-val acc">2,550</div>
+      <div class="kpi-sub">All strategies</div>
+    </div>
+    <div class="kpi" style="--kc:var(--gold)">
+      <div class="kpi-lbl">Win Rate</div>
+      <div class="kpi-val gld">37.84%</div>
+      <div class="kpi-sub">965 wins / 2550</div>
+    </div>
+    <div class="kpi" style="--kc:var(--green)">
+      <div class="kpi-lbl">Recovery Factor</div>
+      <div class="kpi-val pos">4.14×</div>
+      <div class="kpi-sub">Profit / Max DD</div>
+    </div>
+    <div class="kpi" style="--kc:var(--green)">
+      <div class="kpi-lbl">Profitable Months</div>
+      <div class="kpi-val pos">8 / 13</div>
+      <div class="kpi-sub">61.5% positive</div>
+    </div>
+    <div class="kpi" style="--kc:var(--green)">
+      <div class="kpi-lbl">Best Month</div>
+      <div class="kpi-val pos">+$1,933.97</div>
+      <div class="kpi-sub">Feb 2026 · +38.68%</div>
+    </div>
+    <div class="kpi" style="--kc:var(--red)">
+      <div class="kpi-lbl">Worst Month</div>
+      <div class="kpi-val neg">-$584.59</div>
+      <div class="kpi-sub">Apr 2026 · -11.69%</div>
+    </div>
+  </div>
+
+  <div class="cbox">
+    <div class="cbox-title">Combined Equity Curve — $5,000 Starting Capital</div>
+    <div class="chart-wrap"><canvas id="eqOverview" height="180"></canvas></div>
+  </div>
+
+  <div class="two-col">
+    <div class="cbox">
+      <div class="cbox-title">Monthly P/L — Bar Overview</div>
+      <div class="chart-wrap"><canvas id="mBarOverview" height="210"></canvas></div>
+    </div>
+    <div class="cbox">
+      <div class="cbox-title">Capital Allocation ($5,000)</div>
+      <div class="chart-wrap"><canvas id="capPie" height="210"></canvas></div>
+    </div>
+  </div>
+
+  <!-- System Info Box -->
+  <div class="cbox" style="border-left:3px solid var(--accent);">
+    <div class="cbox-title">About USD Pro Bot</div>
+    <p style="font-size:13px;color:var(--muted);line-height:1.8;">
+      <strong style="color:var(--text)">USD Pro Bot</strong> is a fully automated proprietary trading system running on XAUUSD. 
+      It is a <strong style="color:var(--green)">100% Price Action Based</strong> system — all signals are generated from raw price movement only, with <strong style="color:var(--green)">no standard indicators</strong>. 
+      Buy and sell signals are triggered by our <strong style="color:var(--accent)">custom-built signal engine</strong>, developed in-house, which identifies high-probability turning points in the market. 
+      The system also employs a <strong style="color:var(--gold)">Trailing Stop Loss</strong> mechanism to dynamically protect profits as trades move in favour, reducing drawdown and locking in gains automatically.
+      <br><br>
+      All 4 strategies (S1–S4) run simultaneously on different timeframes, each allocated <strong style="color:var(--gold)">$1,250</strong> from a total pool of <strong style="color:var(--gold)">$5,000</strong>.
+    </p>
+  </div>
+</section>
+
+<!-- ═══════════ EQUITY & DD ═══════════ -->
+<section id="equity" class="sec">
+  <div class="stitle">Equity Curve &amp; Drawdown</div>
+
+  <div class="kpi-grid">
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Starting Balance</div><div class="kpi-val acc">$5,000</div><div class="kpi-sub">Initial capital</div></div>
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Peak Balance</div><div class="kpi-val pos">$13,476</div><div class="kpi-sub">Highest point</div></div>
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Final Balance</div><div class="kpi-val pos">$12,118</div><div class="kpi-sub">End of period</div></div>
+    <div class="kpi" style="--kc:var(--red)"><div class="kpi-lbl">Max DD %</div><div class="kpi-val neg">-34.36%</div><div class="kpi-sub">On $5,000</div></div>
+  </div>
+
+  <div class="cbox">
+    <div class="cbox-title">Equity Curve — Balance Over Time</div>
+    <div class="chart-wrap"><canvas id="eqMain" height="200"></canvas></div>
+  </div>
+  <div class="cbox">
+    <div class="cbox-title">Drawdown ($) — Over Time</div>
+    <div class="chart-wrap"><canvas id="ddMain" height="160"></canvas></div>
+  </div>
+  <div class="cbox">
+    <div class="cbox-title">Drawdown (%) — On $5,000 Capital</div>
+    <div class="chart-wrap"><canvas id="ddPct" height="160"></canvas></div>
+  </div>
+</section>
+
+<!-- ═══════════ MONTHLY ═══════════ -->
+<section id="monthly" class="sec">
+  <div class="stitle">Monthly P/L</div>
+  <div class="kpi-grid">
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Avg Monthly</div><div class="kpi-val pos">+$547.59</div><div class="kpi-sub">+10.95% on $5K</div></div>
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Profitable Months</div><div class="kpi-val pos">8 / 13</div><div class="kpi-sub">61.5%</div></div>
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Best Month</div><div class="kpi-val pos">+$1,933.97</div><div class="kpi-sub">Feb 2026 · +38.68%</div></div>
+    <div class="kpi" style="--kc:var(--red)"><div class="kpi-lbl">Worst Month</div><div class="kpi-val neg">-$584.59</div><div class="kpi-sub">Apr 2026 · -11.69%</div></div>
+  </div>
+  <div class="cbox">
+    <div class="cbox-title">Monthly P/L Bar Chart</div>
+    <div class="chart-wrap"><canvas id="mBar" height="210"></canvas></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr>
+        <th>Month</th><th>P/L ($)</th><th>% Return</th>
+        <th>Cumulative</th><th>Cum %</th><th>Result</th>
+      </tr></thead>
+      <tbody><tr>
+      <td class="td-date">2025.05</td>
+      <td class="td-pos">+$569.29</td>
+      <td class="td-pos">+11.39%</td>
+      <td class="td-pos">+$569.29</td>
+      <td class="td-pos">+11.39%</td>
+      <td class="td-win">&nbsp;▲ PROFIT&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025.06</td>
+      <td class="td-neg">$-315.00</td>
+      <td class="td-neg">-6.30%</td>
+      <td class="td-pos">+$254.29</td>
+      <td class="td-pos">+5.09%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025.07</td>
+      <td class="td-pos">+$919.05</td>
+      <td class="td-pos">+18.38%</td>
+      <td class="td-pos">+$1173.34</td>
+      <td class="td-pos">+23.47%</td>
+      <td class="td-win">&nbsp;▲ PROFIT&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025.08</td>
+      <td class="td-neg">$-161.50</td>
+      <td class="td-neg">-3.23%</td>
+      <td class="td-pos">+$1011.84</td>
+      <td class="td-pos">+20.24%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025.09</td>
+      <td class="td-pos">+$441.18</td>
+      <td class="td-pos">+8.82%</td>
+      <td class="td-pos">+$1453.02</td>
+      <td class="td-pos">+29.06%</td>
+      <td class="td-win">&nbsp;▲ PROFIT&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025.10</td>
+      <td class="td-pos">+$1232.87</td>
+      <td class="td-pos">+24.66%</td>
+      <td class="td-pos">+$2685.89</td>
+      <td class="td-pos">+53.72%</td>
+      <td class="td-win">&nbsp;▲ PROFIT&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025.11</td>
+      <td class="td-neg">$-208.38</td>
+      <td class="td-neg">-4.17%</td>
+      <td class="td-pos">+$2477.51</td>
+      <td class="td-pos">+49.55%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025.12</td>
+      <td class="td-neg">$-238.51</td>
+      <td class="td-neg">-4.77%</td>
+      <td class="td-pos">+$2239.00</td>
+      <td class="td-pos">+44.78%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026.01</td>
+      <td class="td-pos">+$1360.90</td>
+      <td class="td-pos">+27.22%</td>
+      <td class="td-pos">+$3599.90</td>
+      <td class="td-pos">+72.00%</td>
+      <td class="td-win">&nbsp;▲ PROFIT&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026.02</td>
+      <td class="td-pos">+$1933.97</td>
+      <td class="td-pos">+38.68%</td>
+      <td class="td-pos">+$5533.87</td>
+      <td class="td-pos">+110.68%</td>
+      <td class="td-win">&nbsp;▲ PROFIT&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026.03</td>
+      <td class="td-pos">+$1630.65</td>
+      <td class="td-pos">+32.61%</td>
+      <td class="td-pos">+$7164.52</td>
+      <td class="td-pos">+143.29%</td>
+      <td class="td-win">&nbsp;▲ PROFIT&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026.04</td>
+      <td class="td-neg">$-584.59</td>
+      <td class="td-neg">-11.69%</td>
+      <td class="td-pos">+$6579.93</td>
+      <td class="td-pos">+131.60%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026.05</td>
+      <td class="td-pos">+$538.71</td>
+      <td class="td-pos">+10.77%</td>
+      <td class="td-pos">+$7118.64</td>
+      <td class="td-pos">+142.37%</td>
+      <td class="td-win">&nbsp;▲ PROFIT&nbsp;</td>
+    </tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════ WEEKLY ═══════════ -->
+<section id="weekly" class="sec">
+  <div class="stitle">Weekly P/L</div>
+  <div class="kpi-grid">
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Avg Weekly</div><div class="kpi-val pos">+$134.31</div><div class="kpi-sub">+2.69%/week on $5K</div></div>
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Profitable Weeks</div><div class="kpi-val pos">31 / 53</div><div class="kpi-sub">58.5%</div></div>
+    <div class="kpi" style="--kc:var(--accent)"><div class="kpi-lbl">Best Week</div><div class="kpi-val acc">+$848.78</div><div class="kpi-sub">+16.98% on $5K</div></div>
+    <div class="kpi" style="--kc:var(--red)"><div class="kpi-lbl">Worst Week</div><div class="kpi-val neg">-$426.19</div><div class="kpi-sub">-8.52% on $5K</div></div>
+  </div>
+  <div class="cbox">
+    <div class="cbox-title">Weekly P/L Bar Chart</div>
+    <div class="chart-wrap"><canvas id="wBar" height="220"></canvas></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Week</th><th>P/L ($)</th><th>% Return</th><th>Result</th></tr></thead>
+      <tbody><tr>
+      <td class="td-date">2025-W20</td>
+      <td class="td-pos">+$451.64</td>
+      <td class="td-pos">+9.03%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W21</td>
+      <td class="td-neg">$-147.04</td>
+      <td class="td-neg">-2.94%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W22</td>
+      <td class="td-pos">+$264.69</td>
+      <td class="td-pos">+5.29%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W23</td>
+      <td class="td-pos">+$32.99</td>
+      <td class="td-pos">+0.66%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W24</td>
+      <td class="td-neg">$-106.87</td>
+      <td class="td-neg">-2.14%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W25</td>
+      <td class="td-neg">$-372.23</td>
+      <td class="td-neg">-7.44%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W26</td>
+      <td class="td-neg">$-30.94</td>
+      <td class="td-neg">-0.62%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W27</td>
+      <td class="td-pos">+$359.23</td>
+      <td class="td-pos">+7.18%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W28</td>
+      <td class="td-pos">+$221.31</td>
+      <td class="td-pos">+4.43%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W29</td>
+      <td class="td-pos">+$9.47</td>
+      <td class="td-pos">+0.19%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W30</td>
+      <td class="td-pos">+$372.20</td>
+      <td class="td-pos">+7.44%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W31</td>
+      <td class="td-pos">+$64.23</td>
+      <td class="td-pos">+1.28%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W32</td>
+      <td class="td-pos">+$49.75</td>
+      <td class="td-pos">+1.00%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W33</td>
+      <td class="td-neg">$-150.51</td>
+      <td class="td-neg">-3.01%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W34</td>
+      <td class="td-pos">+$113.04</td>
+      <td class="td-pos">+2.26%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W35</td>
+      <td class="td-neg">$-119.12</td>
+      <td class="td-neg">-2.38%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W36</td>
+      <td class="td-pos">+$270.70</td>
+      <td class="td-pos">+5.41%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W37</td>
+      <td class="td-neg">$-43.41</td>
+      <td class="td-neg">-0.87%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W38</td>
+      <td class="td-neg">$-68.56</td>
+      <td class="td-neg">-1.37%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W39</td>
+      <td class="td-pos">+$99.36</td>
+      <td class="td-pos">+1.99%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W40</td>
+      <td class="td-pos">+$211.41</td>
+      <td class="td-pos">+4.23%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W41</td>
+      <td class="td-neg">$-35.44</td>
+      <td class="td-neg">-0.71%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W42</td>
+      <td class="td-pos">+$221.51</td>
+      <td class="td-pos">+4.43%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W43</td>
+      <td class="td-pos">+$918.90</td>
+      <td class="td-pos">+18.38%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W44</td>
+      <td class="td-pos">+$99.58</td>
+      <td class="td-pos">+1.99%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W45</td>
+      <td class="td-neg">$-366.66</td>
+      <td class="td-neg">-7.33%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W46</td>
+      <td class="td-pos">+$780.89</td>
+      <td class="td-pos">+15.62%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W47</td>
+      <td class="td-neg">$-265.85</td>
+      <td class="td-neg">-5.32%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W48</td>
+      <td class="td-neg">$-356.76</td>
+      <td class="td-neg">-7.14%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W49</td>
+      <td class="td-neg">$-262.93</td>
+      <td class="td-neg">-5.26%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W50</td>
+      <td class="td-neg">$-44.45</td>
+      <td class="td-neg">-0.89%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W51</td>
+      <td class="td-neg">$-427.56</td>
+      <td class="td-neg">-8.55%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2025-W52</td>
+      <td class="td-pos">+$245.90</td>
+      <td class="td-pos">+4.92%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W01</td>
+      <td class="td-pos">+$353.90</td>
+      <td class="td-pos">+7.08%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W02</td>
+      <td class="td-neg">$-11.07</td>
+      <td class="td-neg">-0.22%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W03</td>
+      <td class="td-neg">$-591.46</td>
+      <td class="td-neg">-11.83%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W04</td>
+      <td class="td-pos">+$447.18</td>
+      <td class="td-pos">+8.94%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W05</td>
+      <td class="td-pos">+$1412.88</td>
+      <td class="td-pos">+28.26%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W06</td>
+      <td class="td-pos">+$2170.83</td>
+      <td class="td-pos">+43.42%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W07</td>
+      <td class="td-pos">+$94.14</td>
+      <td class="td-pos">+1.88%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W08</td>
+      <td class="td-neg">$-207.94</td>
+      <td class="td-neg">-4.16%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W09</td>
+      <td class="td-neg">$-123.06</td>
+      <td class="td-neg">-2.46%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W10</td>
+      <td class="td-pos">+$19.20</td>
+      <td class="td-pos">+0.38%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W11</td>
+      <td class="td-neg">$-383.36</td>
+      <td class="td-neg">-7.67%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W12</td>
+      <td class="td-pos">+$575.70</td>
+      <td class="td-pos">+11.51%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W13</td>
+      <td class="td-pos">+$1638.01</td>
+      <td class="td-pos">+32.76%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W14</td>
+      <td class="td-pos">+$221.70</td>
+      <td class="td-pos">+4.43%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W15</td>
+      <td class="td-neg">$-236.37</td>
+      <td class="td-neg">-4.73%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W16</td>
+      <td class="td-neg">$-653.48</td>
+      <td class="td-neg">-13.07%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W17</td>
+      <td class="td-neg">$-154.20</td>
+      <td class="td-neg">-3.08%</td>
+      <td class="td-loss">&nbsp;▼ LOSS&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W18</td>
+      <td class="td-pos">+$152.26</td>
+      <td class="td-pos">+3.05%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W19</td>
+      <td class="td-pos">+$403.32</td>
+      <td class="td-pos">+8.07%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr><tr>
+      <td class="td-date">2026-W20</td>
+      <td class="td-pos">+$1.99</td>
+      <td class="td-pos">+0.04%</td>
+      <td class="td-win">&nbsp;▲ WIN&nbsp;</td>
+    </tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════ DAILY ═══════════ -->
+<section id="daily" class="sec">
+  <div class="stitle">Daily P/L</div>
+  <div class="kpi-grid">
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Avg Daily P/L</div><div class="kpi-val pos">+$27.59</div><div class="kpi-sub">+0.55%/day on $5K</div></div>
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Positive Days</div><div class="kpi-val pos">144 / 258</div><div class="kpi-sub">55.8%</div></div>
+    <div class="kpi" style="--kc:var(--accent)"><div class="kpi-lbl">Best Day</div><div class="kpi-val acc">+$461.17</div><div class="kpi-sub">2026.05.07</div></div>
+    <div class="kpi" style="--kc:var(--red)"><div class="kpi-lbl">Worst Day</div><div class="kpi-val neg">-$350.13</div><div class="kpi-sub">2026.04.03</div></div>
+  </div>
+  <div class="cbox">
+    <div class="cbox-title">Daily P/L Bar Chart</div>
+    <div class="chart-wrap"><canvas id="dBar" height="200"></canvas></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Date</th><th>P/L ($)</th><th>% Return</th><th>Running Total</th></tr></thead>
+      <tbody><tr>
+      <td class="td-num">1</td>
+      <td class="td-date">2025.05.15</td>
+      <td class="td-pos">+$75.26</td>
+      <td class="td-pos">+1.51%</td>
+      <td class="td-pos">+$75.26</td>
+    </tr><tr>
+      <td class="td-num">2</td>
+      <td class="td-date">2025.05.16</td>
+      <td class="td-pos">+$376.38</td>
+      <td class="td-pos">+7.53%</td>
+      <td class="td-pos">+$451.64</td>
+    </tr><tr>
+      <td class="td-num">3</td>
+      <td class="td-date">2025.05.19</td>
+      <td class="td-neg">$-35.88</td>
+      <td class="td-neg">-0.72%</td>
+      <td class="td-pos">+$415.76</td>
+    </tr><tr>
+      <td class="td-num">4</td>
+      <td class="td-date">2025.05.20</td>
+      <td class="td-neg">$-120.58</td>
+      <td class="td-neg">-2.41%</td>
+      <td class="td-pos">+$295.18</td>
+    </tr><tr>
+      <td class="td-num">5</td>
+      <td class="td-date">2025.05.21</td>
+      <td class="td-pos">+$128.17</td>
+      <td class="td-pos">+2.56%</td>
+      <td class="td-pos">+$423.35</td>
+    </tr><tr>
+      <td class="td-num">6</td>
+      <td class="td-date">2025.05.22</td>
+      <td class="td-neg">$-45.17</td>
+      <td class="td-neg">-0.90%</td>
+      <td class="td-pos">+$378.18</td>
+    </tr><tr>
+      <td class="td-num">7</td>
+      <td class="td-date">2025.05.23</td>
+      <td class="td-neg">$-73.58</td>
+      <td class="td-neg">-1.47%</td>
+      <td class="td-pos">+$304.60</td>
+    </tr><tr>
+      <td class="td-num">8</td>
+      <td class="td-date">2025.05.26</td>
+      <td class="td-pos">+$131.02</td>
+      <td class="td-pos">+2.62%</td>
+      <td class="td-pos">+$435.62</td>
+    </tr><tr>
+      <td class="td-num">9</td>
+      <td class="td-date">2025.05.27</td>
+      <td class="td-pos">+$29.33</td>
+      <td class="td-pos">+0.59%</td>
+      <td class="td-pos">+$464.95</td>
+    </tr><tr>
+      <td class="td-num">10</td>
+      <td class="td-date">2025.05.28</td>
+      <td class="td-neg">$-83.07</td>
+      <td class="td-neg">-1.66%</td>
+      <td class="td-pos">+$381.88</td>
+    </tr><tr>
+      <td class="td-num">11</td>
+      <td class="td-date">2025.05.29</td>
+      <td class="td-pos">+$109.69</td>
+      <td class="td-pos">+2.19%</td>
+      <td class="td-pos">+$491.57</td>
+    </tr><tr>
+      <td class="td-num">12</td>
+      <td class="td-date">2025.05.30</td>
+      <td class="td-pos">+$77.72</td>
+      <td class="td-pos">+1.55%</td>
+      <td class="td-pos">+$569.29</td>
+    </tr><tr>
+      <td class="td-num">13</td>
+      <td class="td-date">2025.06.02</td>
+      <td class="td-neg">$-65.20</td>
+      <td class="td-neg">-1.30%</td>
+      <td class="td-pos">+$504.09</td>
+    </tr><tr>
+      <td class="td-num">14</td>
+      <td class="td-date">2025.06.03</td>
+      <td class="td-pos">+$268.34</td>
+      <td class="td-pos">+5.37%</td>
+      <td class="td-pos">+$772.43</td>
+    </tr><tr>
+      <td class="td-num">15</td>
+      <td class="td-date">2025.06.04</td>
+      <td class="td-neg">$-124.70</td>
+      <td class="td-neg">-2.49%</td>
+      <td class="td-pos">+$647.73</td>
+    </tr><tr>
+      <td class="td-num">16</td>
+      <td class="td-date">2025.06.05</td>
+      <td class="td-neg">$-67.33</td>
+      <td class="td-neg">-1.35%</td>
+      <td class="td-pos">+$580.40</td>
+    </tr><tr>
+      <td class="td-num">17</td>
+      <td class="td-date">2025.06.06</td>
+      <td class="td-pos">+$21.88</td>
+      <td class="td-pos">+0.44%</td>
+      <td class="td-pos">+$602.28</td>
+    </tr><tr>
+      <td class="td-num">18</td>
+      <td class="td-date">2025.06.09</td>
+      <td class="td-pos">+$121.80</td>
+      <td class="td-pos">+2.44%</td>
+      <td class="td-pos">+$724.08</td>
+    </tr><tr>
+      <td class="td-num">19</td>
+      <td class="td-date">2025.06.10</td>
+      <td class="td-pos">+$18.41</td>
+      <td class="td-pos">+0.37%</td>
+      <td class="td-pos">+$742.49</td>
+    </tr><tr>
+      <td class="td-num">20</td>
+      <td class="td-date">2025.06.11</td>
+      <td class="td-neg">$-244.33</td>
+      <td class="td-neg">-4.89%</td>
+      <td class="td-pos">+$498.16</td>
+    </tr><tr>
+      <td class="td-num">21</td>
+      <td class="td-date">2025.06.12</td>
+      <td class="td-pos">+$10.16</td>
+      <td class="td-pos">+0.20%</td>
+      <td class="td-pos">+$508.32</td>
+    </tr><tr>
+      <td class="td-num">22</td>
+      <td class="td-date">2025.06.13</td>
+      <td class="td-neg">$-12.91</td>
+      <td class="td-neg">-0.26%</td>
+      <td class="td-pos">+$495.41</td>
+    </tr><tr>
+      <td class="td-num">23</td>
+      <td class="td-date">2025.06.16</td>
+      <td class="td-neg">$-77.73</td>
+      <td class="td-neg">-1.55%</td>
+      <td class="td-pos">+$417.68</td>
+    </tr><tr>
+      <td class="td-num">24</td>
+      <td class="td-date">2025.06.17</td>
+      <td class="td-neg">$-32.29</td>
+      <td class="td-neg">-0.65%</td>
+      <td class="td-pos">+$385.39</td>
+    </tr><tr>
+      <td class="td-num">25</td>
+      <td class="td-date">2025.06.18</td>
+      <td class="td-neg">$-201.54</td>
+      <td class="td-neg">-4.03%</td>
+      <td class="td-pos">+$183.85</td>
+    </tr><tr>
+      <td class="td-num">26</td>
+      <td class="td-date">2025.06.19</td>
+      <td class="td-neg">$-8.07</td>
+      <td class="td-neg">-0.16%</td>
+      <td class="td-pos">+$175.78</td>
+    </tr><tr>
+      <td class="td-num">27</td>
+      <td class="td-date">2025.06.20</td>
+      <td class="td-neg">$-52.60</td>
+      <td class="td-neg">-1.05%</td>
+      <td class="td-pos">+$123.18</td>
+    </tr><tr>
+      <td class="td-num">28</td>
+      <td class="td-date">2025.06.23</td>
+      <td class="td-neg">$-90.04</td>
+      <td class="td-neg">-1.80%</td>
+      <td class="td-pos">+$33.14</td>
+    </tr><tr>
+      <td class="td-num">29</td>
+      <td class="td-date">2025.06.24</td>
+      <td class="td-pos">+$30.04</td>
+      <td class="td-pos">+0.60%</td>
+      <td class="td-pos">+$63.18</td>
+    </tr><tr>
+      <td class="td-num">30</td>
+      <td class="td-date">2025.06.25</td>
+      <td class="td-pos">+$94.59</td>
+      <td class="td-pos">+1.89%</td>
+      <td class="td-pos">+$157.77</td>
+    </tr><tr>
+      <td class="td-num">31</td>
+      <td class="td-date">2025.06.26</td>
+      <td class="td-neg">$-52.74</td>
+      <td class="td-neg">-1.05%</td>
+      <td class="td-pos">+$105.03</td>
+    </tr><tr>
+      <td class="td-num">32</td>
+      <td class="td-date">2025.06.27</td>
+      <td class="td-neg">$-12.79</td>
+      <td class="td-neg">-0.26%</td>
+      <td class="td-pos">+$92.24</td>
+    </tr><tr>
+      <td class="td-num">33</td>
+      <td class="td-date">2025.06.30</td>
+      <td class="td-pos">+$162.05</td>
+      <td class="td-pos">+3.24%</td>
+      <td class="td-pos">+$254.29</td>
+    </tr><tr>
+      <td class="td-num">34</td>
+      <td class="td-date">2025.07.01</td>
+      <td class="td-pos">+$189.99</td>
+      <td class="td-pos">+3.80%</td>
+      <td class="td-pos">+$444.28</td>
+    </tr><tr>
+      <td class="td-num">35</td>
+      <td class="td-date">2025.07.02</td>
+      <td class="td-neg">$-75.48</td>
+      <td class="td-neg">-1.51%</td>
+      <td class="td-pos">+$368.80</td>
+    </tr><tr>
+      <td class="td-num">36</td>
+      <td class="td-date">2025.07.03</td>
+      <td class="td-pos">+$11.45</td>
+      <td class="td-pos">+0.23%</td>
+      <td class="td-pos">+$380.25</td>
+    </tr><tr>
+      <td class="td-num">37</td>
+      <td class="td-date">2025.07.04</td>
+      <td class="td-pos">+$71.22</td>
+      <td class="td-pos">+1.42%</td>
+      <td class="td-pos">+$451.47</td>
+    </tr><tr>
+      <td class="td-num">38</td>
+      <td class="td-date">2025.07.07</td>
+      <td class="td-pos">+$37.50</td>
+      <td class="td-pos">+0.75%</td>
+      <td class="td-pos">+$488.97</td>
+    </tr><tr>
+      <td class="td-num">39</td>
+      <td class="td-date">2025.07.08</td>
+      <td class="td-pos">+$49.05</td>
+      <td class="td-pos">+0.98%</td>
+      <td class="td-pos">+$538.02</td>
+    </tr><tr>
+      <td class="td-num">40</td>
+      <td class="td-date">2025.07.09</td>
+      <td class="td-pos">+$45.62</td>
+      <td class="td-pos">+0.91%</td>
+      <td class="td-pos">+$583.64</td>
+    </tr><tr>
+      <td class="td-num">41</td>
+      <td class="td-date">2025.07.10</td>
+      <td class="td-pos">+$63.57</td>
+      <td class="td-pos">+1.27%</td>
+      <td class="td-pos">+$647.21</td>
+    </tr><tr>
+      <td class="td-num">42</td>
+      <td class="td-date">2025.07.11</td>
+      <td class="td-pos">+$25.57</td>
+      <td class="td-pos">+0.51%</td>
+      <td class="td-pos">+$672.78</td>
+    </tr><tr>
+      <td class="td-num">43</td>
+      <td class="td-date">2025.07.14</td>
+      <td class="td-neg">$-69.55</td>
+      <td class="td-neg">-1.39%</td>
+      <td class="td-pos">+$603.23</td>
+    </tr><tr>
+      <td class="td-num">44</td>
+      <td class="td-date">2025.07.15</td>
+      <td class="td-pos">+$38.10</td>
+      <td class="td-pos">+0.76%</td>
+      <td class="td-pos">+$641.33</td>
+    </tr><tr>
+      <td class="td-num">45</td>
+      <td class="td-date">2025.07.16</td>
+      <td class="td-neg">$-6.74</td>
+      <td class="td-neg">-0.13%</td>
+      <td class="td-pos">+$634.59</td>
+    </tr><tr>
+      <td class="td-num">46</td>
+      <td class="td-date">2025.07.17</td>
+      <td class="td-pos">+$32.97</td>
+      <td class="td-pos">+0.66%</td>
+      <td class="td-pos">+$667.56</td>
+    </tr><tr>
+      <td class="td-num">47</td>
+      <td class="td-date">2025.07.18</td>
+      <td class="td-pos">+$14.69</td>
+      <td class="td-pos">+0.29%</td>
+      <td class="td-pos">+$682.25</td>
+    </tr><tr>
+      <td class="td-num">48</td>
+      <td class="td-date">2025.07.21</td>
+      <td class="td-pos">+$1.04</td>
+      <td class="td-pos">+0.02%</td>
+      <td class="td-pos">+$683.29</td>
+    </tr><tr>
+      <td class="td-num">49</td>
+      <td class="td-date">2025.07.22</td>
+      <td class="td-pos">+$135.96</td>
+      <td class="td-pos">+2.72%</td>
+      <td class="td-pos">+$819.25</td>
+    </tr><tr>
+      <td class="td-num">50</td>
+      <td class="td-date">2025.07.23</td>
+      <td class="td-pos">+$70.76</td>
+      <td class="td-pos">+1.42%</td>
+      <td class="td-pos">+$890.01</td>
+    </tr><tr>
+      <td class="td-num">51</td>
+      <td class="td-date">2025.07.24</td>
+      <td class="td-pos">+$187.18</td>
+      <td class="td-pos">+3.74%</td>
+      <td class="td-pos">+$1077.19</td>
+    </tr><tr>
+      <td class="td-num">52</td>
+      <td class="td-date">2025.07.25</td>
+      <td class="td-neg">$-22.74</td>
+      <td class="td-neg">-0.45%</td>
+      <td class="td-pos">+$1054.45</td>
+    </tr><tr>
+      <td class="td-num">53</td>
+      <td class="td-date">2025.07.28</td>
+      <td class="td-pos">+$36.76</td>
+      <td class="td-pos">+0.74%</td>
+      <td class="td-pos">+$1091.21</td>
+    </tr><tr>
+      <td class="td-num">54</td>
+      <td class="td-date">2025.07.29</td>
+      <td class="td-pos">+$5.00</td>
+      <td class="td-pos">+0.10%</td>
+      <td class="td-pos">+$1096.21</td>
+    </tr><tr>
+      <td class="td-num">55</td>
+      <td class="td-date">2025.07.30</td>
+      <td class="td-neg">$-64.50</td>
+      <td class="td-neg">-1.29%</td>
+      <td class="td-pos">+$1031.71</td>
+    </tr><tr>
+      <td class="td-num">56</td>
+      <td class="td-date">2025.07.31</td>
+      <td class="td-pos">+$141.63</td>
+      <td class="td-pos">+2.83%</td>
+      <td class="td-pos">+$1173.34</td>
+    </tr><tr>
+      <td class="td-num">57</td>
+      <td class="td-date">2025.08.01</td>
+      <td class="td-neg">$-54.66</td>
+      <td class="td-neg">-1.09%</td>
+      <td class="td-pos">+$1118.68</td>
+    </tr><tr>
+      <td class="td-num">58</td>
+      <td class="td-date">2025.08.04</td>
+      <td class="td-pos">+$103.08</td>
+      <td class="td-pos">+2.06%</td>
+      <td class="td-pos">+$1221.76</td>
+    </tr><tr>
+      <td class="td-num">59</td>
+      <td class="td-date">2025.08.05</td>
+      <td class="td-pos">+$122.86</td>
+      <td class="td-pos">+2.46%</td>
+      <td class="td-pos">+$1344.62</td>
+    </tr><tr>
+      <td class="td-num">60</td>
+      <td class="td-date">2025.08.06</td>
+      <td class="td-pos">+$18.82</td>
+      <td class="td-pos">+0.38%</td>
+      <td class="td-pos">+$1363.44</td>
+    </tr><tr>
+      <td class="td-num">61</td>
+      <td class="td-date">2025.08.07</td>
+      <td class="td-neg">$-34.60</td>
+      <td class="td-neg">-0.69%</td>
+      <td class="td-pos">+$1328.84</td>
+    </tr><tr>
+      <td class="td-num">62</td>
+      <td class="td-date">2025.08.08</td>
+      <td class="td-neg">$-160.41</td>
+      <td class="td-neg">-3.21%</td>
+      <td class="td-pos">+$1168.43</td>
+    </tr><tr>
+      <td class="td-num">63</td>
+      <td class="td-date">2025.08.11</td>
+      <td class="td-pos">+$78.69</td>
+      <td class="td-pos">+1.57%</td>
+      <td class="td-pos">+$1247.12</td>
+    </tr><tr>
+      <td class="td-num">64</td>
+      <td class="td-date">2025.08.12</td>
+      <td class="td-neg">$-155.71</td>
+      <td class="td-neg">-3.11%</td>
+      <td class="td-pos">+$1091.41</td>
+    </tr><tr>
+      <td class="td-num">65</td>
+      <td class="td-date">2025.08.13</td>
+      <td class="td-neg">$-42.31</td>
+      <td class="td-neg">-0.85%</td>
+      <td class="td-pos">+$1049.10</td>
+    </tr><tr>
+      <td class="td-num">66</td>
+      <td class="td-date">2025.08.14</td>
+      <td class="td-neg">$-77.39</td>
+      <td class="td-neg">-1.55%</td>
+      <td class="td-pos">+$971.71</td>
+    </tr><tr>
+      <td class="td-num">67</td>
+      <td class="td-date">2025.08.15</td>
+      <td class="td-pos">+$46.21</td>
+      <td class="td-pos">+0.92%</td>
+      <td class="td-pos">+$1017.92</td>
+    </tr><tr>
+      <td class="td-num">68</td>
+      <td class="td-date">2025.08.18</td>
+      <td class="td-pos">+$24.64</td>
+      <td class="td-pos">+0.49%</td>
+      <td class="td-pos">+$1042.56</td>
+    </tr><tr>
+      <td class="td-num">69</td>
+      <td class="td-date">2025.08.19</td>
+      <td class="td-neg">$-2.61</td>
+      <td class="td-neg">-0.05%</td>
+      <td class="td-pos">+$1039.95</td>
+    </tr><tr>
+      <td class="td-num">70</td>
+      <td class="td-date">2025.08.20</td>
+      <td class="td-pos">+$58.40</td>
+      <td class="td-pos">+1.17%</td>
+      <td class="td-pos">+$1098.35</td>
+    </tr><tr>
+      <td class="td-num">71</td>
+      <td class="td-date">2025.08.21</td>
+      <td class="td-pos">+$99.47</td>
+      <td class="td-pos">+1.99%</td>
+      <td class="td-pos">+$1197.82</td>
+    </tr><tr>
+      <td class="td-num">72</td>
+      <td class="td-date">2025.08.22</td>
+      <td class="td-neg">$-66.86</td>
+      <td class="td-neg">-1.34%</td>
+      <td class="td-pos">+$1130.96</td>
+    </tr><tr>
+      <td class="td-num">73</td>
+      <td class="td-date">2025.08.25</td>
+      <td class="td-neg">$-10.68</td>
+      <td class="td-neg">-0.21%</td>
+      <td class="td-pos">+$1120.28</td>
+    </tr><tr>
+      <td class="td-num">74</td>
+      <td class="td-date">2025.08.26</td>
+      <td class="td-neg">$-86.60</td>
+      <td class="td-neg">-1.73%</td>
+      <td class="td-pos">+$1033.68</td>
+    </tr><tr>
+      <td class="td-num">75</td>
+      <td class="td-date">2025.08.27</td>
+      <td class="td-neg">$-17.49</td>
+      <td class="td-neg">-0.35%</td>
+      <td class="td-pos">+$1016.19</td>
+    </tr><tr>
+      <td class="td-num">76</td>
+      <td class="td-date">2025.08.28</td>
+      <td class="td-neg">$-14.42</td>
+      <td class="td-neg">-0.29%</td>
+      <td class="td-pos">+$1001.77</td>
+    </tr><tr>
+      <td class="td-num">77</td>
+      <td class="td-date">2025.08.29</td>
+      <td class="td-pos">+$10.07</td>
+      <td class="td-pos">+0.20%</td>
+      <td class="td-pos">+$1011.84</td>
+    </tr><tr>
+      <td class="td-num">78</td>
+      <td class="td-date">2025.09.01</td>
+      <td class="td-pos">+$164.52</td>
+      <td class="td-pos">+3.29%</td>
+      <td class="td-pos">+$1176.36</td>
+    </tr><tr>
+      <td class="td-num">79</td>
+      <td class="td-date">2025.09.02</td>
+      <td class="td-neg">$-122.71</td>
+      <td class="td-neg">-2.45%</td>
+      <td class="td-pos">+$1053.65</td>
+    </tr><tr>
+      <td class="td-num">80</td>
+      <td class="td-date">2025.09.03</td>
+      <td class="td-pos">+$156.26</td>
+      <td class="td-pos">+3.13%</td>
+      <td class="td-pos">+$1209.91</td>
+    </tr><tr>
+      <td class="td-num">81</td>
+      <td class="td-date">2025.09.04</td>
+      <td class="td-pos">+$176.38</td>
+      <td class="td-pos">+3.53%</td>
+      <td class="td-pos">+$1386.29</td>
+    </tr><tr>
+      <td class="td-num">82</td>
+      <td class="td-date">2025.09.05</td>
+      <td class="td-neg">$-103.75</td>
+      <td class="td-neg">-2.08%</td>
+      <td class="td-pos">+$1282.54</td>
+    </tr><tr>
+      <td class="td-num">83</td>
+      <td class="td-date">2025.09.08</td>
+      <td class="td-pos">+$11.19</td>
+      <td class="td-pos">+0.22%</td>
+      <td class="td-pos">+$1293.73</td>
+    </tr><tr>
+      <td class="td-num">84</td>
+      <td class="td-date">2025.09.09</td>
+      <td class="td-pos">+$0.92</td>
+      <td class="td-pos">+0.02%</td>
+      <td class="td-pos">+$1294.65</td>
+    </tr><tr>
+      <td class="td-num">85</td>
+      <td class="td-date">2025.09.10</td>
+      <td class="td-neg">$-24.08</td>
+      <td class="td-neg">-0.48%</td>
+      <td class="td-pos">+$1270.57</td>
+    </tr><tr>
+      <td class="td-num">86</td>
+      <td class="td-date">2025.09.11</td>
+      <td class="td-neg">$-18.64</td>
+      <td class="td-neg">-0.37%</td>
+      <td class="td-pos">+$1251.93</td>
+    </tr><tr>
+      <td class="td-num">87</td>
+      <td class="td-date">2025.09.12</td>
+      <td class="td-neg">$-12.80</td>
+      <td class="td-neg">-0.26%</td>
+      <td class="td-pos">+$1239.13</td>
+    </tr><tr>
+      <td class="td-num">88</td>
+      <td class="td-date">2025.09.15</td>
+      <td class="td-neg">$-44.58</td>
+      <td class="td-neg">-0.89%</td>
+      <td class="td-pos">+$1194.55</td>
+    </tr><tr>
+      <td class="td-num">89</td>
+      <td class="td-date">2025.09.16</td>
+      <td class="td-pos">+$102.07</td>
+      <td class="td-pos">+2.04%</td>
+      <td class="td-pos">+$1296.62</td>
+    </tr><tr>
+      <td class="td-num">90</td>
+      <td class="td-date">2025.09.17</td>
+      <td class="td-neg">$-80.50</td>
+      <td class="td-neg">-1.61%</td>
+      <td class="td-pos">+$1216.12</td>
+    </tr><tr>
+      <td class="td-num">91</td>
+      <td class="td-date">2025.09.18</td>
+      <td class="td-neg">$-8.83</td>
+      <td class="td-neg">-0.18%</td>
+      <td class="td-pos">+$1207.29</td>
+    </tr><tr>
+      <td class="td-num">92</td>
+      <td class="td-date">2025.09.19</td>
+      <td class="td-neg">$-36.72</td>
+      <td class="td-neg">-0.73%</td>
+      <td class="td-pos">+$1170.57</td>
+    </tr><tr>
+      <td class="td-num">93</td>
+      <td class="td-date">2025.09.22</td>
+      <td class="td-pos">+$152.54</td>
+      <td class="td-pos">+3.05%</td>
+      <td class="td-pos">+$1323.11</td>
+    </tr><tr>
+      <td class="td-num">94</td>
+      <td class="td-date">2025.09.23</td>
+      <td class="td-pos">+$115.76</td>
+      <td class="td-pos">+2.32%</td>
+      <td class="td-pos">+$1438.87</td>
+    </tr><tr>
+      <td class="td-num">95</td>
+      <td class="td-date">2025.09.24</td>
+      <td class="td-neg">$-58.31</td>
+      <td class="td-neg">-1.17%</td>
+      <td class="td-pos">+$1380.56</td>
+    </tr><tr>
+      <td class="td-num">96</td>
+      <td class="td-date">2025.09.25</td>
+      <td class="td-neg">$-45.74</td>
+      <td class="td-neg">-0.91%</td>
+      <td class="td-pos">+$1334.82</td>
+    </tr><tr>
+      <td class="td-num">97</td>
+      <td class="td-date">2025.09.26</td>
+      <td class="td-neg">$-64.89</td>
+      <td class="td-neg">-1.30%</td>
+      <td class="td-pos">+$1269.93</td>
+    </tr><tr>
+      <td class="td-num">98</td>
+      <td class="td-date">2025.09.29</td>
+      <td class="td-pos">+$49.98</td>
+      <td class="td-pos">+1.00%</td>
+      <td class="td-pos">+$1319.91</td>
+    </tr><tr>
+      <td class="td-num">99</td>
+      <td class="td-date">2025.09.30</td>
+      <td class="td-pos">+$133.11</td>
+      <td class="td-pos">+2.66%</td>
+      <td class="td-pos">+$1453.02</td>
+    </tr><tr>
+      <td class="td-num">100</td>
+      <td class="td-date">2025.10.01</td>
+      <td class="td-pos">+$77.36</td>
+      <td class="td-pos">+1.55%</td>
+      <td class="td-pos">+$1530.38</td>
+    </tr><tr>
+      <td class="td-num">101</td>
+      <td class="td-date">2025.10.02</td>
+      <td class="td-neg">$-27.92</td>
+      <td class="td-neg">-0.56%</td>
+      <td class="td-pos">+$1502.46</td>
+    </tr><tr>
+      <td class="td-num">102</td>
+      <td class="td-date">2025.10.03</td>
+      <td class="td-neg">$-21.12</td>
+      <td class="td-neg">-0.42%</td>
+      <td class="td-pos">+$1481.34</td>
+    </tr><tr>
+      <td class="td-num">103</td>
+      <td class="td-date">2025.10.06</td>
+      <td class="td-pos">+$60.54</td>
+      <td class="td-pos">+1.21%</td>
+      <td class="td-pos">+$1541.88</td>
+    </tr><tr>
+      <td class="td-num">104</td>
+      <td class="td-date">2025.10.07</td>
+      <td class="td-pos">+$105.90</td>
+      <td class="td-pos">+2.12%</td>
+      <td class="td-pos">+$1647.78</td>
+    </tr><tr>
+      <td class="td-num">105</td>
+      <td class="td-date">2025.10.08</td>
+      <td class="td-neg">$-43.75</td>
+      <td class="td-neg">-0.88%</td>
+      <td class="td-pos">+$1604.03</td>
+    </tr><tr>
+      <td class="td-num">106</td>
+      <td class="td-date">2025.10.09</td>
+      <td class="td-neg">$-75.97</td>
+      <td class="td-neg">-1.52%</td>
+      <td class="td-pos">+$1528.06</td>
+    </tr><tr>
+      <td class="td-num">107</td>
+      <td class="td-date">2025.10.10</td>
+      <td class="td-neg">$-82.16</td>
+      <td class="td-neg">-1.64%</td>
+      <td class="td-pos">+$1445.90</td>
+    </tr><tr>
+      <td class="td-num">108</td>
+      <td class="td-date">2025.10.13</td>
+      <td class="td-pos">+$27.63</td>
+      <td class="td-pos">+0.55%</td>
+      <td class="td-pos">+$1473.53</td>
+    </tr><tr>
+      <td class="td-num">109</td>
+      <td class="td-date">2025.10.14</td>
+      <td class="td-pos">+$300.46</td>
+      <td class="td-pos">+6.01%</td>
+      <td class="td-pos">+$1773.99</td>
+    </tr><tr>
+      <td class="td-num">110</td>
+      <td class="td-date">2025.10.15</td>
+      <td class="td-pos">+$167.05</td>
+      <td class="td-pos">+3.34%</td>
+      <td class="td-pos">+$1941.04</td>
+    </tr><tr>
+      <td class="td-num">111</td>
+      <td class="td-date">2025.10.16</td>
+      <td class="td-neg">$-232.68</td>
+      <td class="td-neg">-4.65%</td>
+      <td class="td-pos">+$1708.36</td>
+    </tr><tr>
+      <td class="td-num">112</td>
+      <td class="td-date">2025.10.17</td>
+      <td class="td-neg">$-40.95</td>
+      <td class="td-neg">-0.82%</td>
+      <td class="td-pos">+$1667.41</td>
+    </tr><tr>
+      <td class="td-num">113</td>
+      <td class="td-date">2025.10.20</td>
+      <td class="td-pos">+$150.44</td>
+      <td class="td-pos">+3.01%</td>
+      <td class="td-pos">+$1817.85</td>
+    </tr><tr>
+      <td class="td-num">114</td>
+      <td class="td-date">2025.10.21</td>
+      <td class="td-pos">+$330.20</td>
+      <td class="td-pos">+6.60%</td>
+      <td class="td-pos">+$2148.05</td>
+    </tr><tr>
+      <td class="td-num">115</td>
+      <td class="td-date">2025.10.22</td>
+      <td class="td-pos">+$729.14</td>
+      <td class="td-pos">+14.58%</td>
+      <td class="td-pos">+$2877.19</td>
+    </tr><tr>
+      <td class="td-num">116</td>
+      <td class="td-date">2025.10.23</td>
+      <td class="td-neg">$-282.18</td>
+      <td class="td-neg">-5.64%</td>
+      <td class="td-pos">+$2595.01</td>
+    </tr><tr>
+      <td class="td-num">117</td>
+      <td class="td-date">2025.10.24</td>
+      <td class="td-neg">$-8.70</td>
+      <td class="td-neg">-0.17%</td>
+      <td class="td-pos">+$2586.31</td>
+    </tr><tr>
+      <td class="td-num">118</td>
+      <td class="td-date">2025.10.27</td>
+      <td class="td-neg">$-63.38</td>
+      <td class="td-neg">-1.27%</td>
+      <td class="td-pos">+$2522.93</td>
+    </tr><tr>
+      <td class="td-num">119</td>
+      <td class="td-date">2025.10.28</td>
+      <td class="td-pos">+$328.45</td>
+      <td class="td-pos">+6.57%</td>
+      <td class="td-pos">+$2851.38</td>
+    </tr><tr>
+      <td class="td-num">120</td>
+      <td class="td-date">2025.10.29</td>
+      <td class="td-neg">$-55.48</td>
+      <td class="td-neg">-1.11%</td>
+      <td class="td-pos">+$2795.90</td>
+    </tr><tr>
+      <td class="td-num">121</td>
+      <td class="td-date">2025.10.30</td>
+      <td class="td-neg">$-16.08</td>
+      <td class="td-neg">-0.32%</td>
+      <td class="td-pos">+$2779.82</td>
+    </tr><tr>
+      <td class="td-num">122</td>
+      <td class="td-date">2025.10.31</td>
+      <td class="td-neg">$-93.93</td>
+      <td class="td-neg">-1.88%</td>
+      <td class="td-pos">+$2685.89</td>
+    </tr><tr>
+      <td class="td-num">123</td>
+      <td class="td-date">2025.11.03</td>
+      <td class="td-neg">$-121.47</td>
+      <td class="td-neg">-2.43%</td>
+      <td class="td-pos">+$2564.42</td>
+    </tr><tr>
+      <td class="td-num">124</td>
+      <td class="td-date">2025.11.04</td>
+      <td class="td-neg">$-158.77</td>
+      <td class="td-neg">-3.18%</td>
+      <td class="td-pos">+$2405.65</td>
+    </tr><tr>
+      <td class="td-num">125</td>
+      <td class="td-date">2025.11.05</td>
+      <td class="td-neg">$-4.37</td>
+      <td class="td-neg">-0.09%</td>
+      <td class="td-pos">+$2401.28</td>
+    </tr><tr>
+      <td class="td-num">126</td>
+      <td class="td-date">2025.11.06</td>
+      <td class="td-pos">+$9.91</td>
+      <td class="td-pos">+0.20%</td>
+      <td class="td-pos">+$2411.19</td>
+    </tr><tr>
+      <td class="td-num">127</td>
+      <td class="td-date">2025.11.07</td>
+      <td class="td-neg">$-91.96</td>
+      <td class="td-neg">-1.84%</td>
+      <td class="td-pos">+$2319.23</td>
+    </tr><tr>
+      <td class="td-num">128</td>
+      <td class="td-date">2025.11.10</td>
+      <td class="td-pos">+$105.37</td>
+      <td class="td-pos">+2.11%</td>
+      <td class="td-pos">+$2424.60</td>
+    </tr><tr>
+      <td class="td-num">129</td>
+      <td class="td-date">2025.11.11</td>
+      <td class="td-pos">+$147.55</td>
+      <td class="td-pos">+2.95%</td>
+      <td class="td-pos">+$2572.15</td>
+    </tr><tr>
+      <td class="td-num">130</td>
+      <td class="td-date">2025.11.12</td>
+      <td class="td-pos">+$7.45</td>
+      <td class="td-pos">+0.15%</td>
+      <td class="td-pos">+$2579.60</td>
+    </tr><tr>
+      <td class="td-num">131</td>
+      <td class="td-date">2025.11.13</td>
+      <td class="td-pos">+$250.86</td>
+      <td class="td-pos">+5.02%</td>
+      <td class="td-pos">+$2830.46</td>
+    </tr><tr>
+      <td class="td-num">132</td>
+      <td class="td-date">2025.11.14</td>
+      <td class="td-pos">+$269.66</td>
+      <td class="td-pos">+5.39%</td>
+      <td class="td-pos">+$3100.12</td>
+    </tr><tr>
+      <td class="td-num">133</td>
+      <td class="td-date">2025.11.17</td>
+      <td class="td-neg">$-69.05</td>
+      <td class="td-neg">-1.38%</td>
+      <td class="td-pos">+$3031.07</td>
+    </tr><tr>
+      <td class="td-num">134</td>
+      <td class="td-date">2025.11.18</td>
+      <td class="td-pos">+$95.75</td>
+      <td class="td-pos">+1.92%</td>
+      <td class="td-pos">+$3126.82</td>
+    </tr><tr>
+      <td class="td-num">135</td>
+      <td class="td-date">2025.11.19</td>
+      <td class="td-pos">+$108.16</td>
+      <td class="td-pos">+2.16%</td>
+      <td class="td-pos">+$3234.98</td>
+    </tr><tr>
+      <td class="td-num">136</td>
+      <td class="td-date">2025.11.20</td>
+      <td class="td-neg">$-336.30</td>
+      <td class="td-neg">-6.73%</td>
+      <td class="td-pos">+$2898.68</td>
+    </tr><tr>
+      <td class="td-num">137</td>
+      <td class="td-date">2025.11.21</td>
+      <td class="td-neg">$-64.41</td>
+      <td class="td-neg">-1.29%</td>
+      <td class="td-pos">+$2834.27</td>
+    </tr><tr>
+      <td class="td-num">138</td>
+      <td class="td-date">2025.11.24</td>
+      <td class="td-neg">$-37.62</td>
+      <td class="td-neg">-0.75%</td>
+      <td class="td-pos">+$2796.65</td>
+    </tr><tr>
+      <td class="td-num">139</td>
+      <td class="td-date">2025.11.25</td>
+      <td class="td-neg">$-32.46</td>
+      <td class="td-neg">-0.65%</td>
+      <td class="td-pos">+$2764.19</td>
+    </tr><tr>
+      <td class="td-num">140</td>
+      <td class="td-date">2025.11.26</td>
+      <td class="td-neg">$-166.29</td>
+      <td class="td-neg">-3.33%</td>
+      <td class="td-pos">+$2597.90</td>
+    </tr><tr>
+      <td class="td-num">141</td>
+      <td class="td-date">2025.11.27</td>
+      <td class="td-neg">$-99.81</td>
+      <td class="td-neg">-2.00%</td>
+      <td class="td-pos">+$2498.09</td>
+    </tr><tr>
+      <td class="td-num">142</td>
+      <td class="td-date">2025.11.28</td>
+      <td class="td-neg">$-20.58</td>
+      <td class="td-neg">-0.41%</td>
+      <td class="td-pos">+$2477.51</td>
+    </tr><tr>
+      <td class="td-num">143</td>
+      <td class="td-date">2025.12.01</td>
+      <td class="td-neg">$-21.45</td>
+      <td class="td-neg">-0.43%</td>
+      <td class="td-pos">+$2456.06</td>
+    </tr><tr>
+      <td class="td-num">144</td>
+      <td class="td-date">2025.12.02</td>
+      <td class="td-neg">$-55.42</td>
+      <td class="td-neg">-1.11%</td>
+      <td class="td-pos">+$2400.64</td>
+    </tr><tr>
+      <td class="td-num">145</td>
+      <td class="td-date">2025.12.03</td>
+      <td class="td-neg">$-155.23</td>
+      <td class="td-neg">-3.10%</td>
+      <td class="td-pos">+$2245.41</td>
+    </tr><tr>
+      <td class="td-num">146</td>
+      <td class="td-date">2025.12.04</td>
+      <td class="td-neg">$-20.48</td>
+      <td class="td-neg">-0.41%</td>
+      <td class="td-pos">+$2224.93</td>
+    </tr><tr>
+      <td class="td-num">147</td>
+      <td class="td-date">2025.12.05</td>
+      <td class="td-neg">$-10.35</td>
+      <td class="td-neg">-0.21%</td>
+      <td class="td-pos">+$2214.58</td>
+    </tr><tr>
+      <td class="td-num">148</td>
+      <td class="td-date">2025.12.08</td>
+      <td class="td-neg">$-42.05</td>
+      <td class="td-neg">-0.84%</td>
+      <td class="td-pos">+$2172.53</td>
+    </tr><tr>
+      <td class="td-num">149</td>
+      <td class="td-date">2025.12.09</td>
+      <td class="td-neg">$-27.12</td>
+      <td class="td-neg">-0.54%</td>
+      <td class="td-pos">+$2145.41</td>
+    </tr><tr>
+      <td class="td-num">150</td>
+      <td class="td-date">2025.12.10</td>
+      <td class="td-neg">$-134.11</td>
+      <td class="td-neg">-2.68%</td>
+      <td class="td-pos">+$2011.30</td>
+    </tr><tr>
+      <td class="td-num">151</td>
+      <td class="td-date">2025.12.11</td>
+      <td class="td-neg">$-61.58</td>
+      <td class="td-neg">-1.23%</td>
+      <td class="td-pos">+$1949.72</td>
+    </tr><tr>
+      <td class="td-num">152</td>
+      <td class="td-date">2025.12.12</td>
+      <td class="td-pos">+$220.41</td>
+      <td class="td-pos">+4.41%</td>
+      <td class="td-pos">+$2170.13</td>
+    </tr><tr>
+      <td class="td-num">153</td>
+      <td class="td-date">2025.12.15</td>
+      <td class="td-pos">+$60.15</td>
+      <td class="td-pos">+1.20%</td>
+      <td class="td-pos">+$2230.28</td>
+    </tr><tr>
+      <td class="td-num">154</td>
+      <td class="td-date">2025.12.16</td>
+      <td class="td-pos">+$86.24</td>
+      <td class="td-pos">+1.72%</td>
+      <td class="td-pos">+$2316.52</td>
+    </tr><tr>
+      <td class="td-num">155</td>
+      <td class="td-date">2025.12.17</td>
+      <td class="td-neg">$-135.71</td>
+      <td class="td-neg">-2.71%</td>
+      <td class="td-pos">+$2180.81</td>
+    </tr><tr>
+      <td class="td-num">156</td>
+      <td class="td-date">2025.12.18</td>
+      <td class="td-neg">$-323.57</td>
+      <td class="td-neg">-6.47%</td>
+      <td class="td-pos">+$1857.24</td>
+    </tr><tr>
+      <td class="td-num">157</td>
+      <td class="td-date">2025.12.19</td>
+      <td class="td-neg">$-114.67</td>
+      <td class="td-neg">-2.29%</td>
+      <td class="td-pos">+$1742.57</td>
+    </tr><tr>
+      <td class="td-num">158</td>
+      <td class="td-date">2025.12.22</td>
+      <td class="td-neg">$-23.36</td>
+      <td class="td-neg">-0.47%</td>
+      <td class="td-pos">+$1719.21</td>
+    </tr><tr>
+      <td class="td-num">159</td>
+      <td class="td-date">2025.12.23</td>
+      <td class="td-pos">+$413.47</td>
+      <td class="td-pos">+8.27%</td>
+      <td class="td-pos">+$2132.68</td>
+    </tr><tr>
+      <td class="td-num">160</td>
+      <td class="td-date">2025.12.24</td>
+      <td class="td-neg">$-44.88</td>
+      <td class="td-neg">-0.90%</td>
+      <td class="td-pos">+$2087.80</td>
+    </tr><tr>
+      <td class="td-num">161</td>
+      <td class="td-date">2025.12.26</td>
+      <td class="td-neg">$-99.33</td>
+      <td class="td-neg">-1.99%</td>
+      <td class="td-pos">+$1988.47</td>
+    </tr><tr>
+      <td class="td-num">162</td>
+      <td class="td-date">2025.12.29</td>
+      <td class="td-neg">$-75.87</td>
+      <td class="td-neg">-1.52%</td>
+      <td class="td-pos">+$1912.60</td>
+    </tr><tr>
+      <td class="td-num">163</td>
+      <td class="td-date">2025.12.30</td>
+      <td class="td-pos">+$483.44</td>
+      <td class="td-pos">+9.67%</td>
+      <td class="td-pos">+$2396.04</td>
+    </tr><tr>
+      <td class="td-num">164</td>
+      <td class="td-date">2025.12.31</td>
+      <td class="td-neg">$-157.04</td>
+      <td class="td-neg">-3.14%</td>
+      <td class="td-pos">+$2239.00</td>
+    </tr><tr>
+      <td class="td-num">165</td>
+      <td class="td-date">2026.01.02</td>
+      <td class="td-pos">+$103.37</td>
+      <td class="td-pos">+2.07%</td>
+      <td class="td-pos">+$2342.37</td>
+    </tr><tr>
+      <td class="td-num">166</td>
+      <td class="td-date">2026.01.05</td>
+      <td class="td-pos">+$133.53</td>
+      <td class="td-pos">+2.67%</td>
+      <td class="td-pos">+$2475.90</td>
+    </tr><tr>
+      <td class="td-num">167</td>
+      <td class="td-date">2026.01.06</td>
+      <td class="td-neg">$-128.96</td>
+      <td class="td-neg">-2.58%</td>
+      <td class="td-pos">+$2346.94</td>
+    </tr><tr>
+      <td class="td-num">168</td>
+      <td class="td-date">2026.01.07</td>
+      <td class="td-neg">$-2.70</td>
+      <td class="td-neg">-0.05%</td>
+      <td class="td-pos">+$2344.24</td>
+    </tr><tr>
+      <td class="td-num">169</td>
+      <td class="td-date">2026.01.08</td>
+      <td class="td-neg">$-13.93</td>
+      <td class="td-neg">-0.28%</td>
+      <td class="td-pos">+$2330.31</td>
+    </tr><tr>
+      <td class="td-num">170</td>
+      <td class="td-date">2026.01.09</td>
+      <td class="td-pos">+$0.99</td>
+      <td class="td-pos">+0.02%</td>
+      <td class="td-pos">+$2331.30</td>
+    </tr><tr>
+      <td class="td-num">171</td>
+      <td class="td-date">2026.01.12</td>
+      <td class="td-neg">$-111.88</td>
+      <td class="td-neg">-2.24%</td>
+      <td class="td-pos">+$2219.42</td>
+    </tr><tr>
+      <td class="td-num">172</td>
+      <td class="td-date">2026.01.13</td>
+      <td class="td-pos">+$48.12</td>
+      <td class="td-pos">+0.96%</td>
+      <td class="td-pos">+$2267.54</td>
+    </tr><tr>
+      <td class="td-num">173</td>
+      <td class="td-date">2026.01.14</td>
+      <td class="td-neg">$-100.53</td>
+      <td class="td-neg">-2.01%</td>
+      <td class="td-pos">+$2167.01</td>
+    </tr><tr>
+      <td class="td-num">174</td>
+      <td class="td-date">2026.01.15</td>
+      <td class="td-neg">$-181.78</td>
+      <td class="td-neg">-3.64%</td>
+      <td class="td-pos">+$1985.23</td>
+    </tr><tr>
+      <td class="td-num">175</td>
+      <td class="td-date">2026.01.16</td>
+      <td class="td-neg">$-245.39</td>
+      <td class="td-neg">-4.91%</td>
+      <td class="td-pos">+$1739.84</td>
+    </tr><tr>
+      <td class="td-num">176</td>
+      <td class="td-date">2026.01.19</td>
+      <td class="td-neg">$-222.78</td>
+      <td class="td-neg">-4.46%</td>
+      <td class="td-pos">+$1517.06</td>
+    </tr><tr>
+      <td class="td-num">177</td>
+      <td class="td-date">2026.01.20</td>
+      <td class="td-pos">+$72.70</td>
+      <td class="td-pos">+1.45%</td>
+      <td class="td-pos">+$1589.76</td>
+    </tr><tr>
+      <td class="td-num">178</td>
+      <td class="td-date">2026.01.21</td>
+      <td class="td-pos">+$379.89</td>
+      <td class="td-pos">+7.60%</td>
+      <td class="td-pos">+$1969.65</td>
+    </tr><tr>
+      <td class="td-num">179</td>
+      <td class="td-date">2026.01.22</td>
+      <td class="td-neg">$-117.85</td>
+      <td class="td-neg">-2.36%</td>
+      <td class="td-pos">+$1851.80</td>
+    </tr><tr>
+      <td class="td-num">180</td>
+      <td class="td-date">2026.01.23</td>
+      <td class="td-pos">+$335.22</td>
+      <td class="td-pos">+6.70%</td>
+      <td class="td-pos">+$2187.02</td>
+    </tr><tr>
+      <td class="td-num">181</td>
+      <td class="td-date">2026.01.26</td>
+      <td class="td-pos">+$91.01</td>
+      <td class="td-pos">+1.82%</td>
+      <td class="td-pos">+$2278.03</td>
+    </tr><tr>
+      <td class="td-num">182</td>
+      <td class="td-date">2026.01.27</td>
+      <td class="td-neg">$-184.66</td>
+      <td class="td-neg">-3.69%</td>
+      <td class="td-pos">+$2093.37</td>
+    </tr><tr>
+      <td class="td-num">183</td>
+      <td class="td-date">2026.01.28</td>
+      <td class="td-pos">+$316.72</td>
+      <td class="td-pos">+6.33%</td>
+      <td class="td-pos">+$2410.09</td>
+    </tr><tr>
+      <td class="td-num">184</td>
+      <td class="td-date">2026.01.29</td>
+      <td class="td-pos">+$940.08</td>
+      <td class="td-pos">+18.80%</td>
+      <td class="td-pos">+$3350.17</td>
+    </tr><tr>
+      <td class="td-num">185</td>
+      <td class="td-date">2026.01.30</td>
+      <td class="td-pos">+$249.73</td>
+      <td class="td-pos">+4.99%</td>
+      <td class="td-pos">+$3599.90</td>
+    </tr><tr>
+      <td class="td-num">186</td>
+      <td class="td-date">2026.02.02</td>
+      <td class="td-pos">+$1686.13</td>
+      <td class="td-pos">+33.72%</td>
+      <td class="td-pos">+$5286.03</td>
+    </tr><tr>
+      <td class="td-num">187</td>
+      <td class="td-date">2026.02.03</td>
+      <td class="td-neg">$-22.54</td>
+      <td class="td-neg">-0.45%</td>
+      <td class="td-pos">+$5263.49</td>
+    </tr><tr>
+      <td class="td-num">188</td>
+      <td class="td-date">2026.02.04</td>
+      <td class="td-pos">+$306.77</td>
+      <td class="td-pos">+6.14%</td>
+      <td class="td-pos">+$5570.26</td>
+    </tr><tr>
+      <td class="td-num">189</td>
+      <td class="td-date">2026.02.05</td>
+      <td class="td-neg">$-219.52</td>
+      <td class="td-neg">-4.39%</td>
+      <td class="td-pos">+$5350.74</td>
+    </tr><tr>
+      <td class="td-num">190</td>
+      <td class="td-date">2026.02.06</td>
+      <td class="td-pos">+$419.99</td>
+      <td class="td-pos">+8.40%</td>
+      <td class="td-pos">+$5770.73</td>
+    </tr><tr>
+      <td class="td-num">191</td>
+      <td class="td-date">2026.02.09</td>
+      <td class="td-pos">+$627.28</td>
+      <td class="td-pos">+12.55%</td>
+      <td class="td-pos">+$6398.01</td>
+    </tr><tr>
+      <td class="td-num">192</td>
+      <td class="td-date">2026.02.10</td>
+      <td class="td-neg">$-455.26</td>
+      <td class="td-neg">-9.11%</td>
+      <td class="td-pos">+$5942.75</td>
+    </tr><tr>
+      <td class="td-num">193</td>
+      <td class="td-date">2026.02.11</td>
+      <td class="td-neg">$-132.88</td>
+      <td class="td-neg">-2.66%</td>
+      <td class="td-pos">+$5809.87</td>
+    </tr><tr>
+      <td class="td-num">194</td>
+      <td class="td-date">2026.02.12</td>
+      <td class="td-neg">$-78.16</td>
+      <td class="td-neg">-1.56%</td>
+      <td class="td-pos">+$5731.71</td>
+    </tr><tr>
+      <td class="td-num">195</td>
+      <td class="td-date">2026.02.13</td>
+      <td class="td-pos">+$133.16</td>
+      <td class="td-pos">+2.66%</td>
+      <td class="td-pos">+$5864.87</td>
+    </tr><tr>
+      <td class="td-num">196</td>
+      <td class="td-date">2026.02.16</td>
+      <td class="td-pos">+$80.32</td>
+      <td class="td-pos">+1.61%</td>
+      <td class="td-pos">+$5945.19</td>
+    </tr><tr>
+      <td class="td-num">197</td>
+      <td class="td-date">2026.02.17</td>
+      <td class="td-pos">+$69.14</td>
+      <td class="td-pos">+1.38%</td>
+      <td class="td-pos">+$6014.33</td>
+    </tr><tr>
+      <td class="td-num">198</td>
+      <td class="td-date">2026.02.18</td>
+      <td class="td-neg">$-94.74</td>
+      <td class="td-neg">-1.89%</td>
+      <td class="td-pos">+$5919.59</td>
+    </tr><tr>
+      <td class="td-num">199</td>
+      <td class="td-date">2026.02.19</td>
+      <td class="td-neg">$-102.99</td>
+      <td class="td-neg">-2.06%</td>
+      <td class="td-pos">+$5816.60</td>
+    </tr><tr>
+      <td class="td-num">200</td>
+      <td class="td-date">2026.02.20</td>
+      <td class="td-neg">$-159.67</td>
+      <td class="td-neg">-3.19%</td>
+      <td class="td-pos">+$5656.93</td>
+    </tr><tr>
+      <td class="td-num">201</td>
+      <td class="td-date">2026.02.23</td>
+      <td class="td-pos">+$335.90</td>
+      <td class="td-pos">+6.72%</td>
+      <td class="td-pos">+$5992.83</td>
+    </tr><tr>
+      <td class="td-num">202</td>
+      <td class="td-date">2026.02.24</td>
+      <td class="td-pos">+$176.18</td>
+      <td class="td-pos">+3.52%</td>
+      <td class="td-pos">+$6169.01</td>
+    </tr><tr>
+      <td class="td-num">203</td>
+      <td class="td-date">2026.02.25</td>
+      <td class="td-neg">$-291.39</td>
+      <td class="td-neg">-5.83%</td>
+      <td class="td-pos">+$5877.62</td>
+    </tr><tr>
+      <td class="td-num">204</td>
+      <td class="td-date">2026.02.26</td>
+      <td class="td-neg">$-188.16</td>
+      <td class="td-neg">-3.76%</td>
+      <td class="td-pos">+$5689.46</td>
+    </tr><tr>
+      <td class="td-num">205</td>
+      <td class="td-date">2026.02.27</td>
+      <td class="td-neg">$-155.59</td>
+      <td class="td-neg">-3.11%</td>
+      <td class="td-pos">+$5533.87</td>
+    </tr><tr>
+      <td class="td-num">206</td>
+      <td class="td-date">2026.03.02</td>
+      <td class="td-pos">+$253.04</td>
+      <td class="td-pos">+5.06%</td>
+      <td class="td-pos">+$5786.91</td>
+    </tr><tr>
+      <td class="td-num">207</td>
+      <td class="td-date">2026.03.03</td>
+      <td class="td-neg">$-329.43</td>
+      <td class="td-neg">-6.59%</td>
+      <td class="td-pos">+$5457.48</td>
+    </tr><tr>
+      <td class="td-num">208</td>
+      <td class="td-date">2026.03.04</td>
+      <td class="td-pos">+$510.81</td>
+      <td class="td-pos">+10.22%</td>
+      <td class="td-pos">+$5968.29</td>
+    </tr><tr>
+      <td class="td-num">209</td>
+      <td class="td-date">2026.03.05</td>
+      <td class="td-neg">$-267.49</td>
+      <td class="td-neg">-5.35%</td>
+      <td class="td-pos">+$5700.80</td>
+    </tr><tr>
+      <td class="td-num">210</td>
+      <td class="td-date">2026.03.06</td>
+      <td class="td-neg">$-147.73</td>
+      <td class="td-neg">-2.95%</td>
+      <td class="td-pos">+$5553.07</td>
+    </tr><tr>
+      <td class="td-num">211</td>
+      <td class="td-date">2026.03.09</td>
+      <td class="td-neg">$-326.37</td>
+      <td class="td-neg">-6.53%</td>
+      <td class="td-pos">+$5226.70</td>
+    </tr><tr>
+      <td class="td-num">212</td>
+      <td class="td-date">2026.03.10</td>
+      <td class="td-pos">+$31.32</td>
+      <td class="td-pos">+0.63%</td>
+      <td class="td-pos">+$5258.02</td>
+    </tr><tr>
+      <td class="td-num">213</td>
+      <td class="td-date">2026.03.11</td>
+      <td class="td-neg">$-131.58</td>
+      <td class="td-neg">-2.63%</td>
+      <td class="td-pos">+$5126.44</td>
+    </tr><tr>
+      <td class="td-num">214</td>
+      <td class="td-date">2026.03.12</td>
+      <td class="td-pos">+$36.88</td>
+      <td class="td-pos">+0.74%</td>
+      <td class="td-pos">+$5163.32</td>
+    </tr><tr>
+      <td class="td-num">215</td>
+      <td class="td-date">2026.03.13</td>
+      <td class="td-pos">+$6.39</td>
+      <td class="td-pos">+0.13%</td>
+      <td class="td-pos">+$5169.71</td>
+    </tr><tr>
+      <td class="td-num">216</td>
+      <td class="td-date">2026.03.16</td>
+      <td class="td-neg">$-153.11</td>
+      <td class="td-neg">-3.06%</td>
+      <td class="td-pos">+$5016.60</td>
+    </tr><tr>
+      <td class="td-num">217</td>
+      <td class="td-date">2026.03.17</td>
+      <td class="td-neg">$-196.50</td>
+      <td class="td-neg">-3.93%</td>
+      <td class="td-pos">+$4820.10</td>
+    </tr><tr>
+      <td class="td-num">218</td>
+      <td class="td-date">2026.03.18</td>
+      <td class="td-pos">+$35.43</td>
+      <td class="td-pos">+0.71%</td>
+      <td class="td-pos">+$4855.53</td>
+    </tr><tr>
+      <td class="td-num">219</td>
+      <td class="td-date">2026.03.19</td>
+      <td class="td-pos">+$729.23</td>
+      <td class="td-pos">+14.58%</td>
+      <td class="td-pos">+$5584.76</td>
+    </tr><tr>
+      <td class="td-num">220</td>
+      <td class="td-date">2026.03.20</td>
+      <td class="td-pos">+$160.65</td>
+      <td class="td-pos">+3.21%</td>
+      <td class="td-pos">+$5745.41</td>
+    </tr><tr>
+      <td class="td-num">221</td>
+      <td class="td-date">2026.03.23</td>
+      <td class="td-pos">+$1602.64</td>
+      <td class="td-pos">+32.05%</td>
+      <td class="td-pos">+$7348.05</td>
+    </tr><tr>
+      <td class="td-num">222</td>
+      <td class="td-date">2026.03.24</td>
+      <td class="td-neg">$-567.47</td>
+      <td class="td-neg">-11.35%</td>
+      <td class="td-pos">+$6780.58</td>
+    </tr><tr>
+      <td class="td-num">223</td>
+      <td class="td-date">2026.03.25</td>
+      <td class="td-pos">+$177.68</td>
+      <td class="td-pos">+3.55%</td>
+      <td class="td-pos">+$6958.26</td>
+    </tr><tr>
+      <td class="td-num">224</td>
+      <td class="td-date">2026.03.26</td>
+      <td class="td-pos">+$170.64</td>
+      <td class="td-pos">+3.41%</td>
+      <td class="td-pos">+$7128.90</td>
+    </tr><tr>
+      <td class="td-num">225</td>
+      <td class="td-date">2026.03.27</td>
+      <td class="td-pos">+$254.52</td>
+      <td class="td-pos">+5.09%</td>
+      <td class="td-pos">+$7383.42</td>
+    </tr><tr>
+      <td class="td-num">226</td>
+      <td class="td-date">2026.03.30</td>
+      <td class="td-neg">$-72.07</td>
+      <td class="td-neg">-1.44%</td>
+      <td class="td-pos">+$7311.35</td>
+    </tr><tr>
+      <td class="td-num">227</td>
+      <td class="td-date">2026.03.31</td>
+      <td class="td-neg">$-146.83</td>
+      <td class="td-neg">-2.94%</td>
+      <td class="td-pos">+$7164.52</td>
+    </tr><tr>
+      <td class="td-num">228</td>
+      <td class="td-date">2026.04.01</td>
+      <td class="td-pos">+$196.27</td>
+      <td class="td-pos">+3.93%</td>
+      <td class="td-pos">+$7360.79</td>
+    </tr><tr>
+      <td class="td-num">229</td>
+      <td class="td-date">2026.04.02</td>
+      <td class="td-pos">+$244.33</td>
+      <td class="td-pos">+4.89%</td>
+      <td class="td-pos">+$7605.12</td>
+    </tr><tr>
+      <td class="td-num">230</td>
+      <td class="td-date">2026.04.06</td>
+      <td class="td-neg">$-420.51</td>
+      <td class="td-neg">-8.41%</td>
+      <td class="td-pos">+$7184.61</td>
+    </tr><tr>
+      <td class="td-num">231</td>
+      <td class="td-date">2026.04.07</td>
+      <td class="td-neg">$-303.63</td>
+      <td class="td-neg">-6.07%</td>
+      <td class="td-pos">+$6880.98</td>
+    </tr><tr>
+      <td class="td-num">232</td>
+      <td class="td-date">2026.04.08</td>
+      <td class="td-pos">+$336.53</td>
+      <td class="td-pos">+6.73%</td>
+      <td class="td-pos">+$7217.51</td>
+    </tr><tr>
+      <td class="td-num">233</td>
+      <td class="td-date">2026.04.09</td>
+      <td class="td-pos">+$209.34</td>
+      <td class="td-pos">+4.19%</td>
+      <td class="td-pos">+$7426.85</td>
+    </tr><tr>
+      <td class="td-num">234</td>
+      <td class="td-date">2026.04.10</td>
+      <td class="td-neg">$-58.10</td>
+      <td class="td-neg">-1.16%</td>
+      <td class="td-pos">+$7368.75</td>
+    </tr><tr>
+      <td class="td-num">235</td>
+      <td class="td-date">2026.04.13</td>
+      <td class="td-neg">$-625.57</td>
+      <td class="td-neg">-12.51%</td>
+      <td class="td-pos">+$6743.18</td>
+    </tr><tr>
+      <td class="td-num">236</td>
+      <td class="td-date">2026.04.14</td>
+      <td class="td-neg">$-52.55</td>
+      <td class="td-neg">-1.05%</td>
+      <td class="td-pos">+$6690.63</td>
+    </tr><tr>
+      <td class="td-num">237</td>
+      <td class="td-date">2026.04.15</td>
+      <td class="td-pos">+$155.80</td>
+      <td class="td-pos">+3.12%</td>
+      <td class="td-pos">+$6846.43</td>
+    </tr><tr>
+      <td class="td-num">238</td>
+      <td class="td-date">2026.04.16</td>
+      <td class="td-neg">$-89.77</td>
+      <td class="td-neg">-1.80%</td>
+      <td class="td-pos">+$6756.66</td>
+    </tr><tr>
+      <td class="td-num">239</td>
+      <td class="td-date">2026.04.17</td>
+      <td class="td-neg">$-41.39</td>
+      <td class="td-neg">-0.83%</td>
+      <td class="td-pos">+$6715.27</td>
+    </tr><tr>
+      <td class="td-num">240</td>
+      <td class="td-date">2026.04.20</td>
+      <td class="td-neg">$-124.41</td>
+      <td class="td-neg">-2.49%</td>
+      <td class="td-pos">+$6590.86</td>
+    </tr><tr>
+      <td class="td-num">241</td>
+      <td class="td-date">2026.04.21</td>
+      <td class="td-neg">$-33.99</td>
+      <td class="td-neg">-0.68%</td>
+      <td class="td-pos">+$6556.87</td>
+    </tr><tr>
+      <td class="td-num">242</td>
+      <td class="td-date">2026.04.22</td>
+      <td class="td-pos">+$377.28</td>
+      <td class="td-pos">+7.55%</td>
+      <td class="td-pos">+$6934.15</td>
+    </tr><tr>
+      <td class="td-num">243</td>
+      <td class="td-date">2026.04.23</td>
+      <td class="td-neg">$-387.54</td>
+      <td class="td-neg">-7.75%</td>
+      <td class="td-pos">+$6546.61</td>
+    </tr><tr>
+      <td class="td-num">244</td>
+      <td class="td-date">2026.04.24</td>
+      <td class="td-pos">+$14.46</td>
+      <td class="td-pos">+0.29%</td>
+      <td class="td-pos">+$6561.07</td>
+    </tr><tr>
+      <td class="td-num">245</td>
+      <td class="td-date">2026.04.27</td>
+      <td class="td-neg">$-153.62</td>
+      <td class="td-neg">-3.07%</td>
+      <td class="td-pos">+$6407.45</td>
+    </tr><tr>
+      <td class="td-num">246</td>
+      <td class="td-date">2026.04.28</td>
+      <td class="td-pos">+$174.15</td>
+      <td class="td-pos">+3.48%</td>
+      <td class="td-pos">+$6581.60</td>
+    </tr><tr>
+      <td class="td-num">247</td>
+      <td class="td-date">2026.04.29</td>
+      <td class="td-pos">+$49.42</td>
+      <td class="td-pos">+0.99%</td>
+      <td class="td-pos">+$6631.02</td>
+    </tr><tr>
+      <td class="td-num">248</td>
+      <td class="td-date">2026.04.30</td>
+      <td class="td-neg">$-51.09</td>
+      <td class="td-neg">-1.02%</td>
+      <td class="td-pos">+$6579.93</td>
+    </tr><tr>
+      <td class="td-num">249</td>
+      <td class="td-date">2026.05.01</td>
+      <td class="td-pos">+$133.40</td>
+      <td class="td-pos">+2.67%</td>
+      <td class="td-pos">+$6713.33</td>
+    </tr><tr>
+      <td class="td-num">250</td>
+      <td class="td-date">2026.05.04</td>
+      <td class="td-pos">+$88.59</td>
+      <td class="td-pos">+1.77%</td>
+      <td class="td-pos">+$6801.92</td>
+    </tr><tr>
+      <td class="td-num">251</td>
+      <td class="td-date">2026.05.05</td>
+      <td class="td-pos">+$198.33</td>
+      <td class="td-pos">+3.97%</td>
+      <td class="td-pos">+$7000.25</td>
+    </tr><tr>
+      <td class="td-num">252</td>
+      <td class="td-date">2026.05.06</td>
+      <td class="td-pos">+$218.01</td>
+      <td class="td-pos">+4.36%</td>
+      <td class="td-pos">+$7218.26</td>
+    </tr><tr>
+      <td class="td-num">253</td>
+      <td class="td-date">2026.05.07</td>
+      <td class="td-pos">+$96.81</td>
+      <td class="td-pos">+1.94%</td>
+      <td class="td-pos">+$7315.07</td>
+    </tr><tr>
+      <td class="td-num">254</td>
+      <td class="td-date">2026.05.08</td>
+      <td class="td-neg">$-198.42</td>
+      <td class="td-neg">-3.97%</td>
+      <td class="td-pos">+$7116.65</td>
+    </tr><tr>
+      <td class="td-num">255</td>
+      <td class="td-date">2026.05.11</td>
+      <td class="td-neg">$-104.91</td>
+      <td class="td-neg">-2.10%</td>
+      <td class="td-pos">+$7011.74</td>
+    </tr><tr>
+      <td class="td-num">256</td>
+      <td class="td-date">2026.05.12</td>
+      <td class="td-pos">+$302.71</td>
+      <td class="td-pos">+6.05%</td>
+      <td class="td-pos">+$7314.45</td>
+    </tr><tr>
+      <td class="td-num">257</td>
+      <td class="td-date">2026.05.13</td>
+      <td class="td-neg">$-179.45</td>
+      <td class="td-neg">-3.59%</td>
+      <td class="td-pos">+$7135.00</td>
+    </tr><tr>
+      <td class="td-num">258</td>
+      <td class="td-date">2026.05.14</td>
+      <td class="td-neg">$-16.36</td>
+      <td class="td-neg">-0.33%</td>
+      <td class="td-pos">+$7118.64</td>
+    </tr></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ═══════════ STRATEGIES ═══════════ -->
+<section id="strategies" class="sec">
+  <div class="stitle">Individual Strategy Breakdown</div>
+  <p style="font-size:12px;color:var(--muted);margin-bottom:16px;">Each strategy allocated $1,250 capital. Results shown on $1,250 base.</p>
+  <div class="s-grid">
+    <div class="s-card">
+      <div class="s-card-header" style="background:rgba(0,212,255,0.08);border-top:3px solid #00d4ff">
+        <span class="s-name" style="color:#00d4ff">S1</span>
+        <span class="s-tf" style="color:#00d4ff">TF-A</span>
+      </div>
+      <div class="s-body">
+        <div class="s-row"><span>Total Trades</span><span>478</span></div>
+        <div class="s-row"><span>Win Rate</span><span style="color:#ffd700">38.5%</span></div>
+        <div class="s-row"><span>Net Profit</span><span class="td-pos">+$1743.65</span></div>
+        <div class="s-row"><span>Return % (₹1,250)</span><span class="td-pos">+139.49%</span></div>
+        <div class="s-row"><span>Max Drawdown</span><span class="td-neg">-$831.44</span></div>
+        <div class="s-row"><span>DD % (₹1,250)</span><span class="td-neg">-66.52%</span></div>
+        <div class="s-row"><span>Profit Factor</span><span style="color:#00d4ff">1.27</span></div>
+        <div class="s-row"><span>Sharpe Ratio</span><span style="color:#00d4ff">1.63</span></div>
+        <div class="s-row"><span>Avg Win</span><span class="td-pos">+$43.83</span></div>
+        <div class="s-row"><span>Avg Loss</span><span class="td-neg">$-21.61</span></div>
+        <div class="s-row"><span>Best Trade</span><span class="td-pos">+$610.81</span></div>
+        <div class="s-row" style="border:none"><span>Worst Trade</span><span class="td-neg">$-166.10</span></div>
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-card-header" style="background:rgba(0,255,157,0.08);border-top:3px solid #00ff9d">
+        <span class="s-name" style="color:#00ff9d">S2</span>
+        <span class="s-tf" style="color:#00ff9d">TF-B</span>
+      </div>
+      <div class="s-body">
+        <div class="s-row"><span>Total Trades</span><span>734</span></div>
+        <div class="s-row"><span>Win Rate</span><span style="color:#ffd700">38.4%</span></div>
+        <div class="s-row"><span>Net Profit</span><span class="td-pos">+$2283.01</span></div>
+        <div class="s-row"><span>Return % (₹1,250)</span><span class="td-pos">+182.64%</span></div>
+        <div class="s-row"><span>Max Drawdown</span><span class="td-neg">-$417.13</span></div>
+        <div class="s-row"><span>DD % (₹1,250)</span><span class="td-neg">-33.37%</span></div>
+        <div class="s-row"><span>Profit Factor</span><span style="color:#00ff9d">1.3</span></div>
+        <div class="s-row"><span>Sharpe Ratio</span><span style="color:#00ff9d">1.99</span></div>
+        <div class="s-row"><span>Avg Win</span><span class="td-pos">+$35.14</span></div>
+        <div class="s-row"><span>Avg Loss</span><span class="td-neg">$-16.82</span></div>
+        <div class="s-row"><span>Best Trade</span><span class="td-pos">+$639.11</span></div>
+        <div class="s-row" style="border:none"><span>Worst Trade</span><span class="td-neg">$-128.25</span></div>
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-card-header" style="background:rgba(255,107,53,0.08);border-top:3px solid #ff6b35">
+        <span class="s-name" style="color:#ff6b35">S3</span>
+        <span class="s-tf" style="color:#ff6b35">TF-C</span>
+      </div>
+      <div class="s-body">
+        <div class="s-row"><span>Total Trades</span><span>479</span></div>
+        <div class="s-row"><span>Win Rate</span><span style="color:#ffd700">37.0%</span></div>
+        <div class="s-row"><span>Net Profit</span><span class="td-pos">+$1414.33</span></div>
+        <div class="s-row"><span>Return % (₹1,250)</span><span class="td-pos">+113.15%</span></div>
+        <div class="s-row"><span>Max Drawdown</span><span class="td-neg">-$687.90</span></div>
+        <div class="s-row"><span>DD % (₹1,250)</span><span class="td-neg">-55.03%</span></div>
+        <div class="s-row"><span>Profit Factor</span><span style="color:#ff6b35">1.21</span></div>
+        <div class="s-row"><span>Sharpe Ratio</span><span style="color:#ff6b35">1.25</span></div>
+        <div class="s-row"><span>Avg Win</span><span class="td-pos">+$45.16</span></div>
+        <div class="s-row"><span>Avg Loss</span><span class="td-neg">$-21.89</span></div>
+        <div class="s-row"><span>Best Trade</span><span class="td-pos">+$521.11</span></div>
+        <div class="s-row" style="border:none"><span>Worst Trade</span><span class="td-neg">$-154.25</span></div>
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-card-header" style="background:rgba(255,215,0,0.08);border-top:3px solid #ffd700">
+        <span class="s-name" style="color:#ffd700">S4</span>
+        <span class="s-tf" style="color:#ffd700">TF-D</span>
+      </div>
+      <div class="s-body">
+        <div class="s-row"><span>Total Trades</span><span>859</span></div>
+        <div class="s-row"><span>Win Rate</span><span style="color:#ffd700">37.5%</span></div>
+        <div class="s-row"><span>Net Profit</span><span class="td-pos">+$1677.65</span></div>
+        <div class="s-row"><span>Return % (₹1,250)</span><span class="td-pos">+134.21%</span></div>
+        <div class="s-row"><span>Max Drawdown</span><span class="td-neg">-$513.18</span></div>
+        <div class="s-row"><span>DD % (₹1,250)</span><span class="td-neg">-41.05%</span></div>
+        <div class="s-row"><span>Profit Factor</span><span style="color:#ffd700">1.21</span></div>
+        <div class="s-row"><span>Sharpe Ratio</span><span style="color:#ffd700">1.54</span></div>
+        <div class="s-row"><span>Avg Win</span><span class="td-pos">+$30.24</span></div>
+        <div class="s-row"><span>Avg Loss</span><span class="td-neg">$-14.89</span></div>
+        <div class="s-row"><span>Best Trade</span><span class="td-pos">+$420.33</span></div>
+        <div class="s-row" style="border:none"><span>Worst Trade</span><span class="td-neg">$-90.05</span></div>
+      </div>
+    </div></div>
+  <div class="cbox">
+    <div class="cbox-title">Individual Equity Curves (Profit/Loss from zero)</div>
+    <div class="chart-wrap"><canvas id="indivEq" height="220"></canvas></div>
+  </div>
+  <div class="two-col">
+    <div class="cbox">
+      <div class="cbox-title">Per-Strategy Monthly Comparison</div>
+      <div class="chart-wrap"><canvas id="sMonthly" height="240"></canvas></div>
+    </div>
+    <div class="cbox">
+      <div class="cbox-title">Strategy Metrics Radar</div>
+      <div class="chart-wrap"><canvas id="sRadar" height="240"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ CORRELATION ═══════════ -->
+<section id="correlation" class="sec">
+  <div class="stitle">Correlation &amp; Pair Analysis</div>
+
+  <div class="kpi-grid">
+    <div class="kpi" style="--kc:var(--green)"><div class="kpi-lbl">Best Pair (Low DD)</div><div class="kpi-val pos">S2 + S4</div><div class="kpi-sub">DD: 33.51% · Ret: 158%</div></div>
+    <div class="kpi" style="--kc:var(--accent)"><div class="kpi-lbl">Most Diversified</div><div class="kpi-val acc">S3 ↔ S4</div><div class="kpi-sub">Corr: 0.433</div></div>
+    <div class="kpi" style="--kc:var(--gold)"><div class="kpi-lbl">Highest Correlation</div><div class="kpi-val gld">S2 ↔ S4</div><div class="kpi-sub">Corr: 0.703</div></div>
+    <div class="kpi" style="--kc:var(--red)"><div class="kpi-lbl">Combined DD (All 4)</div><div class="kpi-val neg">-34.36%</div><div class="kpi-sub">$1,717.92 on $5K</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="cbox">
+      <div class="cbox-title">Correlation Matrix</div>
+      <div class="corr-wrap">
+        <table class="corr-tbl">
+          <tr><th></th><th style="color:var(--s1)">S1</th><th style="color:var(--s2)">S2</th><th style="color:var(--s3)">S3</th><th style="color:var(--s4)">S4</th></tr>
+          <tr><th style="color:var(--s1)">S1</th><td style="background:rgba(0,212,255,.2)">1.000</td><td style="background:rgba(0,212,255,.1)">0.670</td><td style="background:rgba(0,212,255,.1)">0.693</td><td style="background:rgba(0,212,255,.06)">0.449</td></tr>
+          <tr><th style="color:var(--s2)">S2</th><td style="background:rgba(0,212,255,.1)">0.670</td><td style="background:rgba(0,232,150,.2)">1.000</td><td style="background:rgba(0,212,255,.1)">0.676</td><td style="background:rgba(0,212,255,.12)">0.703</td></tr>
+          <tr><th style="color:var(--s3)">S3</th><td style="background:rgba(0,212,255,.1)">0.693</td><td style="background:rgba(0,212,255,.1)">0.676</td><td style="background:rgba(255,122,61,.2)">1.000</td><td style="background:rgba(0,212,255,.06)">0.433</td></tr>
+          <tr><th style="color:var(--s4)">S4</th><td style="background:rgba(0,212,255,.06)">0.449</td><td style="background:rgba(0,212,255,.12)">0.703</td><td style="background:rgba(0,212,255,.06)">0.433</td><td style="background:rgba(255,215,0,.2)">1.000</td></tr>
+        </table>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:10px;">Lower = more diversified. S3↔S4 (0.433) &amp; S1↔S4 (0.449) are least correlated.</p>
+    </div>
+    <div class="cbox">
+      <div class="cbox-title">Pair: DD% vs Return%</div>
+      <div class="chart-wrap"><canvas id="pairChart" height="240"></canvas></div>
+    </div>
+  </div>
+
+  <div class="stitle" style="margin-top:8px">All Pair Combinations</div>
+  <div class="pair-grid">
+    <div class="pair-card">
+      <div class="pair-title">S1 + S2</div>
+      <div class="p-row"><span>Net Profit</span><span class="pos">+$4,026.66</span></div>
+      <div class="p-row"><span>Return %</span><span class="pos">+161.07%</span></div>
+      <div class="p-row"><span>Max DD</span><span class="neg">-$1,069.29</span></div>
+      <div class="p-row"><span>DD %</span><span class="neg">-42.77%</span></div>
+    </div>
+    <div class="pair-card">
+      <div class="pair-title">S1 + S3</div>
+      <div class="p-row"><span>Net Profit</span><span class="pos">+$3,157.98</span></div>
+      <div class="p-row"><span>Return %</span><span class="pos">+126.32%</span></div>
+      <div class="p-row"><span>Max DD</span><span class="neg">-$1,122.52</span></div>
+      <div class="p-row"><span>DD %</span><span class="neg">-44.90%</span></div>
+    </div>
+    <div class="pair-card">
+      <div class="pair-title">S1 + S4</div>
+      <div class="p-row"><span>Net Profit</span><span class="pos">+$3,421.30</span></div>
+      <div class="p-row"><span>Return %</span><span class="pos">+136.85%</span></div>
+      <div class="p-row"><span>Max DD</span><span class="neg">-$1,041.12</span></div>
+      <div class="p-row"><span>DD %</span><span class="neg">-41.64%</span></div>
+    </div>
+    <div class="pair-card">
+      <div class="pair-title">S2 + S3</div>
+      <div class="p-row"><span>Net Profit</span><span class="pos">+$3,697.34</span></div>
+      <div class="p-row"><span>Return %</span><span class="pos">+147.89%</span></div>
+      <div class="p-row"><span>Max DD</span><span class="neg">-$1,007.82</span></div>
+      <div class="p-row"><span>DD %</span><span class="neg">-40.31%</span></div>
+    </div>
+    <div class="pair-card" style="border-color:var(--green)">
+      <div class="pair-title">S2 + S4 <span class="best-tag">BEST</span></div>
+      <div class="p-row"><span>Net Profit</span><span class="pos">+$3,960.66</span></div>
+      <div class="p-row"><span>Return %</span><span class="pos">+158.43%</span></div>
+      <div class="p-row"><span>Max DD</span><span class="neg">-$837.75</span></div>
+      <div class="p-row"><span>DD %</span><span class="neg">-33.51%</span></div>
+    </div>
+    <div class="pair-card">
+      <div class="pair-title">S3 + S4</div>
+      <div class="p-row"><span>Net Profit</span><span class="pos">+$3,091.98</span></div>
+      <div class="p-row"><span>Return %</span><span class="pos">+123.68%</span></div>
+      <div class="p-row"><span>Max DD</span><span class="neg">-$1,032.74</span></div>
+      <div class="p-row"><span>DD %</span><span class="neg">-41.31%</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ WHY THIS BOT ═══════════ -->
+<section id="why" class="sec">
+  <div class="stitle">Why USD Pro Bot</div>
+  <div class="why-grid">
+    <div class="why-card" style="--wc:var(--green)">
+      <div class="why-title">✦ Pure Price Action</div>
+      <div class="why-text">100% price-action based system. No standard indicators. All signals are generated purely from price movement, making the bot adaptive to live market conditions, not lagging indicator data.</div>
+    </div>
+    <div class="why-card" style="--wc:var(--accent)">
+      <div class="why-title">✦ Custom Signal Engine</div>
+      <div class="why-text">Buy and sell signals are produced by a proprietary in-house algorithm. The logic is unique, not publicly available, and is the core competitive edge of the USD Pro Bot system.</div>
+    </div>
+    <div class="why-card" style="--wc:var(--gold)">
+      <div class="why-title">✦ Trailing Stop Loss</div>
+      <div class="why-text">Every trade is protected by an intelligent Trailing Stop Loss. As price moves in your favour, the stop follows automatically — locking in gains and preventing profitable trades from turning into losses.</div>
+    </div>
+    <div class="why-card" style="--wc:var(--orange)">
+      <div class="why-title">✦ 4-Strategy Diversification</div>
+      <div class="why-text">Running 4 independent strategies simultaneously across different timeframes means losses in one are often offset by gains in others. This naturally smooths the equity curve and reduces peak drawdown.</div>
+    </div>
+    <div class="why-card" style="--wc:var(--green)">
+      <div class="why-title">✦ Consistent Monthly Returns</div>
+      <div class="why-text">8 out of 13 months were profitable over the 12-month test period. The system generated an average of $547.59/month (+10.95%) on a $5,000 account — with no manual intervention.</div>
+    </div>
+    <div class="why-card" style="--wc:var(--accent)">
+      <div class="why-title">✦ High Recovery Factor</div>
+      <div class="why-text">Recovery Factor of 4.14× means for every dollar of drawdown, the bot recovered $4.14 in profit. This is a strong risk-adjusted performance metric, especially for a fully automated system.</div>
+    </div>
+    <div class="why-card" style="--wc:var(--gold)">
+      <div class="why-title">✦ 96% Tick Quality BT</div>
+      <div class="why-text">The backtest was run on 96% real tick data — the highest quality available in MetaTrader. This means results are as close to real live trading conditions as a backtest can get.</div>
+    </div>
+    <div class="why-card" style="--wc:var(--orange)">
+      <div class="why-title">✦ Positive Risk Ratios</div>
+      <div class="why-text">Even with a ~38% win rate, the bot is profitable due to asymmetric reward. Average winning trades are 2–3× larger than average losers. Profit factors range 1.21–1.30 across all 4 strategies.</div>
+    </div>
+    <div class="why-card" style="--wc:var(--green)">
+      <div class="why-title">✦ Fully Automated</div>
+      <div class="why-text">Zero manual intervention required. The bot runs 24/5 on XAUUSD, monitors the market continuously, and executes trades based on its proprietary signal logic — no emotions, no hesitation.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div>USD Pro Bot · GOPAL Report · XAUUSD · 2025–2026</div>
+  <div style="margin-top:4px;color:#374f66">Confidential — For authorised recipients only</div>
+</footer>
+
+<script>
+// ───────── DATA ─────────
+const EC  = [{"date": "2025.05.15", "equity": 75.26, "pnl": 75.26}, {"date": "2025.05.16", "equity": 451.64, "pnl": 376.38}, {"date": "2025.05.19", "equity": 415.76, "pnl": -35.88}, {"date": "2025.05.20", "equity": 295.18, "pnl": -120.58}, {"date": "2025.05.21", "equity": 423.35, "pnl": 128.17}, {"date": "2025.05.22", "equity": 378.18, "pnl": -45.17}, {"date": "2025.05.23", "equity": 304.6, "pnl": -73.58}, {"date": "2025.05.26", "equity": 435.62, "pnl": 131.02}, {"date": "2025.05.27", "equity": 464.95, "pnl": 29.33}, {"date": "2025.05.28", "equity": 381.88, "pnl": -83.07}, {"date": "2025.05.29", "equity": 491.57, "pnl": 109.69}, {"date": "2025.05.30", "equity": 569.29, "pnl": 77.72}, {"date": "2025.06.02", "equity": 504.09, "pnl": -65.2}, {"date": "2025.06.03", "equity": 772.43, "pnl": 268.34}, {"date": "2025.06.04", "equity": 647.73, "pnl": -124.7}, {"date": "2025.06.05", "equity": 580.4, "pnl": -67.33}, {"date": "2025.06.06", "equity": 602.28, "pnl": 21.88}, {"date": "2025.06.09", "equity": 724.08, "pnl": 121.8}, {"date": "2025.06.10", "equity": 742.49, "pnl": 18.41}, {"date": "2025.06.11", "equity": 498.16, "pnl": -244.33}, {"date": "2025.06.12", "equity": 508.32, "pnl": 10.16}, {"date": "2025.06.13", "equity": 495.41, "pnl": -12.91}, {"date": "2025.06.16", "equity": 417.68, "pnl": -77.73}, {"date": "2025.06.17", "equity": 385.39, "pnl": -32.29}, {"date": "2025.06.18", "equity": 183.85, "pnl": -201.54}, {"date": "2025.06.19", "equity": 175.78, "pnl": -8.07}, {"date": "2025.06.20", "equity": 123.18, "pnl": -52.6}, {"date": "2025.06.23", "equity": 33.14, "pnl": -90.04}, {"date": "2025.06.24", "equity": 63.18, "pnl": 30.04}, {"date": "2025.06.25", "equity": 157.77, "pnl": 94.59}, {"date": "2025.06.26", "equity": 105.03, "pnl": -52.74}, {"date": "2025.06.27", "equity": 92.24, "pnl": -12.79}, {"date": "2025.06.30", "equity": 254.29, "pnl": 162.05}, {"date": "2025.07.01", "equity": 444.28, "pnl": 189.99}, {"date": "2025.07.02", "equity": 368.8, "pnl": -75.48}, {"date": "2025.07.03", "equity": 380.25, "pnl": 11.45}, {"date": "2025.07.04", "equity": 451.47, "pnl": 71.22}, {"date": "2025.07.07", "equity": 488.97, "pnl": 37.5}, {"date": "2025.07.08", "equity": 538.02, "pnl": 49.05}, {"date": "2025.07.09", "equity": 583.64, "pnl": 45.62}, {"date": "2025.07.10", "equity": 647.21, "pnl": 63.57}, {"date": "2025.07.11", "equity": 672.78, "pnl": 25.57}, {"date": "2025.07.14", "equity": 603.23, "pnl": -69.55}, {"date": "2025.07.15", "equity": 641.33, "pnl": 38.1}, {"date": "2025.07.16", "equity": 634.59, "pnl": -6.74}, {"date": "2025.07.17", "equity": 667.56, "pnl": 32.97}, {"date": "2025.07.18", "equity": 682.25, "pnl": 14.69}, {"date": "2025.07.21", "equity": 683.29, "pnl": 1.04}, {"date": "2025.07.22", "equity": 819.25, "pnl": 135.96}, {"date": "2025.07.23", "equity": 890.01, "pnl": 70.76}, {"date": "2025.07.24", "equity": 1077.19, "pnl": 187.18}, {"date": "2025.07.25", "equity": 1054.45, "pnl": -22.74}, {"date": "2025.07.28", "equity": 1091.21, "pnl": 36.76}, {"date": "2025.07.29", "equity": 1096.21, "pnl": 5.0}, {"date": "2025.07.30", "equity": 1031.71, "pnl": -64.5}, {"date": "2025.07.31", "equity": 1173.34, "pnl": 141.63}, {"date": "2025.08.01", "equity": 1118.68, "pnl": -54.66}, {"date": "2025.08.04", "equity": 1221.76, "pnl": 103.08}, {"date": "2025.08.05", "equity": 1344.62, "pnl": 122.86}, {"date": "2025.08.06", "equity": 1363.44, "pnl": 18.82}, {"date": "2025.08.07", "equity": 1328.84, "pnl": -34.6}, {"date": "2025.08.08", "equity": 1168.43, "pnl": -160.41}, {"date": "2025.08.11", "equity": 1247.12, "pnl": 78.69}, {"date": "2025.08.12", "equity": 1091.41, "pnl": -155.71}, {"date": "2025.08.13", "equity": 1049.1, "pnl": -42.31}, {"date": "2025.08.14", "equity": 971.71, "pnl": -77.39}, {"date": "2025.08.15", "equity": 1017.92, "pnl": 46.21}, {"date": "2025.08.18", "equity": 1042.56, "pnl": 24.64}, {"date": "2025.08.19", "equity": 1039.95, "pnl": -2.61}, {"date": "2025.08.20", "equity": 1098.35, "pnl": 58.4}, {"date": "2025.08.21", "equity": 1197.82, "pnl": 99.47}, {"date": "2025.08.22", "equity": 1130.96, "pnl": -66.86}, {"date": "2025.08.25", "equity": 1120.28, "pnl": -10.68}, {"date": "2025.08.26", "equity": 1033.68, "pnl": -86.6}, {"date": "2025.08.27", "equity": 1016.19, "pnl": -17.49}, {"date": "2025.08.28", "equity": 1001.77, "pnl": -14.42}, {"date": "2025.08.29", "equity": 1011.84, "pnl": 10.07}, {"date": "2025.09.01", "equity": 1176.36, "pnl": 164.52}, {"date": "2025.09.02", "equity": 1053.65, "pnl": -122.71}, {"date": "2025.09.03", "equity": 1209.91, "pnl": 156.26}, {"date": "2025.09.04", "equity": 1386.29, "pnl": 176.38}, {"date": "2025.09.05", "equity": 1282.54, "pnl": -103.75}, {"date": "2025.09.08", "equity": 1293.73, "pnl": 11.19}, {"date": "2025.09.09", "equity": 1294.65, "pnl": 0.92}, {"date": "2025.09.10", "equity": 1270.57, "pnl": -24.08}, {"date": "2025.09.11", "equity": 1251.93, "pnl": -18.64}, {"date": "2025.09.12", "equity": 1239.13, "pnl": -12.8}, {"date": "2025.09.15", "equity": 1194.55, "pnl": -44.58}, {"date": "2025.09.16", "equity": 1296.62, "pnl": 102.07}, {"date": "2025.09.17", "equity": 1216.12, "pnl": -80.5}, {"date": "2025.09.18", "equity": 1207.29, "pnl": -8.83}, {"date": "2025.09.19", "equity": 1170.57, "pnl": -36.72}, {"date": "2025.09.22", "equity": 1323.11, "pnl": 152.54}, {"date": "2025.09.23", "equity": 1438.87, "pnl": 115.76}, {"date": "2025.09.24", "equity": 1380.56, "pnl": -58.31}, {"date": "2025.09.25", "equity": 1334.82, "pnl": -45.74}, {"date": "2025.09.26", "equity": 1269.93, "pnl": -64.89}, {"date": "2025.09.29", "equity": 1319.91, "pnl": 49.98}, {"date": "2025.09.30", "equity": 1453.02, "pnl": 133.11}, {"date": "2025.10.01", "equity": 1530.38, "pnl": 77.36}, {"date": "2025.10.02", "equity": 1502.46, "pnl": -27.92}, {"date": "2025.10.03", "equity": 1481.34, "pnl": -21.12}, {"date": "2025.10.06", "equity": 1541.88, "pnl": 60.54}, {"date": "2025.10.07", "equity": 1647.78, "pnl": 105.9}, {"date": "2025.10.08", "equity": 1604.03, "pnl": -43.75}, {"date": "2025.10.09", "equity": 1528.06, "pnl": -75.97}, {"date": "2025.10.10", "equity": 1445.9, "pnl": -82.16}, {"date": "2025.10.13", "equity": 1473.53, "pnl": 27.63}, {"date": "2025.10.14", "equity": 1773.99, "pnl": 300.46}, {"date": "2025.10.15", "equity": 1941.04, "pnl": 167.05}, {"date": "2025.10.16", "equity": 1708.36, "pnl": -232.68}, {"date": "2025.10.17", "equity": 1667.41, "pnl": -40.95}, {"date": "2025.10.20", "equity": 1817.85, "pnl": 150.44}, {"date": "2025.10.21", "equity": 2148.05, "pnl": 330.2}, {"date": "2025.10.22", "equity": 2877.19, "pnl": 729.14}, {"date": "2025.10.23", "equity": 2595.01, "pnl": -282.18}, {"date": "2025.10.24", "equity": 2586.31, "pnl": -8.7}, {"date": "2025.10.27", "equity": 2522.93, "pnl": -63.38}, {"date": "2025.10.28", "equity": 2851.38, "pnl": 328.45}, {"date": "2025.10.29", "equity": 2795.9, "pnl": -55.48}, {"date": "2025.10.30", "equity": 2779.82, "pnl": -16.08}, {"date": "2025.10.31", "equity": 2685.89, "pnl": -93.93}, {"date": "2025.11.03", "equity": 2564.42, "pnl": -121.47}, {"date": "2025.11.04", "equity": 2405.65, "pnl": -158.77}, {"date": "2025.11.05", "equity": 2401.28, "pnl": -4.37}, {"date": "2025.11.06", "equity": 2411.19, "pnl": 9.91}, {"date": "2025.11.07", "equity": 2319.23, "pnl": -91.96}, {"date": "2025.11.10", "equity": 2424.6, "pnl": 105.37}, {"date": "2025.11.11", "equity": 2572.15, "pnl": 147.55}, {"date": "2025.11.12", "equity": 2579.6, "pnl": 7.45}, {"date": "2025.11.13", "equity": 2830.46, "pnl": 250.86}, {"date": "2025.11.14", "equity": 3100.12, "pnl": 269.66}, {"date": "2025.11.17", "equity": 3031.07, "pnl": -69.05}, {"date": "2025.11.18", "equity": 3126.82, "pnl": 95.75}, {"date": "2025.11.19", "equity": 3234.98, "pnl": 108.16}, {"date": "2025.11.20", "equity": 2898.68, "pnl": -336.3}, {"date": "2025.11.21", "equity": 2834.27, "pnl": -64.41}, {"date": "2025.11.24", "equity": 2796.65, "pnl": -37.62}, {"date": "2025.11.25", "equity": 2764.19, "pnl": -32.46}, {"date": "2025.11.26", "equity": 2597.9, "pnl": -166.29}, {"date": "2025.11.27", "equity": 2498.09, "pnl": -99.81}, {"date": "2025.11.28", "equity": 2477.51, "pnl": -20.58}, {"date": "2025.12.01", "equity": 2456.06, "pnl": -21.45}, {"date": "2025.12.02", "equity": 2400.64, "pnl": -55.42}, {"date": "2025.12.03", "equity": 2245.41, "pnl": -155.23}, {"date": "2025.12.04", "equity": 2224.93, "pnl": -20.48}, {"date": "2025.12.05", "equity": 2214.58, "pnl": -10.35}, {"date": "2025.12.08", "equity": 2172.53, "pnl": -42.05}, {"date": "2025.12.09", "equity": 2145.41, "pnl": -27.12}, {"date": "2025.12.10", "equity": 2011.3, "pnl": -134.11}, {"date": "2025.12.11", "equity": 1949.72, "pnl": -61.58}, {"date": "2025.12.12", "equity": 2170.13, "pnl": 220.41}, {"date": "2025.12.15", "equity": 2230.28, "pnl": 60.15}, {"date": "2025.12.16", "equity": 2316.52, "pnl": 86.24}, {"date": "2025.12.17", "equity": 2180.81, "pnl": -135.71}, {"date": "2025.12.18", "equity": 1857.24, "pnl": -323.57}, {"date": "2025.12.19", "equity": 1742.57, "pnl": -114.67}, {"date": "2025.12.22", "equity": 1719.21, "pnl": -23.36}, {"date": "2025.12.23", "equity": 2132.68, "pnl": 413.47}, {"date": "2025.12.24", "equity": 2087.8, "pnl": -44.88}, {"date": "2025.12.26", "equity": 1988.47, "pnl": -99.33}, {"date": "2025.12.29", "equity": 1912.6, "pnl": -75.87}, {"date": "2025.12.30", "equity": 2396.04, "pnl": 483.44}, {"date": "2025.12.31", "equity": 2239.0, "pnl": -157.04}, {"date": "2026.01.02", "equity": 2342.37, "pnl": 103.37}, {"date": "2026.01.05", "equity": 2475.9, "pnl": 133.53}, {"date": "2026.01.06", "equity": 2346.94, "pnl": -128.96}, {"date": "2026.01.07", "equity": 2344.24, "pnl": -2.7}, {"date": "2026.01.08", "equity": 2330.31, "pnl": -13.93}, {"date": "2026.01.09", "equity": 2331.3, "pnl": 0.99}, {"date": "2026.01.12", "equity": 2219.42, "pnl": -111.88}, {"date": "2026.01.13", "equity": 2267.54, "pnl": 48.12}, {"date": "2026.01.14", "equity": 2167.01, "pnl": -100.53}, {"date": "2026.01.15", "equity": 1985.23, "pnl": -181.78}, {"date": "2026.01.16", "equity": 1739.84, "pnl": -245.39}, {"date": "2026.01.19", "equity": 1517.06, "pnl": -222.78}, {"date": "2026.01.20", "equity": 1589.76, "pnl": 72.7}, {"date": "2026.01.21", "equity": 1969.65, "pnl": 379.89}, {"date": "2026.01.22", "equity": 1851.8, "pnl": -117.85}, {"date": "2026.01.23", "equity": 2187.02, "pnl": 335.22}, {"date": "2026.01.26", "equity": 2278.03, "pnl": 91.01}, {"date": "2026.01.27", "equity": 2093.37, "pnl": -184.66}, {"date": "2026.01.28", "equity": 2410.09, "pnl": 316.72}, {"date": "2026.01.29", "equity": 3350.17, "pnl": 940.08}, {"date": "2026.01.30", "equity": 3599.9, "pnl": 249.73}, {"date": "2026.02.02", "equity": 5286.03, "pnl": 1686.13}, {"date": "2026.02.03", "equity": 5263.49, "pnl": -22.54}, {"date": "2026.02.04", "equity": 5570.26, "pnl": 306.77}, {"date": "2026.02.05", "equity": 5350.74, "pnl": -219.52}, {"date": "2026.02.06", "equity": 5770.73, "pnl": 419.99}, {"date": "2026.02.09", "equity": 6398.01, "pnl": 627.28}, {"date": "2026.02.10", "equity": 5942.75, "pnl": -455.26}, {"date": "2026.02.11", "equity": 5809.87, "pnl": -132.88}, {"date": "2026.02.12", "equity": 5731.71, "pnl": -78.16}, {"date": "2026.02.13", "equity": 5864.87, "pnl": 133.16}, {"date": "2026.02.16", "equity": 5945.19, "pnl": 80.32}, {"date": "2026.02.17", "equity": 6014.33, "pnl": 69.14}, {"date": "2026.02.18", "equity": 5919.59, "pnl": -94.74}, {"date": "2026.02.19", "equity": 5816.6, "pnl": -102.99}, {"date": "2026.02.20", "equity": 5656.93, "pnl": -159.67}, {"date": "2026.02.23", "equity": 5992.83, "pnl": 335.9}, {"date": "2026.02.24", "equity": 6169.01, "pnl": 176.18}, {"date": "2026.02.25", "equity": 5877.62, "pnl": -291.39}, {"date": "2026.02.26", "equity": 5689.46, "pnl": -188.16}, {"date": "2026.02.27", "equity": 5533.87, "pnl": -155.59}, {"date": "2026.03.02", "equity": 5786.91, "pnl": 253.04}, {"date": "2026.03.03", "equity": 5457.48, "pnl": -329.43}, {"date": "2026.03.04", "equity": 5968.29, "pnl": 510.81}, {"date": "2026.03.05", "equity": 5700.8, "pnl": -267.49}, {"date": "2026.03.06", "equity": 5553.07, "pnl": -147.73}, {"date": "2026.03.09", "equity": 5226.7, "pnl": -326.37}, {"date": "2026.03.10", "equity": 5258.02, "pnl": 31.32}, {"date": "2026.03.11", "equity": 5126.44, "pnl": -131.58}, {"date": "2026.03.12", "equity": 5163.32, "pnl": 36.88}, {"date": "2026.03.13", "equity": 5169.71, "pnl": 6.39}, {"date": "2026.03.16", "equity": 5016.6, "pnl": -153.11}, {"date": "2026.03.17", "equity": 4820.1, "pnl": -196.5}, {"date": "2026.03.18", "equity": 4855.53, "pnl": 35.43}, {"date": "2026.03.19", "equity": 5584.76, "pnl": 729.23}, {"date": "2026.03.20", "equity": 5745.41, "pnl": 160.65}, {"date": "2026.03.23", "equity": 7348.05, "pnl": 1602.64}, {"date": "2026.03.24", "equity": 6780.58, "pnl": -567.47}, {"date": "2026.03.25", "equity": 6958.26, "pnl": 177.68}, {"date": "2026.03.26", "equity": 7128.9, "pnl": 170.64}, {"date": "2026.03.27", "equity": 7383.42, "pnl": 254.52}, {"date": "2026.03.30", "equity": 7311.35, "pnl": -72.07}, {"date": "2026.03.31", "equity": 7164.52, "pnl": -146.83}, {"date": "2026.04.01", "equity": 7360.79, "pnl": 196.27}, {"date": "2026.04.02", "equity": 7605.12, "pnl": 244.33}, {"date": "2026.04.06", "equity": 7184.61, "pnl": -420.51}, {"date": "2026.04.07", "equity": 6880.98, "pnl": -303.63}, {"date": "2026.04.08", "equity": 7217.51, "pnl": 336.53}, {"date": "2026.04.09", "equity": 7426.85, "pnl": 209.34}, {"date": "2026.04.10", "equity": 7368.75, "pnl": -58.1}, {"date": "2026.04.13", "equity": 6743.18, "pnl": -625.57}, {"date": "2026.04.14", "equity": 6690.63, "pnl": -52.55}, {"date": "2026.04.15", "equity": 6846.43, "pnl": 155.8}, {"date": "2026.04.16", "equity": 6756.66, "pnl": -89.77}, {"date": "2026.04.17", "equity": 6715.27, "pnl": -41.39}, {"date": "2026.04.20", "equity": 6590.86, "pnl": -124.41}, {"date": "2026.04.21", "equity": 6556.87, "pnl": -33.99}, {"date": "2026.04.22", "equity": 6934.15, "pnl": 377.28}, {"date": "2026.04.23", "equity": 6546.61, "pnl": -387.54}, {"date": "2026.04.24", "equity": 6561.07, "pnl": 14.46}, {"date": "2026.04.27", "equity": 6407.45, "pnl": -153.62}, {"date": "2026.04.28", "equity": 6581.6, "pnl": 174.15}, {"date": "2026.04.29", "equity": 6631.02, "pnl": 49.42}, {"date": "2026.04.30", "equity": 6579.93, "pnl": -51.09}, {"date": "2026.05.01", "equity": 6713.33, "pnl": 133.4}, {"date": "2026.05.04", "equity": 6801.92, "pnl": 88.59}, {"date": "2026.05.05", "equity": 7000.25, "pnl": 198.33}, {"date": "2026.05.06", "equity": 7218.26, "pnl": 218.01}, {"date": "2026.05.07", "equity": 7315.07, "pnl": 96.81}, {"date": "2026.05.08", "equity": 7116.65, "pnl": -198.42}, {"date": "2026.05.11", "equity": 7011.74, "pnl": -104.91}, {"date": "2026.05.12", "equity": 7314.45, "pnl": 302.71}, {"date": "2026.05.13", "equity": 7135.0, "pnl": -179.45}, {"date": "2026.05.14", "equity": 7118.64, "pnl": -16.36}];
+const DDC = [{"date": "2025.05.15", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.05.16", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.05.19", "dd": 35.88, "dd_pct": 0.72}, {"date": "2025.05.20", "dd": 156.46, "dd_pct": 3.13}, {"date": "2025.05.21", "dd": 28.29, "dd_pct": 0.57}, {"date": "2025.05.22", "dd": 73.46, "dd_pct": 1.47}, {"date": "2025.05.23", "dd": 147.04, "dd_pct": 2.94}, {"date": "2025.05.26", "dd": 16.02, "dd_pct": 0.32}, {"date": "2025.05.27", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.05.28", "dd": 83.07, "dd_pct": 1.66}, {"date": "2025.05.29", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.05.30", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.06.02", "dd": 65.2, "dd_pct": 1.3}, {"date": "2025.06.03", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.06.04", "dd": 124.7, "dd_pct": 2.49}, {"date": "2025.06.05", "dd": 192.03, "dd_pct": 3.84}, {"date": "2025.06.06", "dd": 170.15, "dd_pct": 3.4}, {"date": "2025.06.09", "dd": 48.35, "dd_pct": 0.97}, {"date": "2025.06.10", "dd": 29.94, "dd_pct": 0.6}, {"date": "2025.06.11", "dd": 274.27, "dd_pct": 5.49}, {"date": "2025.06.12", "dd": 264.11, "dd_pct": 5.28}, {"date": "2025.06.13", "dd": 277.02, "dd_pct": 5.54}, {"date": "2025.06.16", "dd": 354.75, "dd_pct": 7.1}, {"date": "2025.06.17", "dd": 387.04, "dd_pct": 7.74}, {"date": "2025.06.18", "dd": 588.58, "dd_pct": 11.77}, {"date": "2025.06.19", "dd": 596.65, "dd_pct": 11.93}, {"date": "2025.06.20", "dd": 649.25, "dd_pct": 12.99}, {"date": "2025.06.23", "dd": 739.29, "dd_pct": 14.79}, {"date": "2025.06.24", "dd": 709.25, "dd_pct": 14.19}, {"date": "2025.06.25", "dd": 614.66, "dd_pct": 12.29}, {"date": "2025.06.26", "dd": 667.4, "dd_pct": 13.35}, {"date": "2025.06.27", "dd": 680.19, "dd_pct": 13.6}, {"date": "2025.06.30", "dd": 518.14, "dd_pct": 10.36}, {"date": "2025.07.01", "dd": 328.15, "dd_pct": 6.56}, {"date": "2025.07.02", "dd": 403.63, "dd_pct": 8.07}, {"date": "2025.07.03", "dd": 392.18, "dd_pct": 7.84}, {"date": "2025.07.04", "dd": 320.96, "dd_pct": 6.42}, {"date": "2025.07.07", "dd": 283.46, "dd_pct": 5.67}, {"date": "2025.07.08", "dd": 234.41, "dd_pct": 4.69}, {"date": "2025.07.09", "dd": 188.79, "dd_pct": 3.78}, {"date": "2025.07.10", "dd": 125.22, "dd_pct": 2.5}, {"date": "2025.07.11", "dd": 99.65, "dd_pct": 1.99}, {"date": "2025.07.14", "dd": 169.2, "dd_pct": 3.38}, {"date": "2025.07.15", "dd": 131.1, "dd_pct": 2.62}, {"date": "2025.07.16", "dd": 137.84, "dd_pct": 2.76}, {"date": "2025.07.17", "dd": 104.87, "dd_pct": 2.1}, {"date": "2025.07.18", "dd": 90.18, "dd_pct": 1.8}, {"date": "2025.07.21", "dd": 89.14, "dd_pct": 1.78}, {"date": "2025.07.22", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.07.23", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.07.24", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.07.25", "dd": 22.74, "dd_pct": 0.45}, {"date": "2025.07.28", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.07.29", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.07.30", "dd": 64.5, "dd_pct": 1.29}, {"date": "2025.07.31", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.08.01", "dd": 54.66, "dd_pct": 1.09}, {"date": "2025.08.04", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.08.05", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.08.06", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.08.07", "dd": 34.6, "dd_pct": 0.69}, {"date": "2025.08.08", "dd": 195.01, "dd_pct": 3.9}, {"date": "2025.08.11", "dd": 116.32, "dd_pct": 2.33}, {"date": "2025.08.12", "dd": 272.03, "dd_pct": 5.44}, {"date": "2025.08.13", "dd": 314.34, "dd_pct": 6.29}, {"date": "2025.08.14", "dd": 391.73, "dd_pct": 7.83}, {"date": "2025.08.15", "dd": 345.52, "dd_pct": 6.91}, {"date": "2025.08.18", "dd": 320.88, "dd_pct": 6.42}, {"date": "2025.08.19", "dd": 323.49, "dd_pct": 6.47}, {"date": "2025.08.20", "dd": 265.09, "dd_pct": 5.3}, {"date": "2025.08.21", "dd": 165.62, "dd_pct": 3.31}, {"date": "2025.08.22", "dd": 232.48, "dd_pct": 4.65}, {"date": "2025.08.25", "dd": 243.16, "dd_pct": 4.86}, {"date": "2025.08.26", "dd": 329.76, "dd_pct": 6.6}, {"date": "2025.08.27", "dd": 347.25, "dd_pct": 6.94}, {"date": "2025.08.28", "dd": 361.67, "dd_pct": 7.23}, {"date": "2025.08.29", "dd": 351.6, "dd_pct": 7.03}, {"date": "2025.09.01", "dd": 187.08, "dd_pct": 3.74}, {"date": "2025.09.02", "dd": 309.79, "dd_pct": 6.2}, {"date": "2025.09.03", "dd": 153.53, "dd_pct": 3.07}, {"date": "2025.09.04", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.09.05", "dd": 103.75, "dd_pct": 2.08}, {"date": "2025.09.08", "dd": 92.56, "dd_pct": 1.85}, {"date": "2025.09.09", "dd": 91.64, "dd_pct": 1.83}, {"date": "2025.09.10", "dd": 115.72, "dd_pct": 2.31}, {"date": "2025.09.11", "dd": 134.36, "dd_pct": 2.69}, {"date": "2025.09.12", "dd": 147.16, "dd_pct": 2.94}, {"date": "2025.09.15", "dd": 191.74, "dd_pct": 3.83}, {"date": "2025.09.16", "dd": 89.67, "dd_pct": 1.79}, {"date": "2025.09.17", "dd": 170.17, "dd_pct": 3.4}, {"date": "2025.09.18", "dd": 179.0, "dd_pct": 3.58}, {"date": "2025.09.19", "dd": 215.72, "dd_pct": 4.31}, {"date": "2025.09.22", "dd": 63.18, "dd_pct": 1.26}, {"date": "2025.09.23", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.09.24", "dd": 58.31, "dd_pct": 1.17}, {"date": "2025.09.25", "dd": 104.05, "dd_pct": 2.08}, {"date": "2025.09.26", "dd": 168.94, "dd_pct": 3.38}, {"date": "2025.09.29", "dd": 118.96, "dd_pct": 2.38}, {"date": "2025.09.30", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.10.01", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.10.02", "dd": 27.92, "dd_pct": 0.56}, {"date": "2025.10.03", "dd": 49.04, "dd_pct": 0.98}, {"date": "2025.10.06", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.10.07", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.10.08", "dd": 43.75, "dd_pct": 0.88}, {"date": "2025.10.09", "dd": 119.72, "dd_pct": 2.39}, {"date": "2025.10.10", "dd": 201.88, "dd_pct": 4.04}, {"date": "2025.10.13", "dd": 174.25, "dd_pct": 3.48}, {"date": "2025.10.14", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.10.15", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.10.16", "dd": 232.68, "dd_pct": 4.65}, {"date": "2025.10.17", "dd": 273.63, "dd_pct": 5.47}, {"date": "2025.10.20", "dd": 123.19, "dd_pct": 2.46}, {"date": "2025.10.21", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.10.22", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.10.23", "dd": 282.18, "dd_pct": 5.64}, {"date": "2025.10.24", "dd": 290.88, "dd_pct": 5.82}, {"date": "2025.10.27", "dd": 354.26, "dd_pct": 7.09}, {"date": "2025.10.28", "dd": 25.81, "dd_pct": 0.52}, {"date": "2025.10.29", "dd": 81.29, "dd_pct": 1.63}, {"date": "2025.10.30", "dd": 97.37, "dd_pct": 1.95}, {"date": "2025.10.31", "dd": 191.3, "dd_pct": 3.83}, {"date": "2025.11.03", "dd": 312.77, "dd_pct": 6.26}, {"date": "2025.11.04", "dd": 471.54, "dd_pct": 9.43}, {"date": "2025.11.05", "dd": 475.91, "dd_pct": 9.52}, {"date": "2025.11.06", "dd": 466.0, "dd_pct": 9.32}, {"date": "2025.11.07", "dd": 557.96, "dd_pct": 11.16}, {"date": "2025.11.10", "dd": 452.59, "dd_pct": 9.05}, {"date": "2025.11.11", "dd": 305.04, "dd_pct": 6.1}, {"date": "2025.11.12", "dd": 297.59, "dd_pct": 5.95}, {"date": "2025.11.13", "dd": 46.73, "dd_pct": 0.93}, {"date": "2025.11.14", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.11.17", "dd": 69.05, "dd_pct": 1.38}, {"date": "2025.11.18", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.11.19", "dd": 0.0, "dd_pct": 0.0}, {"date": "2025.11.20", "dd": 336.3, "dd_pct": 6.73}, {"date": "2025.11.21", "dd": 400.71, "dd_pct": 8.01}, {"date": "2025.11.24", "dd": 438.33, "dd_pct": 8.77}, {"date": "2025.11.25", "dd": 470.79, "dd_pct": 9.42}, {"date": "2025.11.26", "dd": 637.08, "dd_pct": 12.74}, {"date": "2025.11.27", "dd": 736.89, "dd_pct": 14.74}, {"date": "2025.11.28", "dd": 757.47, "dd_pct": 15.15}, {"date": "2025.12.01", "dd": 778.92, "dd_pct": 15.58}, {"date": "2025.12.02", "dd": 834.34, "dd_pct": 16.69}, {"date": "2025.12.03", "dd": 989.57, "dd_pct": 19.79}, {"date": "2025.12.04", "dd": 1010.05, "dd_pct": 20.2}, {"date": "2025.12.05", "dd": 1020.4, "dd_pct": 20.41}, {"date": "2025.12.08", "dd": 1062.45, "dd_pct": 21.25}, {"date": "2025.12.09", "dd": 1089.57, "dd_pct": 21.79}, {"date": "2025.12.10", "dd": 1223.68, "dd_pct": 24.47}, {"date": "2025.12.11", "dd": 1285.26, "dd_pct": 25.71}, {"date": "2025.12.12", "dd": 1064.85, "dd_pct": 21.3}, {"date": "2025.12.15", "dd": 1004.7, "dd_pct": 20.09}, {"date": "2025.12.16", "dd": 918.46, "dd_pct": 18.37}, {"date": "2025.12.17", "dd": 1054.17, "dd_pct": 21.08}, {"date": "2025.12.18", "dd": 1377.74, "dd_pct": 27.55}, {"date": "2025.12.19", "dd": 1492.41, "dd_pct": 29.85}, {"date": "2025.12.22", "dd": 1515.77, "dd_pct": 30.32}, {"date": "2025.12.23", "dd": 1102.3, "dd_pct": 22.05}, {"date": "2025.12.24", "dd": 1147.18, "dd_pct": 22.94}, {"date": "2025.12.26", "dd": 1246.51, "dd_pct": 24.93}, {"date": "2025.12.29", "dd": 1322.38, "dd_pct": 26.45}, {"date": "2025.12.30", "dd": 838.94, "dd_pct": 16.78}, {"date": "2025.12.31", "dd": 995.98, "dd_pct": 19.92}, {"date": "2026.01.02", "dd": 892.61, "dd_pct": 17.85}, {"date": "2026.01.05", "dd": 759.08, "dd_pct": 15.18}, {"date": "2026.01.06", "dd": 888.04, "dd_pct": 17.76}, {"date": "2026.01.07", "dd": 890.74, "dd_pct": 17.81}, {"date": "2026.01.08", "dd": 904.67, "dd_pct": 18.09}, {"date": "2026.01.09", "dd": 903.68, "dd_pct": 18.07}, {"date": "2026.01.12", "dd": 1015.56, "dd_pct": 20.31}, {"date": "2026.01.13", "dd": 967.44, "dd_pct": 19.35}, {"date": "2026.01.14", "dd": 1067.97, "dd_pct": 21.36}, {"date": "2026.01.15", "dd": 1249.75, "dd_pct": 24.99}, {"date": "2026.01.16", "dd": 1495.14, "dd_pct": 29.9}, {"date": "2026.01.19", "dd": 1717.92, "dd_pct": 34.36}, {"date": "2026.01.20", "dd": 1645.22, "dd_pct": 32.9}, {"date": "2026.01.21", "dd": 1265.33, "dd_pct": 25.31}, {"date": "2026.01.22", "dd": 1383.18, "dd_pct": 27.66}, {"date": "2026.01.23", "dd": 1047.96, "dd_pct": 20.96}, {"date": "2026.01.26", "dd": 956.95, "dd_pct": 19.14}, {"date": "2026.01.27", "dd": 1141.61, "dd_pct": 22.83}, {"date": "2026.01.28", "dd": 824.89, "dd_pct": 16.5}, {"date": "2026.01.29", "dd": 0.0, "dd_pct": 0.0}, {"date": "2026.01.30", "dd": 0.0, "dd_pct": 0.0}, {"date": "2026.02.02", "dd": 0.0, "dd_pct": 0.0}, {"date": "2026.02.03", "dd": 22.54, "dd_pct": 0.45}, {"date": "2026.02.04", "dd": 0.0, "dd_pct": 0.0}, {"date": "2026.02.05", "dd": 219.52, "dd_pct": 4.39}, {"date": "2026.02.06", "dd": 0.0, "dd_pct": 0.0}, {"date": "2026.02.09", "dd": 0.0, "dd_pct": 0.0}, {"date": "2026.02.10", "dd": 455.26, "dd_pct": 9.11}, {"date": "2026.02.11", "dd": 588.14, "dd_pct": 11.76}, {"date": "2026.02.12", "dd": 666.3, "dd_pct": 13.33}, {"date": "2026.02.13", "dd": 533.14, "dd_pct": 10.66}, {"date": "2026.02.16", "dd": 452.82, "dd_pct": 9.06}, {"date": "2026.02.17", "dd": 383.68, "dd_pct": 7.67}, {"date": "2026.02.18", "dd": 478.42, "dd_pct": 9.57}, {"date": "2026.02.19", "dd": 581.41, "dd_pct": 11.63}, {"date": "2026.02.20", "dd": 741.08, "dd_pct": 14.82}, {"date": "2026.02.23", "dd": 405.18, "dd_pct": 8.1}, {"date": "2026.02.24", "dd": 229.0, "dd_pct": 4.58}, {"date": "2026.02.25", "dd": 520.39, "dd_pct": 10.41}, {"date": "2026.02.26", "dd": 708.55, "dd_pct": 14.17}, {"date": "2026.02.27", "dd": 864.14, "dd_pct": 17.28}, {"date": "2026.03.02", "dd": 611.1, "dd_pct": 12.22}, {"date": "2026.03.03", "dd": 940.53, "dd_pct": 18.81}, {"date": "2026.03.04", "dd": 429.72, "dd_pct": 8.59}, {"date": "2026.03.05", "dd": 697.21, "dd_pct": 13.94}, {"date": "2026.03.06", "dd": 844.94, "dd_pct": 16.9}, {"date": "2026.03.09", "dd": 1171.31, "dd_pct": 23.43}, {"date": "2026.03.10", "dd": 1139.99, "dd_pct": 22.8}, {"date": "2026.03.11", "dd": 1271.57, "dd_pct": 25.43}, {"date": "2026.03.12", "dd": 1234.69, "dd_pct": 24.69}, {"date": "2026.03.13", "dd": 1228.3, "dd_pct": 24.57}, {"date": "2026.03.16", "dd": 1381.41, "dd_pct": 27.63}, {"date": "2026.03.17", "dd": 1577.91, "dd_pct": 31.56}, {"date": "2026.03.18", "dd": 1542.48, "dd_pct": 30.85}, {"date": "2026.03.19", "dd": 813.25, "dd_pct": 16.26}, {"date": "2026.03.20", "dd": 652.6, "dd_pct": 13.05}, {"date": "2026.03.23", "dd": 0.0, "dd_pct": 0.0}, {"date": "2026.03.24", "dd": 567.47, "dd_pct": 11.35}, {"date": "2026.03.25", "dd": 389.79, "dd_pct": 7.8}, {"date": "2026.03.26", "dd": 219.15, "dd_pct": 4.38}, {"date": "2026.03.27", "dd": 0.0, "dd_pct": 0.0}, {"date": "2026.03.30", "dd": 72.07, "dd_pct": 1.44}, {"date": "2026.03.31", "dd": 218.9, "dd_pct": 4.38}, {"date": "2026.04.01", "dd": 22.63, "dd_pct": 0.45}, {"date": "2026.04.02", "dd": 0.0, "dd_pct": 0.0}, {"date": "2026.04.06", "dd": 420.51, "dd_pct": 8.41}, {"date": "2026.04.07", "dd": 724.14, "dd_pct": 14.48}, {"date": "2026.04.08", "dd": 387.61, "dd_pct": 7.75}, {"date": "2026.04.09", "dd": 178.27, "dd_pct": 3.57}, {"date": "2026.04.10", "dd": 236.37, "dd_pct": 4.73}, {"date": "2026.04.13", "dd": 861.94, "dd_pct": 17.24}, {"date": "2026.04.14", "dd": 914.49, "dd_pct": 18.29}, {"date": "2026.04.15", "dd": 758.69, "dd_pct": 15.17}, {"date": "2026.04.16", "dd": 848.46, "dd_pct": 16.97}, {"date": "2026.04.17", "dd": 889.85, "dd_pct": 17.8}, {"date": "2026.04.20", "dd": 1014.26, "dd_pct": 20.29}, {"date": "2026.04.21", "dd": 1048.25, "dd_pct": 20.97}, {"date": "2026.04.22", "dd": 670.97, "dd_pct": 13.42}, {"date": "2026.04.23", "dd": 1058.51, "dd_pct": 21.17}, {"date": "2026.04.24", "dd": 1044.05, "dd_pct": 20.88}, {"date": "2026.04.27", "dd": 1197.67, "dd_pct": 23.95}, {"date": "2026.04.28", "dd": 1023.52, "dd_pct": 20.47}, {"date": "2026.04.29", "dd": 974.1, "dd_pct": 19.48}, {"date": "2026.04.30", "dd": 1025.19, "dd_pct": 20.5}, {"date": "2026.05.01", "dd": 891.79, "dd_pct": 17.84}, {"date": "2026.05.04", "dd": 803.2, "dd_pct": 16.06}, {"date": "2026.05.05", "dd": 604.87, "dd_pct": 12.1}, {"date": "2026.05.06", "dd": 386.86, "dd_pct": 7.74}, {"date": "2026.05.07", "dd": 290.05, "dd_pct": 5.8}, {"date": "2026.05.08", "dd": 488.47, "dd_pct": 9.77}, {"date": "2026.05.11", "dd": 593.38, "dd_pct": 11.87}, {"date": "2026.05.12", "dd": 290.67, "dd_pct": 5.81}, {"date": "2026.05.13", "dd": 470.12, "dd_pct": 9.4}, {"date": "2026.05.14", "dd": 486.48, "dd_pct": 9.73}];
+const WD  = {"2025-W20": 451.64, "2025-W21": -147.04, "2025-W22": 264.69, "2025-W23": 32.99, "2025-W24": -106.87, "2025-W25": -372.23, "2025-W26": -30.94, "2025-W27": 359.23, "2025-W28": 221.31, "2025-W29": 9.47, "2025-W30": 372.2, "2025-W31": 64.23, "2025-W32": 49.75, "2025-W33": -150.51, "2025-W34": 113.04, "2025-W35": -119.12, "2025-W36": 270.7, "2025-W37": -43.41, "2025-W38": -68.56, "2025-W39": 99.36, "2025-W40": 211.41, "2025-W41": -35.44, "2025-W42": 221.51, "2025-W43": 918.9, "2025-W44": 99.58, "2025-W45": -366.66, "2025-W46": 780.89, "2025-W47": -265.85, "2025-W48": -356.76, "2025-W49": -262.93, "2025-W50": -44.45, "2025-W51": -427.56, "2025-W52": 245.9, "2026-W01": 353.9, "2026-W02": -11.07, "2026-W03": -591.46, "2026-W04": 447.18, "2026-W05": 1412.88, "2026-W06": 2170.83, "2026-W07": 94.14, "2026-W08": -207.94, "2026-W09": -123.06, "2026-W10": 19.2, "2026-W11": -383.36, "2026-W12": 575.7, "2026-W13": 1638.01, "2026-W14": 221.7, "2026-W15": -236.37, "2026-W16": -653.48, "2026-W17": -154.2, "2026-W18": 152.26, "2026-W19": 403.32, "2026-W20": 1.99};
+const MD  = {"2025.05": 569.29, "2025.06": -315.0, "2025.07": 919.05, "2025.08": -161.5, "2025.09": 441.18, "2025.10": 1232.87, "2025.11": -208.38, "2025.12": -238.51, "2026.01": 1360.9, "2026.02": 1933.97, "2026.03": 1630.65, "2026.04": -584.59, "2026.05": 538.71};
+const DC  = {"2025.05.15": 75.26, "2025.05.16": 376.38, "2025.05.19": -35.88, "2025.05.20": -120.58, "2025.05.21": 128.17, "2025.05.22": -45.17, "2025.05.23": -73.58, "2025.05.26": 131.02, "2025.05.27": 29.33, "2025.05.28": -83.07, "2025.05.29": 109.69, "2025.05.30": 77.72, "2025.06.02": -65.2, "2025.06.03": 268.34, "2025.06.04": -124.7, "2025.06.05": -67.33, "2025.06.06": 21.88, "2025.06.09": 121.8, "2025.06.10": 18.41, "2025.06.11": -244.33, "2025.06.12": 10.16, "2025.06.13": -12.91, "2025.06.16": -77.73, "2025.06.17": -32.29, "2025.06.18": -201.54, "2025.06.19": -8.07, "2025.06.20": -52.6, "2025.06.23": -90.04, "2025.06.24": 30.04, "2025.06.25": 94.59, "2025.06.26": -52.74, "2025.06.27": -12.79, "2025.06.30": 162.05, "2025.07.01": 189.99, "2025.07.02": -75.48, "2025.07.03": 11.45, "2025.07.04": 71.22, "2025.07.07": 37.5, "2025.07.08": 49.05, "2025.07.09": 45.62, "2025.07.10": 63.57, "2025.07.11": 25.57, "2025.07.14": -69.55, "2025.07.15": 38.1, "2025.07.16": -6.74, "2025.07.17": 32.97, "2025.07.18": 14.69, "2025.07.21": 1.04, "2025.07.22": 135.96, "2025.07.23": 70.76, "2025.07.24": 187.18, "2025.07.25": -22.74, "2025.07.28": 36.76, "2025.07.29": 5.0, "2025.07.30": -64.5, "2025.07.31": 141.63, "2025.08.01": -54.66, "2025.08.04": 103.08, "2025.08.05": 122.86, "2025.08.06": 18.82, "2025.08.07": -34.6, "2025.08.08": -160.41, "2025.08.11": 78.69, "2025.08.12": -155.71, "2025.08.13": -42.31, "2025.08.14": -77.39, "2025.08.15": 46.21, "2025.08.18": 24.64, "2025.08.19": -2.61, "2025.08.20": 58.4, "2025.08.21": 99.47, "2025.08.22": -66.86, "2025.08.25": -10.68, "2025.08.26": -86.6, "2025.08.27": -17.49, "2025.08.28": -14.42, "2025.08.29": 10.07, "2025.09.01": 164.52, "2025.09.02": -122.71, "2025.09.03": 156.26, "2025.09.04": 176.38, "2025.09.05": -103.75, "2025.09.08": 11.19, "2025.09.09": 0.92, "2025.09.10": -24.08, "2025.09.11": -18.64, "2025.09.12": -12.8, "2025.09.15": -44.58, "2025.09.16": 102.07, "2025.09.17": -80.5, "2025.09.18": -8.83, "2025.09.19": -36.72, "2025.09.22": 152.54, "2025.09.23": 115.76, "2025.09.24": -58.31, "2025.09.25": -45.74, "2025.09.26": -64.89, "2025.09.29": 49.98, "2025.09.30": 133.11, "2025.10.01": 77.36, "2025.10.02": -27.92, "2025.10.03": -21.12, "2025.10.06": 60.54, "2025.10.07": 105.9, "2025.10.08": -43.75, "2025.10.09": -75.97, "2025.10.10": -82.16, "2025.10.13": 27.63, "2025.10.14": 300.46, "2025.10.15": 167.05, "2025.10.16": -232.68, "2025.10.17": -40.95, "2025.10.20": 150.44, "2025.10.21": 330.2, "2025.10.22": 729.14, "2025.10.23": -282.18, "2025.10.24": -8.7, "2025.10.27": -63.38, "2025.10.28": 328.45, "2025.10.29": -55.48, "2025.10.30": -16.08, "2025.10.31": -93.93, "2025.11.03": -121.47, "2025.11.04": -158.77, "2025.11.05": -4.37, "2025.11.06": 9.91, "2025.11.07": -91.96, "2025.11.10": 105.37, "2025.11.11": 147.55, "2025.11.12": 7.45, "2025.11.13": 250.86, "2025.11.14": 269.66, "2025.11.17": -69.05, "2025.11.18": 95.75, "2025.11.19": 108.16, "2025.11.20": -336.3, "2025.11.21": -64.41, "2025.11.24": -37.62, "2025.11.25": -32.46, "2025.11.26": -166.29, "2025.11.27": -99.81, "2025.11.28": -20.58, "2025.12.01": -21.45, "2025.12.02": -55.42, "2025.12.03": -155.23, "2025.12.04": -20.48, "2025.12.05": -10.35, "2025.12.08": -42.05, "2025.12.09": -27.12, "2025.12.10": -134.11, "2025.12.11": -61.58, "2025.12.12": 220.41, "2025.12.15": 60.15, "2025.12.16": 86.24, "2025.12.17": -135.71, "2025.12.18": -323.57, "2025.12.19": -114.67, "2025.12.22": -23.36, "2025.12.23": 413.47, "2025.12.24": -44.88, "2025.12.26": -99.33, "2025.12.29": -75.87, "2025.12.30": 483.44, "2025.12.31": -157.04, "2026.01.02": 103.37, "2026.01.05": 133.53, "2026.01.06": -128.96, "2026.01.07": -2.7, "2026.01.08": -13.93, "2026.01.09": 0.99, "2026.01.12": -111.88, "2026.01.13": 48.12, "2026.01.14": -100.53, "2026.01.15": -181.78, "2026.01.16": -245.39, "2026.01.19": -222.78, "2026.01.20": 72.7, "2026.01.21": 379.89, "2026.01.22": -117.85, "2026.01.23": 335.22, "2026.01.26": 91.01, "2026.01.27": -184.66, "2026.01.28": 316.72, "2026.01.29": 940.08, "2026.01.30": 249.73, "2026.02.02": 1686.13, "2026.02.03": -22.54, "2026.02.04": 306.77, "2026.02.05": -219.52, "2026.02.06": 419.99, "2026.02.09": 627.28, "2026.02.10": -455.26, "2026.02.11": -132.88, "2026.02.12": -78.16, "2026.02.13": 133.16, "2026.02.16": 80.32, "2026.02.17": 69.14, "2026.02.18": -94.74, "2026.02.19": -102.99, "2026.02.20": -159.67, "2026.02.23": 335.9, "2026.02.24": 176.18, "2026.02.25": -291.39, "2026.02.26": -188.16, "2026.02.27": -155.59, "2026.03.02": 253.04, "2026.03.03": -329.43, "2026.03.04": 510.81, "2026.03.05": -267.49, "2026.03.06": -147.73, "2026.03.09": -326.37, "2026.03.10": 31.32, "2026.03.11": -131.58, "2026.03.12": 36.88, "2026.03.13": 6.39, "2026.03.16": -153.11, "2026.03.17": -196.5, "2026.03.18": 35.43, "2026.03.19": 729.23, "2026.03.20": 160.65, "2026.03.23": 1602.64, "2026.03.24": -567.47, "2026.03.25": 177.68, "2026.03.26": 170.64, "2026.03.27": 254.52, "2026.03.30": -72.07, "2026.03.31": -146.83, "2026.04.01": 196.27, "2026.04.02": 244.33, "2026.04.06": -420.51, "2026.04.07": -303.63, "2026.04.08": 336.53, "2026.04.09": 209.34, "2026.04.10": -58.1, "2026.04.13": -625.57, "2026.04.14": -52.55, "2026.04.15": 155.8, "2026.04.16": -89.77, "2026.04.17": -41.39, "2026.04.20": -124.41, "2026.04.21": -33.99, "2026.04.22": 377.28, "2026.04.23": -387.54, "2026.04.24": 14.46, "2026.04.27": -153.62, "2026.04.28": 174.15, "2026.04.29": 49.42, "2026.04.30": -51.09, "2026.05.01": 133.4, "2026.05.04": 88.59, "2026.05.05": 198.33, "2026.05.06": 218.01, "2026.05.07": 96.81, "2026.05.08": -198.42, "2026.05.11": -104.91, "2026.05.12": 302.71, "2026.05.13": -179.45, "2026.05.14": -16.36};
+const DPS = [{"2025.05.15": 28.51, "2025.05.16": 94.78, "2025.05.19": 0.66, "2025.05.20": -39.55, "2025.05.21": 39.37, "2025.05.22": -28.85, "2025.05.23": -24.61, "2025.05.26": 33.54, "2025.05.27": -27.08, "2025.05.28": -8.11, "2025.05.29": 31.19, "2025.05.30": 20.7, "2025.06.02": -2.19, "2025.06.03": 64.28, "2025.06.04": -19.35, "2025.06.05": -9.99, "2025.06.06": 2.01, "2025.06.09": 34.59, "2025.06.10": -10.85, "2025.06.11": -30.64, "2025.06.12": -32.52, "2025.06.13": 20.02, "2025.06.16": -6.16, "2025.06.17": -42.63, "2025.06.18": -58.15, "2025.06.19": -5.59, "2025.06.20": -16.15, "2025.06.23": -35.57, "2025.06.24": -12.64, "2025.06.25": 36.22, "2025.06.26": 5.21, "2025.06.27": -12.79, "2025.06.30": 16.89, "2025.07.01": 42.22, "2025.07.02": -14.41, "2025.07.03": 7.09, "2025.07.04": 7.32, "2025.07.07": -0.42, "2025.07.08": 26.89, "2025.07.09": -31.66, "2025.07.10": 12.24, "2025.07.11": 8.94, "2025.07.14": -63.7, "2025.07.15": -0.11, "2025.07.16": -7.78, "2025.07.17": 12.98, "2025.07.18": 0, "2025.07.21": 11.34, "2025.07.22": 18.58, "2025.07.23": 9.56, "2025.07.24": 46.36, "2025.07.25": -12.25, "2025.07.28": 2.91, "2025.07.29": -19.39, "2025.07.30": -16.64, "2025.07.31": 34.83, "2025.08.01": -2.34, "2025.08.04": 0, "2025.08.05": 79.47, "2025.08.06": 8.54, "2025.08.07": -10.08, "2025.08.08": -37.42, "2025.08.11": 0, "2025.08.12": 26.58, "2025.08.13": 0.66, "2025.08.14": -37.07, "2025.08.15": -1.32, "2025.08.18": 2.5, "2025.08.19": -4.45, "2025.08.20": 8.14, "2025.08.21": 21.0, "2025.08.22": -6.45, "2025.08.25": 21.34, "2025.08.26": -35.57, "2025.08.27": -15.23, "2025.08.28": -20.08, "2025.08.29": -7.2, "2025.09.01": 34.15, "2025.09.02": -18.06, "2025.09.03": 0, "2025.09.04": 89.37, "2025.09.05": 4.7, "2025.09.08": 0, "2025.09.09": 20.21, "2025.09.10": 0.8, "2025.09.11": 10.72, "2025.09.12": 5.71, "2025.09.15": -17.97, "2025.09.16": 43.15, "2025.09.17": -25.02, "2025.09.18": -20.28, "2025.09.19": -11.85, "2025.09.22": 61.3, "2025.09.23": 10.21, "2025.09.24": -30.03, "2025.09.25": -20.28, "2025.09.26": 0, "2025.09.29": -20.73, "2025.09.30": 89.32, "2025.10.01": 46.19, "2025.10.02": 0.19, "2025.10.03": -31.97, "2025.10.06": 0, "2025.10.07": 63.61, "2025.10.08": 0, "2025.10.09": 1.88, "2025.10.10": -27.12, "2025.10.13": 0, "2025.10.14": 68.11, "2025.10.15": 43.0, "2025.10.16": -74.25, "2025.10.17": -8.08, "2025.10.20": 73.65, "2025.10.21": 75.86, "2025.10.22": 148.74, "2025.10.23": 0, "2025.10.24": 48.57, "2025.10.27": -22.35, "2025.10.28": 158.78, "2025.10.29": 54.09, "2025.10.30": 20.2, "2025.10.31": -3.91, "2025.11.03": -13.38, "2025.11.04": -106.62, "2025.11.05": -25.46, "2025.11.06": 7.88, "2025.11.07": -27.99, "2025.11.10": -14.91, "2025.11.11": 105.56, "2025.11.12": -6.69, "2025.11.13": 82.51, "2025.11.14": 93.91, "2025.11.17": -29.51, "2025.11.18": -9.05, "2025.11.19": 56.12, "2025.11.20": -129.27, "2025.11.21": -18.17, "2025.11.24": -28.43, "2025.11.25": -21.27, "2025.11.26": -34.43, "2025.11.27": -33.32, "2025.11.28": 1.38, "2025.12.01": -9.56, "2025.12.02": -15.7, "2025.12.03": -35.48, "2025.12.04": -7.53, "2025.12.05": 8.29, "2025.12.08": -21.31, "2025.12.09": 0.1, "2025.12.10": -17.13, "2025.12.11": -21.73, "2025.12.12": 61.89, "2025.12.15": 42.76, "2025.12.16": -29.46, "2025.12.17": -36.61, "2025.12.18": -48.94, "2025.12.19": -9.88, "2025.12.22": -8.38, "2025.12.23": 92.01, "2025.12.24": 2.97, "2025.12.26": -2.53, "2025.12.29": -29.35, "2025.12.30": 106.13, "2025.12.31": 4.85, "2026.01.02": 41.25, "2026.01.05": 4.26, "2026.01.06": 9.51, "2026.01.07": -21.01, "2026.01.08": -40.32, "2026.01.09": 10.98, "2026.01.12": -53.55, "2026.01.13": 18.91, "2026.01.14": -35.73, "2026.01.15": -100.04, "2026.01.16": 3.16, "2026.01.19": 0, "2026.01.20": 67.83, "2026.01.21": 150.7, "2026.01.22": -6.22, "2026.01.23": 29.09, "2026.01.26": 66.7, "2026.01.27": -39.46, "2026.01.28": 0, "2026.01.29": 609.9, "2026.01.30": -61.57, "2026.02.02": 540.39, "2026.02.03": 0, "2026.02.04": 165.33, "2026.02.05": -181.05, "2026.02.06": 15.09, "2026.02.09": 162.03, "2026.02.10": -82.66, "2026.02.11": -50.2, "2026.02.12": 0, "2026.02.13": 74.54, "2026.02.16": 24.63, "2026.02.17": -42.56, "2026.02.18": -48.63, "2026.02.19": -33.42, "2026.02.20": -34.01, "2026.02.23": 103.23, "2026.02.24": 15.94, "2026.02.25": -27.54, "2026.02.26": -130.95, "2026.02.27": 0, "2026.03.02": -0.06, "2026.03.03": -217.53, "2026.03.04": 9.42, "2026.03.05": -74.63, "2026.03.06": -102.5, "2026.03.09": -45.61, "2026.03.10": 67.27, "2026.03.11": 0, "2026.03.12": -22.28, "2026.03.13": -62.21, "2026.03.16": -76.87, "2026.03.17": -70.88, "2026.03.18": 53.89, "2026.03.19": 231.39, "2026.03.20": 45.96, "2026.03.23": 341.22, "2026.03.24": -185.3, "2026.03.25": 57.08, "2026.03.26": 0, "2026.03.27": 133.05, "2026.03.30": -4.48, "2026.03.31": -94.6, "2026.04.01": 0, "2026.04.02": 143.28, "2026.04.06": -128.68, "2026.04.07": -110.82, "2026.04.08": 101.52, "2026.04.09": 11.18, "2026.04.10": -13.17, "2026.04.13": -168.53, "2026.04.14": 0, "2026.04.15": 33.28, "2026.04.16": -43.14, "2026.04.17": -9.96, "2026.04.20": -49.46, "2026.04.21": -4.21, "2026.04.22": 65.89, "2026.04.23": -66.31, "2026.04.24": -9.13, "2026.04.27": -66.8, "2026.04.28": -6.15, "2026.04.29": 46.64, "2026.04.30": -39.72, "2026.05.01": 4.91, "2026.05.04": 24.07, "2026.05.05": 76.38, "2026.05.06": 65.39, "2026.05.07": -26.35, "2026.05.08": -23.61, "2026.05.11": 3.61, "2026.05.12": 75.3, "2026.05.13": -22.49, "2026.05.14": -11.5}, {"2025.05.15": 9.2, "2025.05.16": 78.44, "2025.05.19": -11.03, "2025.05.20": -37.75, "2025.05.21": 28.62, "2025.05.22": -11.39, "2025.05.23": -17.69, "2025.05.26": 31.73, "2025.05.27": 33.66, "2025.05.28": -24.45, "2025.05.29": 26.71, "2025.05.30": 28.48, "2025.06.02": -31.56, "2025.06.03": 69.86, "2025.06.04": -52.03, "2025.06.05": -24.43, "2025.06.06": 4.69, "2025.06.09": 21.83, "2025.06.10": 15.06, "2025.06.11": -70.94, "2025.06.12": 36.66, "2025.06.13": -36.63, "2025.06.16": -20.35, "2025.06.17": -19.63, "2025.06.18": -35.09, "2025.06.19": -3.0, "2025.06.20": -11.93, "2025.06.23": -12.95, "2025.06.24": 0, "2025.06.25": 49.78, "2025.06.26": -11.93, "2025.06.27": 0, "2025.06.30": 59.43, "2025.07.01": 51.24, "2025.07.02": -19.54, "2025.07.03": -0.68, "2025.07.04": 24.23, "2025.07.07": 16.23, "2025.07.08": 0.01, "2025.07.09": 29.82, "2025.07.10": 21.62, "2025.07.11": 25.56, "2025.07.14": -18.82, "2025.07.15": 15.24, "2025.07.16": 10.28, "2025.07.17": 8.47, "2025.07.18": 6.01, "2025.07.21": -1.0, "2025.07.22": 39.21, "2025.07.23": 27.94, "2025.07.24": 48.2, "2025.07.25": -11.16, "2025.07.28": 21.48, "2025.07.29": 11.2, "2025.07.30": -17.61, "2025.07.31": 39.73, "2025.08.01": -26.65, "2025.08.04": 31.36, "2025.08.05": 6.66, "2025.08.06": 9.68, "2025.08.07": 8.16, "2025.08.08": -70.88, "2025.08.11": 26.48, "2025.08.12": -78.92, "2025.08.13": -0.45, "2025.08.14": -3.31, "2025.08.15": 18.99, "2025.08.18": 8.24, "2025.08.19": -6.94, "2025.08.20": 15.45, "2025.08.21": 25.77, "2025.08.22": -17.88, "2025.08.25": -18.77, "2025.08.26": -20.21, "2025.08.27": -5.59, "2025.08.28": 8.15, "2025.08.29": 2.72, "2025.09.01": 24.83, "2025.09.02": -40.8, "2025.09.03": 38.27, "2025.09.04": 36.39, "2025.09.05": -33.18, "2025.09.08": 5.13, "2025.09.09": -13.42, "2025.09.10": 4.44, "2025.09.11": -14.5, "2025.09.12": -11.04, "2025.09.15": -7.85, "2025.09.16": 5.37, "2025.09.17": -15.0, "2025.09.18": -0.07, "2025.09.19": -7.1, "2025.09.22": 41.04, "2025.09.23": -0.23, "2025.09.24": 0.88, "2025.09.25": -7.15, "2025.09.26": -9.41, "2025.09.29": 33.92, "2025.09.30": 14.28, "2025.10.01": -7.61, "2025.10.02": -1.93, "2025.10.03": -1.08, "2025.10.06": 33.44, "2025.10.07": -8.26, "2025.10.08": -10.13, "2025.10.09": -42.74, "2025.10.10": -4.74, "2025.10.13": 0, "2025.10.14": 103.87, "2025.10.15": 40.79, "2025.10.16": -51.51, "2025.10.17": -19.74, "2025.10.20": 8.75, "2025.10.21": 87.35, "2025.10.22": 244.32, "2025.10.23": -129.28, "2025.10.24": -15.52, "2025.10.27": -31.03, "2025.10.28": 58.87, "2025.10.29": -57.23, "2025.10.30": -20.51, "2025.10.31": -43.98, "2025.11.03": -55.47, "2025.11.04": -2.06, "2025.11.05": 15.47, "2025.11.06": 2.08, "2025.11.07": -14.89, "2025.11.10": 30.53, "2025.11.11": 17.45, "2025.11.12": 7.15, "2025.11.13": 50.34, "2025.11.14": 99.24, "2025.11.17": -44.79, "2025.11.18": 24.29, "2025.11.19": 16.93, "2025.11.20": -45.12, "2025.11.21": -13.53, "2025.11.24": -2.25, "2025.11.25": 4.09, "2025.11.26": -67.31, "2025.11.27": -28.38, "2025.11.28": -3.05, "2025.12.01": 8.12, "2025.12.02": -8.08, "2025.12.03": -27.16, "2025.12.04": 1.82, "2025.12.05": 8.28, "2025.12.08": -4.0, "2025.12.09": -10.68, "2025.12.10": -11.01, "2025.12.11": 6.16, "2025.12.12": 58.74, "2025.12.15": 13.22, "2025.12.16": 54.03, "2025.12.17": -35.28, "2025.12.18": -105.09, "2025.12.19": -16.28, "2025.12.22": -4.75, "2025.12.23": 89.84, "2025.12.24": -16.65, "2025.12.26": -17.26, "2025.12.29": -0.22, "2025.12.30": 105.54, "2025.12.31": -79.93, "2026.01.02": 16.25, "2026.01.05": 51.85, "2026.01.06": -35.99, "2026.01.07": 53.84, "2026.01.08": 19.47, "2026.01.09": -3.57, "2026.01.12": 3.09, "2026.01.13": -10.11, "2026.01.14": -22.44, "2026.01.15": -74.1, "2026.01.16": -100.5, "2026.01.19": -76.32, "2026.01.20": 45.09, "2026.01.21": 16.27, "2026.01.22": -57.64, "2026.01.23": 123.48, "2026.01.26": 14.67, "2026.01.27": -64.09, "2026.01.28": 77.57, "2026.01.29": 115.11, "2026.01.30": -5.04, "2026.02.02": 638.78, "2026.02.03": 17.15, "2026.02.04": -35.84, "2026.02.05": 16.38, "2026.02.06": 154.58, "2026.02.09": 174.47, "2026.02.10": -112.82, "2026.02.11": -32.32, "2026.02.12": -43.97, "2026.02.13": 18.35, "2026.02.16": 24.41, "2026.02.17": 49.4, "2026.02.18": -11.59, "2026.02.19": -24.69, "2026.02.20": -57.08, "2026.02.23": 108.44, "2026.02.24": 62.39, "2026.02.25": -49.25, "2026.02.26": -12.16, "2026.02.27": -43.94, "2026.03.02": 82.73, "2026.03.03": -10.5, "2026.03.04": 158.86, "2026.03.05": -91.59, "2026.03.06": -6.38, "2026.03.09": -96.25, "2026.03.10": -61.47, "2026.03.11": -65.79, "2026.03.12": 30.91, "2026.03.13": 14.33, "2026.03.16": -47.34, "2026.03.17": -24.46, "2026.03.18": -28.6, "2026.03.19": 324.26, "2026.03.20": -14.32, "2026.03.23": 449.28, "2026.03.24": -67.35, "2026.03.25": 7.33, "2026.03.26": 140.17, "2026.03.27": 7.09, "2026.03.30": -15.88, "2026.03.31": -9.26, "2026.04.01": 164.21, "2026.04.02": -5.44, "2026.04.06": -69.28, "2026.04.07": -84.49, "2026.04.08": 110.08, "2026.04.09": 86.33, "2026.04.10": -2.05, "2026.04.13": -194.49, "2026.04.14": 0, "2026.04.15": 76.23, "2026.04.16": -16.22, "2026.04.17": -26.3, "2026.04.20": -25.45, "2026.04.21": -17.54, "2026.04.22": 109.55, "2026.04.23": -81.02, "2026.04.24": 40.08, "2026.04.27": -6.74, "2026.04.28": 79.04, "2026.04.29": -20.39, "2026.04.30": 5.77, "2026.05.01": 25.27, "2026.05.04": 39.64, "2026.05.05": 30.89, "2026.05.06": 94.0, "2026.05.07": -37.7, "2026.05.08": -51.05, "2026.05.11": -53.5, "2026.05.12": 80.66, "2026.05.13": -39.21, "2026.05.14": -9.29}, {"2025.05.15": 19.6, "2025.05.16": 72.1, "2025.05.19": -23.92, "2025.05.20": -13.13, "2025.05.21": 50.42, "2025.05.22": -4.36, "2025.05.23": -11.14, "2025.05.26": 32.68, "2025.05.27": -3.82, "2025.05.28": -32.59, "2025.05.29": 15.05, "2025.05.30": 27.27, "2025.06.02": 4.85, "2025.06.03": 69.48, "2025.06.04": -24.88, "2025.06.05": -21.45, "2025.06.06": -0.58, "2025.06.09": 33.95, "2025.06.10": -7.66, "2025.06.11": -71.85, "2025.06.12": -41.28, "2025.06.13": 15.1, "2025.06.16": -20.35, "2025.06.17": 15.15, "2025.06.18": -53.61, "2025.06.19": 2.0, "2025.06.20": -5.92, "2025.06.23": -34.81, "2025.06.24": -15.61, "2025.06.25": 11.79, "2025.06.26": -10.08, "2025.06.27": 0, "2025.06.30": 30.79, "2025.07.01": 42.22, "2025.07.02": -5.09, "2025.07.03": 5.92, "2025.07.04": 19.65, "2025.07.07": 7.07, "2025.07.08": 14.42, "2025.07.09": 31.44, "2025.07.10": 14.53, "2025.07.11": -14.06, "2025.07.14": 30.17, "2025.07.15": 5.22, "2025.07.16": -11.91, "2025.07.17": 1.08, "2025.07.18": -1.66, "2025.07.21": -7.15, "2025.07.22": 34.31, "2025.07.23": 12.74, "2025.07.24": 42.4, "2025.07.25": -10.2, "2025.07.28": 18.38, "2025.07.29": 23.32, "2025.07.30": 0, "2025.07.31": 32.48, "2025.08.01": -7.63, "2025.08.04": 35.92, "2025.08.05": 10.16, "2025.08.06": 8.56, "2025.08.07": -28.03, "2025.08.08": -15.42, "2025.08.11": 25.73, "2025.08.12": -23.69, "2025.08.13": -13.02, "2025.08.14": -15.03, "2025.08.15": 15.86, "2025.08.18": 2.68, "2025.08.19": 6.84, "2025.08.20": 17.49, "2025.08.21": 23.22, "2025.08.22": -26.49, "2025.08.25": -3.11, "2025.08.26": -3.9, "2025.08.27": -0.02, "2025.08.28": 1.3, "2025.08.29": 11.66, "2025.09.01": 60.97, "2025.09.02": -32.91, "2025.09.03": 61.41, "2025.09.04": 15.5, "2025.09.05": -45.97, "2025.09.08": -2.26, "2025.09.09": -4.83, "2025.09.10": -5.05, "2025.09.11": -8.47, "2025.09.12": 6.03, "2025.09.15": -1.67, "2025.09.16": 41.36, "2025.09.17": -15.87, "2025.09.18": -0.32, "2025.09.19": -17.97, "2025.09.22": 0, "2025.09.23": 108.55, "2025.09.24": -29.61, "2025.09.25": -22.68, "2025.09.26": -25.97, "2025.09.29": 20.65, "2025.09.30": 0.07, "2025.10.01": 21.44, "2025.10.02": -16.79, "2025.10.03": 0.86, "2025.10.06": 0, "2025.10.07": 78.72, "2025.10.08": 0, "2025.10.09": -4.67, "2025.10.10": 29.18, "2025.10.13": 0, "2025.10.14": 107.01, "2025.10.15": 35.63, "2025.10.16": -82.69, "2025.10.17": -37.03, "2025.10.20": 48.32, "2025.10.21": 66.17, "2025.10.22": 137.38, "2025.10.23": -52.12, "2025.10.24": -53.88, "2025.10.27": -31.61, "2025.10.28": 37.28, "2025.10.29": -4.62, "2025.10.30": -29.31, "2025.10.31": -9.6, "2025.11.03": -24.36, "2025.11.04": -52.29, "2025.11.05": 11.24, "2025.11.06": -15.14, "2025.11.07": -42.27, "2025.11.10": 52.43, "2025.11.11": 19.62, "2025.11.12": -5.79, "2025.11.13": 79.21, "2025.11.14": -45.07, "2025.11.17": 71.47, "2025.11.18": 31.48, "2025.11.19": 36.9, "2025.11.20": -145.33, "2025.11.21": -38.0, "2025.11.24": -12.9, "2025.11.25": 13.74, "2025.11.26": -13.08, "2025.11.27": -16.94, "2025.11.28": -32.46, "2025.12.01": -37.83, "2025.12.02": -35.72, "2025.12.03": -89.22, "2025.12.04": -4.22, "2025.12.05": -41.49, "2025.12.08": -25.17, "2025.12.09": -0.82, "2025.12.10": -45.78, "2025.12.11": -35.21, "2025.12.12": 40.09, "2025.12.15": -9.94, "2025.12.16": 32.95, "2025.12.17": -31.95, "2025.12.18": -47.83, "2025.12.19": -84.36, "2025.12.22": 0, "2025.12.23": 128.54, "2025.12.24": -16.52, "2025.12.26": -47.36, "2025.12.29": -46.3, "2025.12.30": 135.54, "2025.12.31": -20.06, "2026.01.02": 28.49, "2026.01.05": 8.25, "2026.01.06": -36.36, "2026.01.07": -8.66, "2026.01.08": 22.89, "2026.01.09": 13.29, "2026.01.12": 0, "2026.01.13": 53.37, "2026.01.14": -23.34, "2026.01.15": 14.7, "2026.01.16": -31.05, "2026.01.19": -57.93, "2026.01.20": -21.79, "2026.01.21": 151.04, "2026.01.22": 35.12, "2026.01.23": 41.9, "2026.01.26": 101.1, "2026.01.27": -49.31, "2026.01.28": 110.84, "2026.01.29": 157.74, "2026.01.30": -98.95, "2026.02.02": 421.52, "2026.02.03": -154.2, "2026.02.04": 207.54, "2026.02.05": 0, "2026.02.06": 203.34, "2026.02.09": 116.51, "2026.02.10": -159.97, "2026.02.11": -40.87, "2026.02.12": 0, "2026.02.13": 21.92, "2026.02.16": 3.56, "2026.02.17": 59.37, "2026.02.18": -34.27, "2026.02.19": -0.09, "2026.02.20": -22.31, "2026.02.23": 37.73, "2026.02.24": 8.08, "2026.02.25": -125.32, "2026.02.26": -33.32, "2026.02.27": -33.19, "2026.03.02": 120.47, "2026.03.03": -92.91, "2026.03.04": 193.16, "2026.03.05": -28.07, "2026.03.06": -54.45, "2026.03.09": -85.82, "2026.03.10": 54.94, "2026.03.11": 0, "2026.03.12": 1.67, "2026.03.13": 8.4, "2026.03.16": -20.87, "2026.03.17": -72.85, "2026.03.18": -22.7, "2026.03.19": 0, "2026.03.20": 204.06, "2026.03.23": 353.99, "2026.03.24": -205.35, "2026.03.25": 74.53, "2026.03.26": 0, "2026.03.27": 84.66, "2026.03.30": -90.14, "2026.03.31": -32.85, "2026.04.01": 0, "2026.04.02": 146.79, "2026.04.06": -158.04, "2026.04.07": -68.2, "2026.04.08": 1.4, "2026.04.09": 31.11, "2026.04.10": -21.76, "2026.04.13": -162.95, "2026.04.14": 0, "2026.04.15": 82.89, "2026.04.16": -18.4, "2026.04.17": 6.53, "2026.04.20": -47.09, "2026.04.21": -5.35, "2026.04.22": 74.52, "2026.04.23": -121.27, "2026.04.24": -38.16, "2026.04.27": -73.28, "2026.04.28": -2.11, "2026.04.29": 63.07, "2026.04.30": -47.58, "2026.05.01": 84.22, "2026.05.04": -2.41, "2026.05.05": 55.52, "2026.05.06": 0, "2026.05.07": 143.08, "2026.05.08": -46.33, "2026.05.11": -64.54, "2026.05.12": 58.59, "2026.05.13": -15.19, "2026.05.14": 40.05}, {"2025.05.15": 17.95, "2025.05.16": 131.06, "2025.05.19": -1.59, "2025.05.20": -30.15, "2025.05.21": 9.76, "2025.05.22": -0.57, "2025.05.23": -20.14, "2025.05.26": 33.07, "2025.05.27": 26.57, "2025.05.28": -17.92, "2025.05.29": 36.74, "2025.05.30": 1.27, "2025.06.02": -36.3, "2025.06.03": 64.72, "2025.06.04": -28.44, "2025.06.05": -11.46, "2025.06.06": 15.76, "2025.06.09": 31.43, "2025.06.10": 21.86, "2025.06.11": -70.9, "2025.06.12": 47.3, "2025.06.13": -11.4, "2025.06.16": -30.87, "2025.06.17": 14.82, "2025.06.18": -54.69, "2025.06.19": -1.48, "2025.06.20": -18.6, "2025.06.23": -6.71, "2025.06.24": 58.29, "2025.06.25": -3.2, "2025.06.26": -35.94, "2025.06.27": 0, "2025.06.30": 54.94, "2025.07.01": 54.31, "2025.07.02": -36.44, "2025.07.03": -0.88, "2025.07.04": 20.02, "2025.07.07": 14.62, "2025.07.08": 7.73, "2025.07.09": 16.02, "2025.07.10": 15.18, "2025.07.11": 5.13, "2025.07.14": -17.2, "2025.07.15": 17.75, "2025.07.16": 2.67, "2025.07.17": 10.44, "2025.07.18": 10.34, "2025.07.21": -2.15, "2025.07.22": 43.86, "2025.07.23": 20.52, "2025.07.24": 50.22, "2025.07.25": 10.87, "2025.07.28": -6.01, "2025.07.29": -10.13, "2025.07.30": -30.25, "2025.07.31": 34.59, "2025.08.01": -18.04, "2025.08.04": 35.8, "2025.08.05": 26.57, "2025.08.06": -7.96, "2025.08.07": -4.65, "2025.08.08": -36.69, "2025.08.11": 26.48, "2025.08.12": -79.68, "2025.08.13": -29.5, "2025.08.14": -21.98, "2025.08.15": 12.68, "2025.08.18": 11.22, "2025.08.19": 1.94, "2025.08.20": 17.32, "2025.08.21": 29.48, "2025.08.22": -16.04, "2025.08.25": -10.14, "2025.08.26": -26.92, "2025.08.27": 3.35, "2025.08.28": -3.79, "2025.08.29": 2.89, "2025.09.01": 44.57, "2025.09.02": -30.94, "2025.09.03": 56.58, "2025.09.04": 35.12, "2025.09.05": -29.3, "2025.09.08": 8.32, "2025.09.09": -1.04, "2025.09.10": -24.27, "2025.09.11": -6.39, "2025.09.12": -13.5, "2025.09.15": -17.09, "2025.09.16": 12.19, "2025.09.17": -24.61, "2025.09.18": 11.84, "2025.09.19": 0.2, "2025.09.22": 50.2, "2025.09.23": -2.77, "2025.09.24": 0.45, "2025.09.25": 4.37, "2025.09.26": -29.51, "2025.09.29": 16.14, "2025.09.30": 29.44, "2025.10.01": 17.34, "2025.10.02": -9.39, "2025.10.03": 11.07, "2025.10.06": 27.1, "2025.10.07": -28.17, "2025.10.08": -33.62, "2025.10.09": -30.44, "2025.10.10": -79.48, "2025.10.13": 27.63, "2025.10.14": 21.47, "2025.10.15": 47.63, "2025.10.16": -24.23, "2025.10.17": 23.9, "2025.10.20": 19.72, "2025.10.21": 100.82, "2025.10.22": 198.7, "2025.10.23": -100.78, "2025.10.24": 12.13, "2025.10.27": 21.61, "2025.10.28": 73.52, "2025.10.29": -47.72, "2025.10.30": 13.54, "2025.10.31": -36.44, "2025.11.03": -28.26, "2025.11.04": 2.2, "2025.11.05": -5.62, "2025.11.06": 15.09, "2025.11.07": -6.81, "2025.11.10": 37.32, "2025.11.11": 4.92, "2025.11.12": 12.78, "2025.11.13": 38.8, "2025.11.14": 121.58, "2025.11.17": -66.22, "2025.11.18": 49.03, "2025.11.19": -1.79, "2025.11.20": -16.58, "2025.11.21": 5.29, "2025.11.24": 5.96, "2025.11.25": -29.02, "2025.11.26": -51.47, "2025.11.27": -21.17, "2025.11.28": 13.55, "2025.12.01": 17.82, "2025.12.02": 4.08, "2025.12.03": -3.37, "2025.12.04": -10.55, "2025.12.05": 14.57, "2025.12.08": 8.43, "2025.12.09": -15.72, "2025.12.10": -60.19, "2025.12.11": -10.8, "2025.12.12": 59.69, "2025.12.15": 14.11, "2025.12.16": 28.72, "2025.12.17": -31.87, "2025.12.18": -121.71, "2025.12.19": -4.15, "2025.12.22": -10.23, "2025.12.23": 103.08, "2025.12.24": -14.68, "2025.12.26": -32.18, "2025.12.29": 0, "2025.12.30": 136.23, "2025.12.31": -61.9, "2026.01.02": 17.38, "2026.01.05": 69.17, "2026.01.06": -66.12, "2026.01.07": -26.87, "2026.01.08": -15.97, "2026.01.09": -19.71, "2026.01.12": -61.42, "2026.01.13": -14.05, "2026.01.14": -19.02, "2026.01.15": -22.34, "2026.01.16": -117.0, "2026.01.19": -88.53, "2026.01.20": -18.43, "2026.01.21": 61.88, "2026.01.22": -89.11, "2026.01.23": 140.75, "2026.01.26": -91.46, "2026.01.27": -31.8, "2026.01.28": 128.31, "2026.01.29": 57.33, "2026.01.30": 415.29, "2026.02.02": 85.44, "2026.02.03": 114.51, "2026.02.04": -30.26, "2026.02.05": -54.85, "2026.02.06": 46.98, "2026.02.09": 174.27, "2026.02.10": -99.81, "2026.02.11": -9.49, "2026.02.12": -34.19, "2026.02.13": 18.35, "2026.02.16": 27.72, "2026.02.17": 2.93, "2026.02.18": -0.25, "2026.02.19": -44.79, "2026.02.20": -46.27, "2026.02.23": 86.5, "2026.02.24": 89.77, "2026.02.25": -89.28, "2026.02.26": -11.73, "2026.02.27": -78.46, "2026.03.02": 49.9, "2026.03.03": -8.49, "2026.03.04": 149.37, "2026.03.05": -73.2, "2026.03.06": 15.6, "2026.03.09": -98.69, "2026.03.10": -29.42, "2026.03.11": -65.79, "2026.03.12": 26.58, "2026.03.13": 45.87, "2026.03.16": -8.03, "2026.03.17": -28.31, "2026.03.18": 32.84, "2026.03.19": 173.58, "2026.03.20": -75.05, "2026.03.23": 458.15, "2026.03.24": -109.47, "2026.03.25": 38.74, "2026.03.26": 30.47, "2026.03.27": 29.72, "2026.03.30": 38.43, "2026.03.31": -10.12, "2026.04.01": 32.06, "2026.04.02": -40.3, "2026.04.06": -64.51, "2026.04.07": -40.12, "2026.04.08": 123.53, "2026.04.09": 80.72, "2026.04.10": -21.12, "2026.04.13": -99.6, "2026.04.14": -52.55, "2026.04.15": -36.6, "2026.04.16": -12.01, "2026.04.17": -11.66, "2026.04.20": -2.41, "2026.04.21": -6.89, "2026.04.22": 127.32, "2026.04.23": -118.94, "2026.04.24": 21.67, "2026.04.27": -6.8, "2026.04.28": 103.37, "2026.04.29": -39.9, "2026.04.30": 30.44, "2026.05.01": 19.0, "2026.05.04": 27.29, "2026.05.05": 35.54, "2026.05.06": 58.62, "2026.05.07": 17.78, "2026.05.08": -77.43, "2026.05.11": 9.52, "2026.05.12": 88.16, "2026.05.13": -102.56, "2026.05.14": -35.62}];
+const SI  = [{"name": "S1", "tf": "TF-A", "trades": 478, "wins": 184, "total": 1743.65, "dd": 831.44, "pf": 1.27, "sharpe": 1.63, "avg_profit": 43.83, "avg_loss": -21.61, "largest_win": 610.81, "largest_loss": -166.1}, {"name": "S2", "tf": "TF-B", "trades": 734, "wins": 282, "total": 2283.01, "dd": 417.13, "pf": 1.3, "sharpe": 1.99, "avg_profit": 35.14, "avg_loss": -16.82, "largest_win": 639.11, "largest_loss": -128.25}, {"name": "S3", "tf": "TF-C", "trades": 479, "wins": 177, "total": 1414.33, "dd": 687.9, "pf": 1.21, "sharpe": 1.25, "avg_profit": 45.16, "avg_loss": -21.89, "largest_win": 521.11, "largest_loss": -154.25}, {"name": "S4", "tf": "TF-D", "trades": 859, "wins": 322, "total": 1677.65, "dd": 513.18, "pf": 1.21, "sharpe": 1.54, "avg_profit": 30.24, "avg_loss": -14.89, "largest_win": 420.33, "largest_loss": -90.05}];
+const COLORS = ['#00d4ff','#00e896','#ff7a3d','#ffd700'];
+const CAP = 5000, CPER = 1250;
+
+// ───────── CHART DEFAULTS ─────────
+Chart.defaults.color = '#5a7fa0';
+Chart.defaults.borderColor = '#1a3050';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size   = 11;
+const GRID = { color:'rgba(26,48,80,.5)' };
+
+// ───────── TABS ─────────
+function showTab(id, btn) {
+  document.querySelectorAll('.sec').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  // lazy render charts
+  if (!window._rendered) window._rendered = {};
+  if (!window._rendered[id]) { window._rendered[id] = true; renderCharts(id); }
+}
+
+// ───────── HELPERS ─────────
+const mKeys = Object.keys(MD), mVals = Object.values(MD);
+const wKeys = Object.keys(WD), wVals = Object.values(WD);
+const dKeys = Object.keys(DC), dVals = Object.values(DC);
+const allDates = EC.map(e => e.date);
+
+// ───────── CHART FACTORY ─────────
+function lineChart(id, labels, datasets, opts={}) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  return new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets },
+    options:{ responsive:true, animation:false,
+      plugins:{ legend: opts.legend || {display:false}, tooltip:{ callbacks: opts.tooltip || {} } },
+      scales:{
+        y:{ grid:GRID, ticks:{ callback: opts.yTick || (v => '$'+v.toFixed(0)) } },
+        x:{ grid:{display:false}, ticks:{ maxTicksLimit: opts.xTicks||14 } }
+      }
+    }
+  });
+}
+
+function barChart(id, labels, data, opts={}) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  return new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels,
+      datasets:[{ data, borderRadius:4, borderWidth:1,
+        backgroundColor: data.map(v => v>=0?'rgba(0,232,150,.65)':'rgba(255,61,90,.65)'),
+        borderColor:      data.map(v => v>=0?'#00e896':'#ff3d5a'),
+        ...opts.ds
+      }]
+    },
+    options:{ responsive:true, animation:false,
+      plugins:{ legend:{display:false}, tooltip:{ callbacks: opts.tooltip || {} } },
+      scales:{
+        y:{ grid:GRID, ticks:{ callback: v => '$'+v.toFixed(0) } },
+        x:{ grid:{display:false}, ticks:{ maxTicksLimit: opts.xTicks||20, maxRotation:45 } }
+      }
+    }
+  });
+}
+
+function renderCharts(id) {
+  if (id === 'overview') {
+    // Equity overview
+    const g = document.getElementById('eqOverview').getContext('2d');
+    const gr = g.createLinearGradient(0,0,0,280); gr.addColorStop(0,'rgba(0,232,150,.2)'); gr.addColorStop(1,'rgba(0,232,150,0)');
+    lineChart('eqOverview', allDates, [{ label:'Balance', data:EC.map(e=>+(5000+e.equity).toFixed(2)), borderColor:'#00e896', borderWidth:2, fill:true, backgroundColor:gr, pointRadius:0, tension:.3 }]);
+    // Monthly bar
+    barChart('mBarOverview', mKeys.map(m=>m.slice(2).replace('.','\/')), mVals);
+    // Pie
+    new Chart(document.getElementById('capPie'), {
+      type:'doughnut',
+      data:{ labels:['S1','S2','S3','S4'], datasets:[{ data:[1250,1250,1250,1250], backgroundColor:COLORS, borderColor:'#07101a', borderWidth:3 }] },
+      options:{ responsive:true, plugins:{ legend:{ position:'right', labels:{ color:'#ddeeff', font:{size:12} } }, tooltip:{ callbacks:{ label:ctx => ctx.label+': $1,250 (25%)' } } } }
+    });
+  }
+
+  if (id === 'equity') {
+    const ctx = document.getElementById('eqMain').getContext('2d');
+    const gr2 = ctx.createLinearGradient(0,0,0,300); gr2.addColorStop(0,'rgba(0,232,150,.15)'); gr2.addColorStop(1,'rgba(0,232,150,0)');
+    lineChart('eqMain', allDates, [{ label:'Balance', data:EC.map(e=>+(5000+e.equity).toFixed(2)), borderColor:'#00e896', borderWidth:2, fill:true, backgroundColor:gr2, pointRadius:0, tension:.3 }]);
+    lineChart('ddMain',  allDates, [{ label:'DD $', data:DDC.map(d=>-d.dd), borderColor:'#ff3d5a', borderWidth:1.5, fill:true, backgroundColor:'rgba(255,61,90,.1)', pointRadius:0, tension:.2 }], { yTick: v => '$'+v.toFixed(0) });
+    lineChart('ddPct',   allDates, [{ label:'DD %', data:DDC.map(d=>-d.dd_pct), borderColor:'#ff7a3d', borderWidth:1.5, fill:true, backgroundColor:'rgba(255,122,61,.1)', pointRadius:0, tension:.2 }], { yTick: v => v.toFixed(1)+'%' });
+  }
+
+  if (id === 'monthly') {
+    barChart('mBar', mKeys, mVals);
+  }
+
+  if (id === 'weekly') {
+    barChart('wBar', wKeys, wVals, { xTicks:28 });
+  }
+
+  if (id === 'daily') {
+    barChart('dBar', dKeys, dVals, { xTicks:30 });
+  }
+
+  if (id === 'strategies') {
+    // Individual equity curves
+    const iDatasets = SI.map((s,i) => {
+      let eq=0;
+      return { label:s.name, data:allDates.map(d => { eq+=(DPS[i][d]||0); return +eq.toFixed(2); }), borderColor:COLORS[i], borderWidth:2, fill:false, pointRadius:0, tension:.3 };
+    });
+    lineChart('indivEq', allDates, iDatasets, { legend:{ position:'top', labels:{ color:'#ddeeff' } }, xTicks:14 });
+
+    // Per-strategy monthly
+    const sm = SI.map((s,si) => mKeys.map(m => +(allDates.filter(d=>d.startsWith(m)).reduce((a,d) => a+(DPS[si][d]||0),0)).toFixed(2)));
+    new Chart(document.getElementById('sMonthly'), {
+      type:'bar',
+      data:{ labels:mKeys.map(m=>m.slice(2).replace('.','/')), datasets:SI.map((s,i)=>({ label:s.name, data:sm[i], backgroundColor:COLORS[i]+'99', borderColor:COLORS[i], borderWidth:1, borderRadius:3 })) },
+      options:{ responsive:true, animation:false, plugins:{ legend:{ position:'top', labels:{ color:'#ddeeff' } } }, scales:{ y:{ stacked:false, grid:GRID }, x:{ grid:{display:false} } } }
+    });
+
+    // Radar
+    new Chart(document.getElementById('sRadar'), {
+      type:'radar',
+      data:{
+        labels:['Return %','Sharpe','Win Rate','Profit Factor','Low DD'],
+        datasets:SI.map((s,i) => ({
+          label:s.name,
+          data:[
+            Math.min(s.total/CPER*100/2,100),
+            s.sharpe*30,
+            s.wins/s.trades*100,
+            (s.pf-1)*200,
+            100 - s.dd/CPER*100
+          ],
+          borderColor:COLORS[i], borderWidth:2, pointRadius:3,
+          backgroundColor:COLORS[i].startsWith('#ff')?'rgba(255,122,61,.05)':'rgba(0,0,0,0)'
+        }))
+      },
+      options:{ responsive:true, animation:false,
+        plugins:{ legend:{ position:'top', labels:{ color:'#ddeeff' } } },
+        scales:{ r:{ grid:{ color:'rgba(26,48,80,.8)' }, ticks:{ display:false }, pointLabels:{ color:'#5a7fa0' } } }
+      }
+    });
+  }
+
+  if (id === 'correlation') {
+    const pairLabels = ['S1+S2','S1+S3','S1+S4','S2+S3','S2+S4','S3+S4'];
+    const pairDD   = [42.77,44.90,41.64,40.31,33.51,41.31];
+    const pairRet  = [161.07,126.32,136.85,147.89,158.43,123.68];
+    new Chart(document.getElementById('pairChart'), {
+      type:'bar',
+      data:{
+        labels:pairLabels,
+        datasets:[
+          { label:'DD %',     data:pairDD,  backgroundColor:'rgba(255,61,90,.7)',  borderColor:'#ff3d5a', borderWidth:1, borderRadius:4 },
+          { label:'Return %', data:pairRet, backgroundColor:'rgba(0,232,150,.6)',  borderColor:'#00e896', borderWidth:1, borderRadius:4 }
+        ]
+      },
+      options:{ responsive:true, animation:false,
+        plugins:{ legend:{ position:'top', labels:{ color:'#ddeeff' } } },
+        scales:{ y:{ grid:GRID, ticks:{ callback:v=>v+'%' } }, x:{ grid:{display:false} } }
+      }
+    });
+  }
+}
+
+// ───────── INIT ─────────
+window._rendered = { overview:true };
+renderCharts('overview');
+</script>
+</body>
+</html>

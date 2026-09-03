@@ -1,20 +1,94 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>My GitHub Page</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — AlgoVortex Trading</title>
+<meta name="description" content="Request free bot setup or ask a question — contact AlgoVortex Trading.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  .page-head{padding:52px 0 8px;text-align:center;}
+  .page-head h1{font-size:clamp(28px,4vw,38px);
+    background:linear-gradient(90deg,#fff 10%,var(--blue) 60%,var(--purple) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 22px rgba(21,166,255,.25));}
+  .page-head p{color:var(--text-dim);font-size:14.5px;margin-top:12px;max-width:520px;margin-left:auto;margin-right:auto;}
+  .contact-layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:22px;margin-top:36px;align-items:start;}
+  .side-card{padding:24px;}
+  .side-card h3{font-size:15px;margin-bottom:14px;}
+  .side-row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--border);}
+  .side-row:first-of-type{border-top:none;padding-top:0;}
+  .side-row .ic{width:34px;height:34px;border-radius:9px;background:var(--btc-soft);border:1px solid rgba(21,166,255,.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .side-row .txt b{display:block;font-size:13px;margin-bottom:2px;}
+  .side-row .txt span{font-size:12px;color:var(--text-faint);}
+  .side-row a{color:var(--btc);}
+  .form-card{padding:6px;overflow:hidden;}
+  .form-card iframe{width:100%;border:0;min-height:1000px;border-radius:12px;background:#fff;}
+  @media (max-width:880px){.contact-layout{grid-template-columns:1fr;}}
+</style>
 </head>
 <body>
-    <h1>Contact Us</h1>
-    <p>Please fill out the form below:</p>
+<div class="bg-fx"><div class="grid-overlay"></div></div>
 
-    <!-- Paste your Google Form iframe below -->
-    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSePcIQGl6onnGEYOl34PDg5glkpNa48JPurK2uollfFUHZbuA/viewform?usp=publish-editor" 
-            width="640" 
-            height="961" 
-            frameborder="0" 
-            marginheight="0" 
-            marginwidth="0">Loading…</iframe>
+<header class="topbar">
+  <a href="index.html" class="brand">
+    <div class="brand-mark"><img src="assets/logo.png" alt="AlgoVortex logo"></div>
+    <div>
+      <div class="brand-name">AlgoVortex Trading</div>
+      <div class="brand-sub">ALGO + PRECISION + PROFITS</div>
+    </div>
+  </a>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="bots.html">Bots</a>
+    <a href="indicators.html">Indicators</a>
+    <a href="index.html#brokers">Brokers</a>
+    <a href="CONTACT.html" class="current">Contact</a>
+  </nav>
+  <a class="nav-cta" href="https://t.me/+CesxwJ2XW11OGM1" target="_blank" rel="noopener">Join Telegram</a>
+</header>
 
+<div class="wrap page-head">
+  <div class="kicker" style="justify-content:center;">Get in touch</div>
+  <h1>Request free bot setup, or ask us anything</h1>
+  <p>Fill out the form and our team will confirm your broker account and set up your bot — usually within a day.</p>
+</div>
+
+<div class="wrap contact-layout">
+  <div class="panel side-card">
+    <h3>Other ways to reach us</h3>
+    <div class="side-row">
+      <div class="ic">✈️</div>
+      <div class="txt"><b>Telegram community</b><span><a href="https://t.me/+CesxwJ2XW11OGM1" target="_blank" rel="noopener">t.me/+CesxwJ2XW11OGM1</a></span></div>
+    </div>
+    <div class="side-row">
+      <div class="ic">🤖</div>
+      <div class="txt"><b>Already have an account?</b><span><a href="bots.html">View your bot's live report</a></span></div>
+    </div>
+    <div class="side-row">
+      <div class="ic">📈</div>
+      <div class="txt"><b>Not sure which broker?</b><span><a href="index.html#brokers">Compare partner brokers</a></span></div>
+    </div>
+    <div class="side-row">
+      <div class="ic">⏱️</div>
+      <div class="txt"><b>Response time</b><span>Usually within 24 hours</span></div>
+    </div>
+  </div>
+
+  <div class="panel form-card">
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSePcIQGl6onnGEYOl34PDg5glkpNa48JPurK2uollfFUHZbuA/viewform?embedded=true" title="AlgoVortex contact form">Loading…</iframe>
+  </div>
+</div>
+
+<div class="wrap" style="padding-bottom:20px;margin-top:40px;">
+  <footer class="foot">
+    <span>© AlgoVortex Trading — Live execution, verified accounts.</span>
+    <span>Risk disclosure: trading involves risk. Past performance is not a guarantee of future results.</span>
+    <span><a href="index.html">Home</a> · <a href="bots.html">Bots</a> · <a href="indicators.html">Indicators</a></span>
+  </footer>
+</div>
 </body>
 </html>

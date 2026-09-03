@@ -1,434 +1,307 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AlgoVortex · Bots</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Bots &amp; Credentials — AlgoVortex Trading</title>
+<meta name="description" content="Live account credentials and backtest / performance reports for AlgoVortex Trading's three automated bots.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  .page-head{padding:52px 0 8px;}
+  .page-head h1{font-size:clamp(28px,4vw,40px);max-width:680px;
+    background:linear-gradient(90deg,#fff 10%,var(--blue) 60%,var(--purple) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 22px rgba(21,166,255,.25));}
+  .page-head p{color:var(--text-dim);font-size:14.5px;margin-top:12px;max-width:600px;}
+  .warn-note{
+    margin-top:22px;display:flex;gap:12px;align-items:flex-start;padding:15px 18px;border-radius:12px;
+    background:var(--gold-soft);border:1px solid rgba(255,194,75,.35);color:var(--text-dim);font-size:12.5px;line-height:1.6;
+  }
+  .warn-note b{color:var(--gold);}
 
-    body {
-      background: #060d1a;
-      color: #e6edf8;
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      padding: 0 20px 40px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+  .bot-block{padding:34px 0 10px;scroll-margin-top:90px;}
+  .bot-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:14px;margin-bottom:20px;}
+  .bot-head .titles{display:flex;align-items:center;gap:14px;}
+  .bot-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk';font-weight:700;font-size:18px;flex-shrink:0;}
+  .bot-head h2{font-size:24px;}
+  .bot-head .sub{font-size:12.5px;color:var(--text-faint);font-family:'JetBrains Mono',monospace;margin-top:3px;}
+  .badge-live{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;background:var(--green-soft);color:var(--green);border:1px solid rgba(0,226,154,.35);padding:5px 11px;border-radius:6px;display:flex;align-items:center;gap:6px;}
+  .badge-live .d{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 1.8s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-      flex: 1;
-    }
+  .bot-layout{display:grid;grid-template-columns:1.3fr .9fr;gap:20px;align-items:start;}
 
-    /* header / nav */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 28px 0 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      flex-wrap: wrap;
-      gap: 16px;
-    }
+  .cred-card{border-radius:var(--radius-lg);overflow:hidden;}
+  .cred-top{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+  .cred-top .label{font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.07em;}
+  .cred-grid{display:grid;grid-template-columns:1fr 1fr;padding:22px 24px 24px;gap:18px 10px;}
+  .c-field{padding:2px 16px;border-left:1px solid var(--border);}
+  .c-field:nth-child(odd){border-left:none;padding-left:0;}
+  .c-field .k{font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+  .c-field .v{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:600;word-break:break-all;}
+  .c-field .v.pw{color:var(--btc);letter-spacing:.03em;filter:blur(5px);transition:filter .2s;cursor:pointer;user-select:none;}
+  .c-field .v.pw.revealed{filter:blur(0);}
+  .reveal-hint{font-size:9.5px;color:var(--text-faint);margin-top:5px;}
+  .copy-btn{background:none;border:1px solid var(--border-2);color:var(--text-faint);padding:3px 8px;border-radius:5px;font-size:10px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:.15s;margin-left:8px;}
+  .copy-btn:hover{border-color:var(--btc);color:var(--btc);}
+  .fund-strip{margin:0 24px 22px;background:var(--panel-2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;font-size:12.5px;color:var(--text-dim);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+  .fund-strip b{color:var(--text);}
+  .cred-actions{display:flex;gap:10px;padding:0 24px 24px;flex-wrap:wrap;}
+  .report-btn{
+    flex:1;min-width:200px;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;
+    background:linear-gradient(90deg,var(--btc),var(--purple));color:#031018;padding:13px;border-radius:10px;
+    box-shadow:0 0 22px rgba(21,166,255,.3);transition:.2s;
+  }
+  .report-btn:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(21,166,255,.45);}
+  .telegram-btn{flex:1;min-width:160px;text-align:center;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13.5px;background:rgba(255,255,255,.02);border:1px solid var(--border-2);color:var(--text);padding:13px;border-radius:10px;}
+  .telegram-btn:hover{border-color:var(--btc);color:var(--btc);}
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+  .stat-card2{padding:24px;height:100%;}
+  .stat-card2 .k-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .k-mini{padding:14px 0;border-top:1px solid var(--border);}
+  .k-mini:nth-child(-n+2){border-top:none;}
+  .k-mini .kl{font-size:10.5px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;}
+  .k-mini .kv{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;}
+  .k-mini .kv.green{color:var(--green);text-shadow:0 0 14px rgba(0,226,154,.4);}
+  .k-mini .kv.red{color:var(--red);text-shadow:0 0 14px rgba(255,59,110,.35);}
+  .k-mini .kv.btc{color:var(--btc);text-shadow:0 0 14px rgba(21,166,255,.4);}
+  .strategy-note{margin-top:16px;font-size:12.5px;color:var(--text-dim);line-height:1.7;}
 
-    .brand-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #0b82f0, #2dd4bf);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 20px;
-      color: #fff;
-      box-shadow: 0 0 28px rgba(11, 130, 240, 0.2);
-    }
+  hr.divider{border:none;border-top:1px solid var(--border);margin:38px 0;}
 
-    .brand-text {
-      font-weight: 700;
-      font-size: 24px;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #f0f9ff, #93c5fd);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .brand-sub {
-      font-size: 12px;
-      color: #8ba0c0;
-      display: block;
-      margin-top: 2px;
-      letter-spacing: 0.3px;
-      -webkit-text-fill-color: #8ba0c0;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 28px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .nav-links a {
-      color: #b3c9e5;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 14px;
-      transition: 0.2s;
-      border-bottom: 2px solid transparent;
-      padding-bottom: 4px;
-    }
-
-    .nav-links a:hover {
-      color: #fff;
-      border-bottom-color: #2dd4bf;
-    }
-
-    .btn-outline {
-      border: 1px solid rgba(45, 212, 191, 0.25);
-      padding: 8px 22px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 13px;
-      background: rgba(45, 212, 191, 0.04);
-      transition: 0.2s;
-    }
-
-    .btn-outline:hover {
-      background: rgba(45, 212, 191, 0.12);
-      border-color: #2dd4bf;
-      color: #fff;
-    }
-
-    /* page title */
-    .page-title {
-      font-size: 34px;
-      font-weight: 800;
-      margin: 32px 0 12px;
-      letter-spacing: -0.5px;
-    }
-
-    .page-sub {
-      color: #8ba0c0;
-      font-size: 16px;
-      margin-bottom: 40px;
-    }
-
-    /* bots grid */
-    .bots-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 28px;
-      margin-bottom: 48px;
-    }
-
-    .bot-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 24px;
-      padding: 28px 26px 32px;
-      transition: 0.3s;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .bot-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #0b82f0, #2dd4bf);
-      opacity: 0.4;
-      transition: 0.3s;
-    }
-
-    .bot-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(45, 212, 191, 0.15);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    }
-
-    .bot-card:hover::before {
-      opacity: 1;
-    }
-
-    .bot-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-
-    .bot-name {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .bot-badge {
-      font-size: 11px;
-      font-weight: 600;
-      background: rgba(45, 212, 191, 0.12);
-      color: #2dd4bf;
-      padding: 2px 14px;
-      border-radius: 40px;
-      letter-spacing: 0.3px;
-      border: 1px solid rgba(45, 212, 191, 0.08);
-    }
-
-    .bot-desc {
-      color: #8ba0c0;
-      font-size: 14px;
-      margin: 10px 0 18px;
-    }
-
-    .bot-desc strong {
-      color: #e6edf8;
-      font-weight: 600;
-    }
-
-    .cred-list {
-      list-style: none;
-      font-size: 13.5px;
-      background: rgba(0, 0, 0, 0.25);
-      border-radius: 14px;
-      padding: 16px 18px;
-      margin: 6px 0 22px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    .cred-list li {
-      display: flex;
-      justify-content: space-between;
-      padding: 6px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    .cred-list li:last-child {
-      border-bottom: none;
-    }
-
-    .cred-list .label {
-      color: #8ba0c0;
-    }
-
-    .cred-list .value {
-      font-weight: 500;
-      font-family: 'Inter', monospace;
-      color: #e6edf8;
-    }
-
-    .bot-footer {
-      margin-top: auto;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .btn-sm {
-      padding: 10px 18px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 12.5px;
-      border: none;
-      cursor: pointer;
-      transition: 0.2s;
-      text-decoration: none;
-      display: inline-block;
-      text-align: center;
-      flex: 1;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #0b82f0, #2dd4bf);
-      color: #fff;
-      box-shadow: 0 0 20px rgba(11, 130, 240, 0.15);
-    }
-
-    .btn-primary:hover {
-      box-shadow: 0 0 32px rgba(11, 130, 240, 0.3);
-      transform: scale(1.02);
-    }
-
-    .btn-outline-light {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #b3c9e5;
-    }
-
-    .btn-outline-light:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-    }
-
-    /* footer */
-    .footer {
-      margin-top: 20px;
-      padding: 24px 0 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      font-size: 13px;
-      color: #5e7a9e;
-    }
-
-    .footer a {
-      color: #8ba0c0;
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      color: #fff;
-    }
-
-    /* responsive */
-    @media (max-width: 900px) {
-      .bots-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .bots-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .nav-links {
-        width: 100%;
-        justify-content: flex-start;
-        gap: 16px;
-      }
-
-      .brand-text {
-        font-size: 20px;
-      }
-
-      .page-title {
-        font-size: 28px;
-      }
-    }
-  </style>
+  @media (max-width:900px){
+    .bot-layout{grid-template-columns:1fr;}
+    .cred-grid{grid-template-columns:1fr;}
+    .c-field{border-left:none;padding-left:0;}
+  }
+</style>
 </head>
 <body>
-<div class="container">
+<div class="bg-fx"><div class="grid-overlay"></div></div>
 
-  <!-- header -->
-  <header class="header">
-    <div class="brand">
-      <div class="brand-icon">AV</div>
+<header class="topbar">
+  <a href="index.html" class="brand">
+    <div class="brand-mark"><img src="assets/logo.png" alt="AlgoVortex logo"></div>
+    <div>
+      <div class="brand-name">AlgoVortex Trading</div>
+      <div class="brand-sub">ALGO + PRECISION + PROFITS</div>
+    </div>
+  </a>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="bots.html" class="current">Bots</a>
+    <a href="indicators.html">Indicators</a>
+    <a href="index.html#brokers">Brokers</a>
+    <a href="CONTACT.html">Contact</a>
+  </nav>
+  <a class="nav-cta" href="CONTACT.html">Get Free Access</a>
+</header>
+
+<div class="wrap page-head">
+  <div class="kicker">Live account access</div>
+  <h1>Bot credentials &amp; backtest / live performance reports</h1>
+  <p>These are the real MT5 login details and live/backtest performance terminals for our three active bots. Tap a password field to reveal it, and open the full report for the equity curve, trade log and strategy breakdown.</p>
+  <div class="warn-note">⚠️ <span><b>For referred clients only.</b> These are live trading accounts — do not share these credentials outside AlgoVortex, and never reuse this password anywhere else. Investor-only (read-only) logins are available on request via <a href="CONTACT.html" style="color:var(--gold)">Contact</a> if you only need to view performance.</span></div>
+</div>
+
+<!-- ============ V4 BOT ============ -->
+<section class="wrap bot-block" id="v4">
+  <div class="bot-head">
+    <div class="titles">
+      <div class="bot-icon" style="background:var(--btc-soft);border:1px solid rgba(21,166,255,.4);color:var(--btc);">V4</div>
       <div>
-        <span class="brand-text">AlgoVortex</span>
-        <span class="brand-sub">Trading · Automation</span>
+        <h2>V4 Bot — XAUUSD Grid Engine</h2>
+        <div class="sub">Broker: Vantage Markets · Server: vantagemarkets-live11</div>
       </div>
     </div>
-    <div class="nav-links">
-      <a href="index.html">Home</a>
-      <a href="CREDENTIAL.html">Credentials</a>
-      <a href="CONTACT.html" class="btn-outline">Contact</a>
-    </div>
-  </header>
-
-  <!-- page title -->
-  <h1 class="page-title">Live Bots</h1>
-  <p class="page-sub">Three automated strategies — credentials and backtest reports below.</p>
-
-  <!-- BOTS GRID -->
-  <div class="bots-grid">
-
-    <!-- V4 BOT -->
-    <div class="bot-card">
-      <div class="bot-header">
-        <span class="bot-name">V4 BOT</span>
-        <span class="bot-badge">Grid</span>
-      </div>
-      <div class="bot-desc">Grid engine for XAUUSD · recommended fund <strong>$5,000</strong></div>
-      <ul class="cred-list">
-        <li><span class="label">ID</span><span class="value">23347071</span></li>
-        <li><span class="label">Password</span><span class="value">@123Zxcv</span></li>
-        <li><span class="label">Broker</span><span class="value">Vantage Markets</span></li>
-        <li><span class="label">Server</span><span class="value">vantagemarkets-live11</span></li>
-      </ul>
-      <div class="bot-footer">
-        <a href="backtest_v4.html" class="btn-sm btn-primary">Backtest</a>
-        <a href="CREDENTIAL.html" class="btn-sm btn-outline-light">Credentials</a>
-      </div>
-    </div>
-
-    <!-- USD BOT -->
-    <div class="bot-card">
-      <div class="bot-header">
-        <span class="bot-name">USD BOT</span>
-        <span class="bot-badge">USD</span>
-      </div>
-      <div class="bot-desc">USD-focused strategy · recommended fund <strong>$1,000</strong></div>
-      <ul class="cred-list">
-        <li><span class="label">ID</span><span class="value">34375762</span></li>
-        <li><span class="label">Password</span><span class="value">@Usdbot1</span></li>
-        <li><span class="label">Broker</span><span class="value">Vantage Markets</span></li>
-        <li><span class="label">Server</span><span class="value">vantagemarkets-live19</span></li>
-      </ul>
-      <div class="bot-footer">
-        <a href="backtest_usd.html" class="btn-sm btn-primary">Backtest</a>
-        <a href="CREDENTIAL.html" class="btn-sm btn-outline-light">Credentials</a>
-      </div>
-    </div>
-
-    <!-- BTC BOT -->
-    <div class="bot-card">
-      <div class="bot-header">
-        <span class="bot-name">BTC BOT</span>
-        <span class="bot-badge">Crypto</span>
-      </div>
-      <div class="bot-desc">Cryptocurrency strategy · recommended fund <strong>$1,000</strong></div>
-      <ul class="cred-list">
-        <li><span class="label">ID</span><span class="value">184120097</span></li>
-        <li><span class="label">Password</span><span class="value">@Algo123</span></li>
-        <li><span class="label">Broker</span><span class="value">Exness</span></li>
-        <li><span class="label">Server</span><span class="value">Exness-MT5Real25</span></li>
-      </ul>
-      <div class="bot-footer">
-        <a href="backtest_btc.html" class="btn-sm btn-primary">Backtest</a>
-        <a href="CREDENTIAL.html" class="btn-sm btn-outline-light">Credentials</a>
-      </div>
-    </div>
+    <span class="badge-live"><span class="d"></span>LIVE</span>
   </div>
 
-  <!-- footer -->
-  <footer class="footer">
-    <span>© AlgoVortex — Live execution, verified accounts.</span>
-    <span><a href="CONTACT.html">Contact</a> · <a href="CREDENTIAL.html">Credentials</a></span>
-  </footer>
+  <div class="bot-layout">
+    <div class="panel cred-card">
+      <div class="cred-top">
+        <span class="label">MT5 Login Credentials</span>
+        <span class="badge-live"><span class="d"></span>Account Active</span>
+      </div>
+      <div class="cred-grid">
+        <div class="c-field">
+          <div class="k">Login ID <button class="copy-btn" onclick="copyText('23347071',this)">Copy</button></div>
+          <div class="v">23347071</div>
+        </div>
+        <div class="c-field">
+          <div class="k">Password <button class="copy-btn" onclick="copyText('@123Zxcv',this)">Copy</button></div>
+          <div class="v pw" onclick="this.classList.toggle('revealed')">@123Zxcv</div>
+          <div class="reveal-hint">Tap to reveal</div>
+        </div>
+        <div class="c-field">
+          <div class="k">Broker</div>
+          <div class="v">Vantage Markets</div>
+        </div>
+        <div class="c-field">
+          <div class="k">Server</div>
+          <div class="v">vantagemarkets-live11</div>
+        </div>
+      </div>
+      <div class="fund-strip"><span>Required funding</span><b>$5,000</b></div>
+      <div class="cred-actions">
+        <a class="report-btn" href="V4_BOT.html">Open Full Backtest / Live Report →</a>
+        <a class="telegram-btn" href="https://t.me/+CesxwJ2XW11OGM1" target="_blank" rel="noopener">Ask on Telegram</a>
+      </div>
+    </div>
 
+    <div class="panel stat-card2">
+      <div class="k-row">
+        <div class="k-mini"><div class="kl">Net profit</div><div class="kv green">$107,709.64</div></div>
+        <div class="k-mini"><div class="kl">Total return</div><div class="kv green">17.95%</div></div>
+        <div class="k-mini"><div class="kl">Win rate</div><div class="kv">72.5%</div></div>
+        <div class="k-mini"><div class="kl">Max drawdown</div><div class="kv btc">11.43%</div></div>
+      </div>
+      <div class="strategy-note">Grid-based engine on XAUUSD with 6,241 logged trades. Full equity curve, monthly breakdown and trade log are in the report.</div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><hr class="divider"></div>
+
+<!-- ============ USD BOT ============ -->
+<section class="wrap bot-block" id="usd">
+  <div class="bot-head">
+    <div class="titles">
+      <div class="bot-icon" style="background:var(--green-soft);border:1px solid rgba(0,226,154,.4);color:var(--green);">$</div>
+      <div>
+        <h2>USD Pro Bot — Combined Strategy</h2>
+        <div class="sub">Broker: Vantage Markets · Server: vantagemarkets-live19</div>
+      </div>
+    </div>
+    <span class="badge-live"><span class="d"></span>LIVE</span>
+  </div>
+
+  <div class="bot-layout">
+    <div class="panel cred-card">
+      <div class="cred-top">
+        <span class="label">MT5 Login Credentials</span>
+        <span class="badge-live"><span class="d"></span>Account Active</span>
+      </div>
+      <div class="cred-grid">
+        <div class="c-field">
+          <div class="k">Login ID <button class="copy-btn" onclick="copyText('34375762',this)">Copy</button></div>
+          <div class="v">34375762</div>
+        </div>
+        <div class="c-field">
+          <div class="k">Password <button class="copy-btn" onclick="copyText('@Usdbot1',this)">Copy</button></div>
+          <div class="v pw" onclick="this.classList.toggle('revealed')">@Usdbot1</div>
+          <div class="reveal-hint">Tap to reveal</div>
+        </div>
+        <div class="c-field">
+          <div class="k">Broker</div>
+          <div class="v">Vantage Markets</div>
+        </div>
+        <div class="c-field">
+          <div class="k">Server</div>
+          <div class="v">vantagemarkets-live19</div>
+        </div>
+      </div>
+      <div class="fund-strip"><span>Required funding</span><b>$1,000</b></div>
+      <div class="cred-actions">
+        <a class="report-btn" href="USD_BOT.html">Open Full Backtest / Live Report →</a>
+        <a class="telegram-btn" href="https://t.me/+CesxwJ2XW11OGM1" target="_blank" rel="noopener">Ask on Telegram</a>
+      </div>
+    </div>
+
+    <div class="panel stat-card2">
+      <div class="k-row">
+        <div class="k-mini"><div class="kl">Net profit</div><div class="kv green">$7,118.64</div></div>
+        <div class="k-mini"><div class="kl">Return (on $5K)</div><div class="kv green">+142.37%</div></div>
+        <div class="k-mini"><div class="kl">Max drawdown</div><div class="kv red">-$1,717.92</div></div>
+        <div class="k-mini"><div class="kl">Real-tick quality</div><div class="kv btc">96%</div></div>
+      </div>
+      <div class="strategy-note">Four strategies combined on XAUUSD, reported over May 2025 – May 2026 on a $5,000 capital base.</div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><hr class="divider"></div>
+
+<!-- ============ BTC BOT ============ -->
+<section class="wrap bot-block" id="btc">
+  <div class="bot-head">
+    <div class="titles">
+      <div class="bot-icon" style="background:var(--gold-soft);border:1px solid rgba(255,194,75,.4);color:var(--gold);">₿</div>
+      <div>
+        <h2>BTC Bot — Bot 3</h2>
+        <div class="sub">Broker: Exness · Server: Exness-MT5Real25</div>
+      </div>
+    </div>
+    <span class="badge-live"><span class="d"></span>LIVE</span>
+  </div>
+
+  <div class="bot-layout">
+    <div class="panel cred-card">
+      <div class="cred-top">
+        <span class="label">MT5 Login Credentials</span>
+        <span class="badge-live"><span class="d"></span>Account Active</span>
+      </div>
+      <div class="cred-grid">
+        <div class="c-field">
+          <div class="k">Login ID <button class="copy-btn" onclick="copyText('184120097',this)">Copy</button></div>
+          <div class="v">184120097</div>
+        </div>
+        <div class="c-field">
+          <div class="k">Password <button class="copy-btn" onclick="copyText('@Algo123',this)">Copy</button></div>
+          <div class="v pw" onclick="this.classList.toggle('revealed')">@Algo123</div>
+          <div class="reveal-hint">Tap to reveal</div>
+        </div>
+        <div class="c-field">
+          <div class="k">Broker</div>
+          <div class="v">Exness</div>
+        </div>
+        <div class="c-field">
+          <div class="k">Server</div>
+          <div class="v">Exness-MT5Real25</div>
+        </div>
+      </div>
+      <div class="fund-strip"><span>Required funding</span><b>$1,000</b></div>
+      <div class="cred-actions">
+        <a class="report-btn" href="BTC_BOT.html">Open Full Backtest / Live Report →</a>
+        <a class="telegram-btn" href="https://t.me/+CesxwJ2XW11OGM1" target="_blank" rel="noopener">Ask on Telegram</a>
+      </div>
+    </div>
+
+    <div class="panel stat-card2">
+      <div class="k-row">
+        <div class="k-mini"><div class="kl">Net profit</div><div class="kv green">$9,736.50</div></div>
+        <div class="k-mini"><div class="kl">Total return</div><div class="kv green">973.6%</div></div>
+        <div class="k-mini"><div class="kl">Win rate</div><div class="kv">94.4%</div></div>
+        <div class="k-mini"><div class="kl">Max drawdown</div><div class="kv btc">13.15%</div></div>
+      </div>
+      <div class="strategy-note">Crypto engine on BTCUSD with 143 logged trades and a tightly controlled drawdown.</div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap" style="padding-bottom:20px;">
+  <footer class="foot">
+    <span>© AlgoVortex Trading — Live execution, verified accounts.</span>
+    <span>Risk disclosure: trading involves risk. Past performance is not a guarantee of future results.</span>
+    <span><a href="CONTACT.html">Contact</a> · <a href="index.html">Home</a> · <a href="indicators.html">Indicators</a></span>
+  </footer>
 </div>
+
+<script>
+  function copyText(txt, btn){
+    navigator.clipboard.writeText(txt).then(()=>{
+      const old = btn.textContent; btn.textContent='Copied';
+      setTimeout(()=>btn.textContent=old,1200);
+    });
+  }
+  // Auto-scroll to hash target with offset, and reveal card
+  if(location.hash){
+    const el = document.querySelector(location.hash);
+    if(el){ setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),100); }
+  }
+</script>
 </body>
 </html>

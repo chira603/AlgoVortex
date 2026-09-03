@@ -1,572 +1,441 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AlgoVortex · Automated Trading Bots</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AlgoVortex Trading — Automated Algo Bots, Free VPS &amp; Signals</title>
+<meta name="description" content="AlgoVortex Trading gives referred clients free access to our live automated trading bots, premium indicators, free VPS and real-time signals.">
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/theme.css">
+<style>
+  /* ============ HERO ============ */
+  .hero{padding:56px 0 20px;position:relative;}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:44px;align-items:center;}
+  .eyebrow-badge{
+    display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--gold);
+    background:rgba(0,0,0,.3);border:1px solid rgba(255,194,75,.4);padding:6px 13px;border-radius:20px;margin-bottom:22px;
+    box-shadow:0 0 16px rgba(255,194,75,.2);
+  }
+  .eyebrow-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:pulse 1.8s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .hero h1{font-size:clamp(32px,4.4vw,54px);line-height:1.06;max-width:640px;}
+  .hero h1 .g{background:linear-gradient(90deg,var(--btc),var(--pink) 60%,var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 24px rgba(21,166,255,.4));}
+  .hero p.lead{color:var(--text-dim);font-size:16px;max-width:520px;margin-top:20px;}
+  .hero-cta{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;}
+  .btn{
+    font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:14.5px;
+    padding:14px 24px;border-radius:11px;border:1px solid transparent;cursor:pointer;
+    display:inline-flex;align-items:center;gap:9px;transition:.2s;
+  }
+  .btn-primary{background:linear-gradient(90deg,var(--btc),var(--purple));color:#031018;box-shadow:0 0 26px rgba(21,166,255,.4);}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 34px rgba(21,166,255,.55);}
+  .btn-ghost{background:rgba(255,255,255,.02);border-color:var(--border-2);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--btc);color:var(--btc);}
+  .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:38px;max-width:520px;}
+  .hstat{background:rgba(6,2,20,.4);border:1px solid var(--border-2);border-radius:12px;padding:14px 16px;}
+  .hstat .v{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--green);text-shadow:0 0 14px rgba(0,226,154,.4);}
+  .hstat .l{font-size:10.5px;color:var(--text-faint);margin-top:4px;text-transform:uppercase;letter-spacing:.05em;}
 
-    body {
-      background: #060d1a;
-      color: #e6edf8;
-      font-family: 'Inter', sans-serif;
-      line-height: 1.6;
-      padding: 0 20px;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+  .hero-art{position:relative;}
+  .offer-frame{
+    border-radius:var(--radius-lg);overflow:hidden;border:1px solid transparent;
+    border-image:linear-gradient(140deg,var(--btc),var(--purple),transparent) 1;
+    box-shadow:0 0 60px rgba(21,166,255,.22), 0 24px 60px rgba(0,0,0,.5);
+    transform:rotate(1.2deg);transition:transform .4s ease;
+  }
+  .offer-frame:hover{transform:rotate(0deg) scale(1.01);}
+  .offer-frame img{width:100%;display:block;}
+  .offer-ribbon{
+    position:absolute;top:-14px;left:-14px;background:linear-gradient(90deg,var(--gold),#ff9f43);color:#241300;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12.5px;padding:9px 16px;border-radius:9px;
+    box-shadow:0 8px 22px rgba(255,194,75,.4);transform:rotate(-4deg);
+  }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-      flex: 1;
-    }
+  /* ============ MARQUEE ============ */
+  .marquee-bar{background:linear-gradient(90deg, rgba(10,5,36,.9), rgba(24,10,58,.9));border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;padding:10px 0;position:relative;z-index:1;}
+  .marquee-track{display:inline-flex;gap:50px;animation:scrollTicker 34s linear infinite;padding-left:100%;}
+  .marquee-track span{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-dim);}
+  .marquee-track b{color:var(--btc);font-weight:600;}
+  @keyframes scrollTicker{0%{transform:translateX(0)}100%{transform:translateX(-100%)}}
+  @media (prefers-reduced-motion:reduce){.marquee-track{animation:none;padding-left:0;}}
 
-    /* header / nav */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 24px 0 16px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      flex-wrap: wrap;
-      gap: 16px;
-    }
+  /* ============ PROCESS ============ */
+  .process-wrap{position:relative;margin-top:52px;}
+  .process-line{
+    position:absolute;top:34px;left:0;right:0;height:2px;
+    background:linear-gradient(90deg, transparent, rgba(21,166,255,.5), rgba(21,166,255,.5), transparent);
+    transform-origin:left center;transform:scaleX(0);transition:transform 1.2s ease;
+  }
+  .process-line.in-view{transform:scaleX(1);}
+  .process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;position:relative;}
+  .p-step{opacity:0;transform:translateY(18px);transition:opacity .6s ease, transform .6s ease;}
+  .p-step.in-view{opacity:1;transform:translateY(0);}
+  .p-step:nth-child(2){transition-delay:.15s;}
+  .p-step:nth-child(3){transition-delay:.3s;}
+  .p-num{
+    width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin:0 auto 20px;
+    background:radial-gradient(circle, rgba(21,166,255,.25), rgba(6,10,20,.9));
+    border:1px solid rgba(21,166,255,.5);color:var(--btc);
+    box-shadow:0 0 0 6px rgba(21,166,255,.06), 0 0 24px rgba(21,166,255,.3);
+    animation:markPulse 3.4s ease-in-out infinite;
+  }
+  @keyframes markPulse{0%,100%{box-shadow:0 0 0 6px rgba(21,166,255,.06),0 0 24px rgba(21,166,255,.3);}50%{box-shadow:0 0 0 9px rgba(21,166,255,.1),0 0 34px rgba(21,166,255,.5);}}
+  .p-card{padding:28px 24px 26px;text-align:center;height:100%;}
+  .p-card h3{font-size:17.5px;margin-bottom:10px;}
+  .p-card p{color:var(--text-dim);font-size:13.5px;}
+  .p-card .p-link{display:inline-block;margin-top:14px;font-size:12.5px;color:var(--btc);font-family:'JetBrains Mono',monospace;}
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+  /* ============ FEATURE STRIP ============ */
+  .feat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;}
+  .feat{padding:20px 18px;text-align:left;}
+  .feat .fi{width:38px;height:38px;border-radius:9px;background:var(--btc-soft);border:1px solid rgba(21,166,255,.3);display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:var(--btc);}
+  .feat h4{font-size:14px;margin-bottom:6px;}
+  .feat p{font-size:12.5px;color:var(--text-faint);}
 
-    .brand-icon {
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #0b82f0, #2dd4bf);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 20px;
-      color: #fff;
-      box-shadow: 0 0 24px rgba(11, 130, 240, 0.25);
-    }
+  /* ============ BOT / INDICATOR CARDS ============ */
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+  .card{padding:24px 24px 22px;transition:.25s;}
+  .card:hover{border-color:rgba(21,166,255,.45);box-shadow:0 12px 40px rgba(21,166,255,.15);transform:translateY(-3px);}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+  .pair-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--btc);background:var(--btc-soft);padding:4px 9px;border-radius:6px;border:1px solid rgba(21,166,255,.3);}
+  .badge-live{font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;background:var(--green-soft);color:var(--green);border:1px solid rgba(0,226,154,.35);padding:4px 10px;border-radius:6px;display:flex;align-items:center;gap:6px;}
+  .badge-live .d{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:pulse 1.8s ease-in-out infinite;}
+  .card h3{font-size:19px;margin-bottom:8px;}
+  .card .desc{color:var(--text-dim);font-size:13px;margin-bottom:18px;min-height:38px;}
+  .card .metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  .metrics .m .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:17px;}
+  .metrics .m .v.green{color:var(--green);}
+  .metrics .m .l{font-size:10px;color:var(--text-faint);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;}
+  .card-link{display:flex;align-items:center;justify-content:space-between;font-size:12.5px;font-family:'JetBrains Mono',monospace;color:var(--btc);border-top:1px solid var(--border);padding-top:14px;}
 
-    .brand-text {
-      font-weight: 700;
-      font-size: 22px;
-      letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #f0f9ff, #93c5fd);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+  /* ============ BROKERS ============ */
+  .broker-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .broker{padding:22px 22px;display:flex;flex-direction:column;gap:10px;}
+  .broker .bname{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;}
+  .broker .bsub{font-size:12px;color:var(--text-faint);}
+  .broker .bmeta{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-dim);margin-top:4px;}
+  .broker a.bbtn{margin-top:10px;text-align:center;background:var(--btc-soft);border:1px solid rgba(21,166,255,.35);color:var(--btc);padding:10px;border-radius:9px;font-size:12.5px;font-weight:600;font-family:'Space Grotesk',sans-serif;transition:.2s;}
+  .broker a.bbtn:hover{background:rgba(21,166,255,.22);}
 
-    .brand-sub {
-      font-size: 12px;
-      color: #8ba0c0;
-      display: block;
-      margin-top: 2px;
-      letter-spacing: 0.3px;
-      -webkit-text-fill-color: #8ba0c0;
-    }
+  /* ============ CTA BAND ============ */
+  .cta-band{
+    border-radius:var(--radius-lg);padding:46px clamp(24px,5vw,60px);text-align:center;
+    background:linear-gradient(135deg, rgba(21,166,255,.18), rgba(92,140,255,.1) 60%, transparent);
+    border:1px solid transparent;border-image:linear-gradient(120deg,var(--btc),var(--purple)) 1;
+    box-shadow:0 0 60px rgba(21,166,255,.15);
+  }
+  .cta-band h2{font-size:clamp(24px,3vw,34px);margin-bottom:14px;}
+  .cta-band p{color:var(--text-dim);max-width:520px;margin:0 auto 26px;}
+  .cta-row{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;}
+  .telegram-note{margin-top:18px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-faint);}
+  .telegram-note a{color:var(--btc);}
 
-    .nav-links {
-      display: flex;
-      gap: 28px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+  /* ============ CONTACT MODAL ============ */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:200;background:rgba(2,4,10,.78);backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;padding:24px;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal-box{
+    width:100%;max-width:680px;max-height:88vh;overflow:auto;border-radius:var(--radius-lg);
+    background:var(--bg-1);border:1px solid var(--border);box-shadow:0 30px 90px rgba(0,0,0,.6), 0 0 60px rgba(21,166,255,.15);
+    animation:modalUp .3s ease both;
+  }
+  @keyframes modalUp{from{opacity:0;transform:translateY(16px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;padding:20px 24px;border-bottom:1px solid var(--border);}
+  .modal-head h3{font-size:18px;}
+  .modal-close{background:none;border:1px solid var(--border-2);color:var(--text-dim);width:34px;height:34px;border-radius:8px;cursor:pointer;font-size:16px;}
+  .modal-close:hover{color:var(--btc);border-color:var(--btc);}
+  .modal-body{padding:8px;}
+  .modal-body iframe{width:100%;border:0;min-height:920px;border-radius:10px;background:#fff;}
 
-    .nav-links a {
-      color: #b3c9e5;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 14px;
-      transition: 0.2s;
-      border-bottom: 2px solid transparent;
-      padding-bottom: 4px;
-    }
-
-    .nav-links a:hover {
-      color: #fff;
-      border-bottom-color: #2dd4bf;
-    }
-
-    .btn-outline {
-      border: 1px solid rgba(45, 212, 191, 0.3);
-      padding: 8px 20px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 13px;
-      background: rgba(45, 212, 191, 0.05);
-      transition: 0.2s;
-    }
-
-    .btn-outline:hover {
-      background: rgba(45, 212, 191, 0.12);
-      border-color: #2dd4bf;
-      color: #fff;
-    }
-
-    /* offer banner */
-    .offer-banner {
-      margin: 28px 0 32px;
-      background: linear-gradient(135deg, rgba(11, 130, 240, 0.12), rgba(45, 212, 191, 0.07));
-      border: 1px solid rgba(45, 212, 191, 0.2);
-      border-radius: 16px;
-      padding: 18px 28px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-    }
-
-    .offer-banner strong {
-      font-size: 18px;
-      font-weight: 700;
-      color: #b3e5fc;
-    }
-
-    .offer-banner span {
-      color: #a5d8ff;
-      font-weight: 400;
-    }
-
-    .offer-banner .btn-glow {
-      background: linear-gradient(135deg, #0b82f0, #2dd4bf);
-      border: none;
-      padding: 10px 28px;
-      border-radius: 40px;
-      font-weight: 700;
-      font-size: 14px;
-      color: #fff;
-      cursor: pointer;
-      box-shadow: 0 0 20px rgba(11, 130, 240, 0.3);
-      transition: 0.2s;
-      text-decoration: none;
-      display: inline-block;
-    }
-
-    .offer-banner .btn-glow:hover {
-      transform: scale(1.02);
-      box-shadow: 0 0 32px rgba(11, 130, 240, 0.5);
-    }
-
-    /* process steps */
-    .process-section {
-      margin: 40px 0 48px;
-    }
-
-    .process-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 24px;
-    }
-
-    .process-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      border-radius: 20px;
-      padding: 28px 24px;
-      text-align: center;
-      transition: 0.3s;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .process-card:hover {
-      transform: translateY(-6px);
-      border-color: rgba(45, 212, 191, 0.25);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    .process-num {
-      font-size: 40px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #0b82f0, #2dd4bf);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      line-height: 1;
-      margin-bottom: 12px;
-    }
-
-    .process-card h4 {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .process-card p {
-      color: #8ba0c0;
-      font-size: 14px;
-      max-width: 260px;
-      margin: 0 auto;
-    }
-
-    /* bots grid */
-    .section-title {
-      font-size: 28px;
-      font-weight: 700;
-      margin: 40px 0 24px;
-      letter-spacing: -0.3px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(45, 212, 191, 0.2), transparent);
-    }
-
-    .bots-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-bottom: 48px;
-    }
-
-    .bot-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      padding: 24px 24px 28px;
-      transition: 0.3s;
-      backdrop-filter: blur(4px);
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-      display: flex;
-      flex-direction: column;
-    }
-
-    .bot-card:hover {
-      transform: translateY(-4px);
-      border-color: rgba(45, 212, 191, 0.2);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-    }
-
-    .bot-name {
-      font-size: 20px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .bot-badge {
-      font-size: 11px;
-      font-weight: 600;
-      background: rgba(45, 212, 191, 0.15);
-      color: #2dd4bf;
-      padding: 2px 12px;
-      border-radius: 40px;
-      letter-spacing: 0.3px;
-    }
-
-    .bot-desc {
-      color: #8ba0c0;
-      font-size: 14px;
-      margin: 8px 0 16px;
-    }
-
-    .cred-list {
-      list-style: none;
-      font-size: 13.5px;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 12px;
-      padding: 14px 16px;
-      margin: 8px 0 18px;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    .cred-list li {
-      display: flex;
-      justify-content: space-between;
-      padding: 5px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    .cred-list li:last-child {
-      border-bottom: none;
-    }
-
-    .cred-list .label {
-      color: #8ba0c0;
-    }
-
-    .cred-list .value {
-      font-weight: 500;
-      font-family: 'Inter', monospace;
-      color: #e6edf8;
-    }
-
-    .bot-footer {
-      margin-top: auto;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .btn-sm {
-      padding: 8px 16px;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 12px;
-      border: none;
-      cursor: pointer;
-      transition: 0.2s;
-      text-decoration: none;
-      display: inline-block;
-      text-align: center;
-      flex: 1;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #0b82f0, #2dd4bf);
-      color: #fff;
-      box-shadow: 0 0 16px rgba(11, 130, 240, 0.15);
-    }
-
-    .btn-primary:hover {
-      box-shadow: 0 0 28px rgba(11, 130, 240, 0.3);
-      transform: scale(1.02);
-    }
-
-    .btn-outline-light {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #b3c9e5;
-    }
-
-    .btn-outline-light:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-    }
-
-    /* footer */
-    .footer {
-      margin-top: 40px;
-      padding: 24px 0 32px;
-      border-top: 1px solid rgba(255, 255, 255, 0.04);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      font-size: 13px;
-      color: #5e7a9e;
-    }
-
-    /* site links grid */
-    .links-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin: 28px 0 12px;
-    }
-
-    .link-item {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.03);
-      padding: 12px 14px;
-      border-radius: 10px;
-      text-align: center;
-    }
-
-    .link-item a { color: #2dd4bf; font-weight:700; text-decoration:none }
-
-
-    .footer a {
-      color: #8ba0c0;
-      text-decoration: none;
-    }
-
-    .footer a:hover {
-      color: #fff;
-    }
-
-    /* responsive */
-    @media (max-width: 900px) {
-      .process-grid,
-      .bots-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    @media (max-width: 640px) {
-      .process-grid,
-      .bots-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .offer-banner {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-      }
-
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .nav-links {
-        width: 100%;
-        justify-content: flex-start;
-        gap: 16px;
-      }
-
-      .brand-text {
-        font-size: 18px;
-      }
-    }
-  </style>
+  @media (max-width:920px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-art{order:-1;max-width:420px;margin:0 auto;}
+    .process-grid,.feat-row,.grid-3,.grid-2,.broker-row{grid-template-columns:1fr;}
+    .process-line{display:none;}
+    .hero-stats{grid-template-columns:repeat(3,1fr);}
+  }
+</style>
 </head>
 <body>
-<div class="container">
+<div class="bg-fx"><div class="grid-overlay"></div></div>
 
-  <!-- header -->
-  <header class="header">
-    <div class="brand">
-      <div class="brand-icon">AV</div>
-      <div>
-        <span class="brand-text">AlgoVortex</span>
-        <span class="brand-sub">Trading · Automation</span>
-      </div>
-    </div>
-    <div class="nav-links">
-      <a href="bots.html">Bots</a>
-      <a href="indicators.html">Indicators</a>
-      <a href="CREDENTIAL.html">Credentials</a>
-      <a href="CONTACT.html" class="btn-outline">Contact</a>
-    </div>
-  </header>
-
-  <!-- OFFER BANNER -->
-  <div class="offer-banner">
+<header class="topbar">
+  <a href="index.html" class="brand">
+    <div class="brand-mark"><img src="assets/logo.png" alt="AlgoVortex logo"></div>
     <div>
-      <strong>🔥 Limited Offer</strong>
-      <span>— Free onboarding for first 50 clients who open an account under our referral &amp; fund their trading account.</span>
+      <div class="brand-name">AlgoVortex Trading</div>
+      <div class="brand-sub">ALGO + PRECISION + PROFITS</div>
     </div>
-    <a href="CONTACT.html" class="btn-glow">Claim Offer →</a>
-  </div>
+  </a>
+  <nav class="nav-links">
+    <a href="index.html" class="current">Home</a>
+    <a href="bots.html">Bots</a>
+    <a href="indicators.html">Indicators</a>
+    <a href="#brokers">Brokers</a>
+    <a href="javascript:void(0)" onclick="openContact()">Contact</a>
+  </nav>
+  <button class="nav-cta" onclick="openContact()">Get Free Access</button>
+  <button class="burger" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')" aria-label="Menu">☰</button>
+</header>
 
-  <!-- PROCESS SECTION -->
-  <section class="process-section">
-    <h2 class="section-title">How it works</h2>
-    <div class="process-grid">
-      <div class="process-card">
-        <div class="process-num">1</div>
-        <h4>Open Account</h4>
-        <p>Use our referral links to open &amp; verify your live broker account.</p>
+<main class="wrap hero">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow-badge"><span class="dot"></span> Limited-time — free bot access for referred clients</div>
+      <h1>Automated trading, <span class="g">run by the vortex</span>, not by emotion.</h1>
+      <p class="lead">AlgoVortex runs three live algorithmic bots and two premium indicators across XAUUSD and BTCUSD. Open an account with one of our partner brokers, and we set up, host and monitor your bot at no cost.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="openContact()">
+          Request Free Setup
+        </button>
+        <a class="btn btn-ghost" href="bots.html">View Bot Performance →</a>
       </div>
-      <div class="process-card">
-        <div class="process-num">2</div>
-        <h4>Fund &amp; Connect</h4>
-        <p>Fund as per bot requirements and share credentials securely for setup.</p>
-      </div>
-      <div class="process-card">
-        <div class="process-num">3</div>
-        <h4>Go Live</h4>
-        <p>We validate, deploy the bot and monitor performance with backtests.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- BOTS SECTION -->
-  <h2 class="section-title" id="bots">Live Bots</h2>
-  <div class="bots-grid">
-
-    <!-- V4 BOT -->
-    <div class="bot-card">
-      <div class="bot-name">V4 BOT <span class="bot-badge">Grid</span></div>
-      <div class="bot-desc">Grid engine for XAUUSD · recommended fund <strong>$5,000</strong></div>
-      <ul class="cred-list">
-        <li><span class="label">ID</span><span class="value">23347071</span></li>
-        <li><span class="label">Password</span><span class="value">@123Zxcv</span></li>
-        <li><span class="label">Broker</span><span class="value">Vantage Markets</span></li>
-        <li><span class="label">Server</span><span class="value">vantagemarkets-live11</span></li>
-      </ul>
-      <div class="bot-footer">
-        <a href="V4_BOT.html" class="btn-sm btn-primary">Backtest</a>
-        <a href="CREDENTIAL.html" class="btn-sm btn-outline-light">Credentials</a>
+      <div class="hero-stats">
+        <div class="hstat"><div class="v" data-count="94.4" data-suffix="%">0%</div><div class="l">Best Win Rate</div></div>
+        <div class="hstat"><div class="v" data-count="3">0</div><div class="l">Live Bots Running</div></div>
+        <div class="hstat"><div class="v" data-count="24">0</div><div class="l">Hr VPS Uptime</div></div>
       </div>
     </div>
-
-    <!-- USD BOT -->
-    <div class="bot-card">
-      <div class="bot-name">USD BOT <span class="bot-badge">USD</span></div>
-      <div class="bot-desc">USD-focused strategy · recommended fund <strong>$1,000</strong></div>
-      <ul class="cred-list">
-        <li><span class="label">ID</span><span class="value">34375762</span></li>
-        <li><span class="label">Password</span><span class="value">@Usdbot1</span></li>
-        <li><span class="label">Broker</span><span class="value">Vantage Markets</span></li>
-        <li><span class="label">Server</span><span class="value">vantagemarkets-live19</span></li>
-      </ul>
-      <div class="bot-footer">
-        <a href="USD_BOT.html" class="btn-sm btn-primary">Backtest</a>
-        <a href="CREDENTIAL.html" class="btn-sm btn-outline-light">Credentials</a>
-      </div>
-    </div>
-
-    <!-- BTC BOT -->
-    <div class="bot-card">
-      <div class="bot-name">BTC BOT <span class="bot-badge">Crypto</span></div>
-      <div class="bot-desc">Cryptocurrency strategy · recommended fund <strong>$1,000</strong></div>
-      <ul class="cred-list">
-        <li><span class="label">ID</span><span class="value">184120097</span></li>
-        <li><span class="label">Password</span><span class="value">@Algo123</span></li>
-        <li><span class="label">Broker</span><span class="value">Exness</span></li>
-        <li><span class="label">Server</span><span class="value">Exness-MT5Real25</span></li>
-      </ul>
-      <div class="bot-footer">
-        <a href="BTC_BOT.html" class="btn-sm btn-primary">Backtest</a>
-        <a href="CREDENTIAL.html" class="btn-sm btn-outline-light">Credentials</a>
-      </div>
+    <div class="hero-art">
+      <span class="offer-ribbon">Limited time offer</span>
+      <div class="offer-frame"><img src="offer.png" alt="AlgoVortex limited-time free bot access offer"></div>
     </div>
   </div>
+</main>
 
-  <!-- SITE LINKS -->
-  <section class="site-links">
-    <h3 class="section-title">Site Links</h3>
-    <div class="links-grid">
-      <div class="link-item"><a href="index.html">Home</a></div>
-      <div class="link-item"><a href="bots.html">Bots Overview</a></div>
-      <div class="link-item"><a href="CREDENTIAL.html">Credentials</a></div>
-      <div class="link-item"><a href="CONTACT.html">Contact / Form</a></div>
-      <div class="link-item"><a href="indicators.html">Indicators (overview)</a></div>
-      <div class="link-item"><a href="IVFG_INDICATOR.html">IVFG Indicator</a></div>
-      <div class="link-item"><a href="SESSIONKING_INDICATOR.html">SessionKing Indicator</a></div>
-      <div class="link-item"><a href="BTC_BOT.html">BTC Bot Page</a></div>
-      <div class="link-item"><a href="USD_BOT.html">USD Bot Page</a></div>
-      <div class="link-item"><a href="V4_BOT.html">V4 Bot Page</a></div>
-      <div class="link-item"><a href="V4_BOT.html">Backtest V4</a></div>
-      <div class="link-item"><a href="USD_BOT.html">Backtest USD</a></div>
-      <div class="link-item"><a href="BTC_BOT.html">Backtest BTC</a></div>
-    </div>
-  </section>
-
-  <!-- footer -->
-  <footer class="footer">
-    <span>© AlgoVortex — Live execution, verified accounts.</span>
-    <span><a href="CONTACT.html">Contact</a> · <a href="CREDENTIAL.html">Credentials</a></span>
-  </footer>
-
+<div class="marquee-bar">
+  <div class="marquee-track">
+    <span>XAUUSD <b>V4 Grid Engine</b> — live</span>
+    <span>BTCUSD <b>Bot 3</b> — live</span>
+    <span>XAUUSD <b>USD Pro Bot</b> — 4 strategies combined</span>
+    <span>Free <b>VPS</b> for every referred client</span>
+    <span>Free <b>VIP indicator</b> access included</span>
+    <span>XAUUSD <b>V4 Grid Engine</b> — live</span>
+    <span>BTCUSD <b>Bot 3</b> — live</span>
+    <span>XAUUSD <b>USD Pro Bot</b> — 4 strategies combined</span>
+    <span>Free <b>VPS</b> for every referred client</span>
+    <span>Free <b>VIP indicator</b> access included</span>
+  </div>
 </div>
+
+<section class="wrap section" id="process">
+  <div class="kicker">How it works</div>
+  <h2 style="font-size:clamp(24px,3vw,32px);max-width:560px;">Three steps to free, fully-managed bot access</h2>
+  <p style="color:var(--text-dim);margin-top:12px;max-width:560px;">No coding, no manual trading. Once your account is funded, our team handles the entire bot setup for you.</p>
+
+  <div class="process-wrap" data-reveal>
+    <div class="process-line" data-reveal-line></div>
+    <div class="process-grid">
+      <div class="p-step" data-reveal-item>
+        <div class="p-num">1</div>
+        <div class="panel p-card">
+          <h3>Open a trading account</h3>
+          <p>Sign up with one of our official broker referral links below. It takes a few minutes and keeps your account eligible for free bot access.</p>
+          <a class="p-link" href="#brokers">See partner brokers →</a>
+        </div>
+      </div>
+      <div class="p-step" data-reveal-item>
+        <div class="p-num">2</div>
+        <div class="panel p-card">
+          <h3>Complete bot setup</h3>
+          <p>Send us your account details through the contact form. Our team installs the bot on a free VPS and configures your risk settings.</p>
+          <a class="p-link" href="javascript:void(0)" onclick="openContact()">Send account details →</a>
+        </div>
+      </div>
+      <div class="p-step" data-reveal-item>
+        <div class="p-num">3</div>
+        <div class="panel p-card">
+          <h3>Free, fully-managed access</h3>
+          <p>The bot goes live on your account. Track performance any time on the bot dashboards — 100% free for referred clients.</p>
+          <a class="p-link" href="bots.html">View live dashboards →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="feat-row">
+    <div class="panel feat">
+      <div class="fi">⚡</div>
+      <h4>Fully automated</h4>
+      <p>Bots execute around the clock — no manual chart-watching required.</p>
+    </div>
+    <div class="panel feat">
+      <div class="fi">🎯</div>
+      <h4>Emotion-free execution</h4>
+      <p>Every entry and exit follows fixed rules, not feelings.</p>
+    </div>
+    <div class="panel feat">
+      <div class="fi">🛡️</div>
+      <h4>Managed risk</h4>
+      <p>Position sizing and drawdown limits are set before the bot goes live.</p>
+    </div>
+    <div class="panel feat">
+      <div class="fi">🖥️</div>
+      <h4>Free 24/7 VPS</h4>
+      <p>Your bot runs on a hosted server, not your personal computer.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section-tight" id="bots-preview">
+  <div class="kicker">Live bots</div>
+  <h2 style="font-size:clamp(22px,3vw,28px);">Three bots, three live performance terminals</h2>
+  <div class="grid-3" style="margin-top:26px;">
+    <div class="panel card">
+      <div class="card-top"><span class="pair-tag">XAUUSD</span><span class="badge-live"><span class="d"></span>LIVE</span></div>
+      <h3>V4 Bot</h3>
+      <div class="desc">Grid-based engine trading gold with 6,000+ logged trades.</div>
+      <div class="metrics">
+        <div class="m"><div class="v green">72.5%</div><div class="l">Win rate</div></div>
+        <div class="m"><div class="v">11.43%</div><div class="l">Max drawdown</div></div>
+      </div>
+      <a class="card-link" href="bots.html#v4">View credentials &amp; report <span>→</span></a>
+    </div>
+    <div class="panel card">
+      <div class="card-top"><span class="pair-tag">XAUUSD</span><span class="badge-live"><span class="d"></span>LIVE</span></div>
+      <h3>USD Pro Bot</h3>
+      <div class="desc">Four combined strategies reporting on a $5,000 capital base.</div>
+      <div class="metrics">
+        <div class="m"><div class="v green">+142.4%</div><div class="l">Return</div></div>
+        <div class="m"><div class="v">$1,717.92</div><div class="l">Max DD</div></div>
+      </div>
+      <a class="card-link" href="bots.html#usd">View credentials &amp; report <span>→</span></a>
+    </div>
+    <div class="panel card">
+      <div class="card-top"><span class="pair-tag">BTCUSD</span><span class="badge-live"><span class="d"></span>LIVE</span></div>
+      <h3>BTC Bot</h3>
+      <div class="desc">High win-rate crypto engine with tight drawdown control.</div>
+      <div class="metrics">
+        <div class="m"><div class="v green">94.4%</div><div class="l">Win rate</div></div>
+        <div class="m"><div class="v">13.15%</div><div class="l">Max drawdown</div></div>
+      </div>
+      <a class="card-link" href="bots.html#btc">View credentials &amp; report <span>→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section-tight" id="indicators-preview">
+  <div class="kicker">Indicators</div>
+  <h2 style="font-size:clamp(22px,3vw,28px);">Premium indicators, free for our clients</h2>
+  <div class="grid-2" style="margin-top:26px;">
+    <div class="panel card">
+      <h3>IVFG Indicator</h3>
+      <div class="desc">Combines volume, volatility and momentum to highlight high-probability moves and confirm trend strength.</div>
+      <a class="card-link" href="indicators.html">View indicator <span>→</span></a>
+    </div>
+    <div class="panel card">
+      <h3>SessionKing</h3>
+      <div class="desc">Analyzes session-by-session price action to find institutional flow and session dominance for better entries.</div>
+      <a class="card-link" href="indicators.html">View indicator <span>→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section-tight" id="brokers">
+  <div class="kicker">Step 1</div>
+  <h2 style="font-size:clamp(22px,3vw,28px);">Open an account with a partner broker</h2>
+  <p style="color:var(--text-dim);margin-top:10px;max-width:560px;">Use one of our official referral links so your account qualifies for free bot setup and support.</p>
+  <div class="broker-row" style="margin-top:26px;">
+    <div class="panel broker">
+      <div class="bname">Vantage Markets</div>
+      <div class="bsub">Open a live account with our referral</div>
+      <div class="bmeta">IB: 16503074</div>
+      <a class="bbtn" href="https://www.vantagemarkets.com/open-live-account/?affid=MTY1MDMwNzQ=&invitecode=Algovortex" target="_blank" rel="noopener">Open account →</a>
+    </div>
+    <div class="panel broker">
+      <div class="bname">PU Prime</div>
+      <div class="bsub">Partner referral link</div>
+      <div class="bmeta">Program: LA Partners</div>
+      <a class="bbtn" href="https://puvip.co/la-partners/ALGOVORTEX" target="_blank" rel="noopener">Open account →</a>
+    </div>
+    <div class="panel broker">
+      <div class="bname">EC Markets</div>
+      <div class="bsub">Affiliate / referral</div>
+      <div class="bmeta">Referral: 2FBMH</div>
+      <a class="bbtn" href="https://i.ecmarkets.com/api/client/pm/2/2FBMH" target="_blank" rel="noopener">Open account →</a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section-tight">
+  <div class="cta-band">
+    <h2>Ready to get started?</h2>
+    <p>Open a broker account, then send us your details. We'll handle the VPS, bot install and setup — completely free for referred clients.</p>
+    <div class="cta-row">
+      <button class="btn btn-primary" onclick="openContact()">Request Free Setup</button>
+      <a class="btn btn-ghost" href="bots.html">View Bot Performance</a>
+    </div>
+    <div class="telegram-note">Prefer chat? Join our Telegram community: <a href="https://t.me/+CesxwJ2XW11OGM1" target="_blank" rel="noopener">t.me/+CesxwJ2XW11OGM1</a></div>
+  </div>
+</section>
+
+<div class="wrap">
+  <footer class="foot">
+    <span>© AlgoVortex Trading — Live execution, verified accounts.</span>
+    <span>Risk disclosure: trading involves risk. Past performance is not a guarantee of future results.</span>
+    <span><a href="javascript:void(0)" onclick="openContact()">Contact</a> · <a href="bots.html">Bots</a> · <a href="indicators.html">Indicators</a></span>
+  </footer>
+</div>
+
+<!-- Contact modal -->
+<div class="modal-overlay" id="contactModal" onclick="if(event.target===this) closeContact()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3>Get free bot access</h3>
+      <button class="modal-close" onclick="closeContact()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSePcIQGl6onnGEYOl34PDg5glkpNa48JPurK2uollfFUHZbuA/viewform?embedded=true" title="AlgoVortex contact form">Loading…</iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openContact(){document.getElementById('contactModal').classList.add('open');document.body.style.overflow='hidden';}
+  function closeContact(){document.getElementById('contactModal').classList.remove('open');document.body.style.overflow='';}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeContact();});
+
+  // Reveal process steps + counters on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        entry.target.querySelectorAll('[data-reveal-item]').forEach(el=>el.classList.add('in-view'));
+        const line = entry.target.querySelector('[data-reveal-line]');
+        if(line) line.classList.add('in-view');
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:.25});
+  document.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
+
+  // Animated counters
+  function animateCount(el){
+    const target = parseFloat(el.getAttribute('data-count'));
+    const suffix = el.getAttribute('data-suffix')||'';
+    const prefix = el.getAttribute('data-prefix')||'';
+    const dur = 1400; const start = performance.now();
+    function tick(now){
+      const p = Math.min(1,(now-start)/dur);
+      const eased = 1-Math.pow(1-p,3);
+      const val = target*eased;
+      el.textContent = prefix + (Number.isInteger(target)? Math.round(val): val.toFixed(1)) + suffix;
+      if(p<1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  const counterIo = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){animateCount(entry.target);counterIo.unobserve(entry.target);}
+    });
+  },{threshold:.6});
+  document.querySelectorAll('[data-count]').forEach(el=>counterIo.observe(el));
+</script>
 </body>
 </html>

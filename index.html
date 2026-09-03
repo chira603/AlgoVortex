@@ -120,7 +120,9 @@
   /* ============ BROKERS ============ */
   .broker-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
   .broker{padding:22px 22px;display:flex;flex-direction:column;gap:10px;}
-  .broker .blogo{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.35);margin-bottom:2px;}
+  .broker .blogo{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.35);margin-bottom:2px;overflow:hidden;}
+  .broker .blogo-img{padding:7px;}
+  .broker .blogo-img img{width:100%;height:100%;object-fit:contain;}
   .broker .bname{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;}
   .broker .bsub{font-size:12px;color:var(--text-faint);}
   .broker .bmeta{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-dim);margin-top:4px;}
@@ -166,6 +168,34 @@
     .process-line{display:none;}
     .hero-stats{grid-template-columns:repeat(3,1fr);}
   }
+
+  /* ============ MOBILE NAV (fix) ============ */
+  .nav-backdrop{position:fixed;inset:0;background:rgba(2,4,10,.6);backdrop-filter:blur(3px);z-index:59;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+  .nav-backdrop.open{opacity:1;pointer-events:auto;}
+  .burger{position:relative;z-index:61;}
+  .burger .bx{position:relative;width:16px;height:12px;display:block;margin:0 auto;}
+  .burger .bx span{position:absolute;left:0;right:0;height:2px;background:currentColor;border-radius:2px;transition:transform .25s ease,opacity .2s ease,top .25s ease;}
+  .burger .bx span:nth-child(1){top:0;}
+  .burger .bx span:nth-child(2){top:5px;}
+  .burger .bx span:nth-child(3){top:10px;}
+  .burger.open .bx span:nth-child(1){top:5px;transform:rotate(45deg);}
+  .burger.open .bx span:nth-child(2){opacity:0;}
+  .burger.open .bx span:nth-child(3){top:5px;transform:rotate(-45deg);}
+  @media (max-width:860px){
+    .nav-links{
+      display:flex !important;flex-direction:column;align-items:stretch;gap:4px;
+      position:fixed;top:0;right:0;height:100vh;width:min(78vw,300px);
+      background:linear-gradient(160deg, rgba(8,12,26,.98), rgba(5,8,18,.98));
+      border-left:1px solid var(--border);
+      padding:88px 20px 28px;z-index:60;
+      transform:translateX(100%);transition:transform .3s ease;
+      box-shadow:-20px 0 60px rgba(0,0,0,.5);
+      overflow-y:auto;
+    }
+    .nav-links.mobile-open{transform:translateX(0);}
+    .nav-links a{padding:13px 14px;font-size:15px;border-radius:9px;border:1px solid var(--border-2);}
+    .nav-links a.current{border-color:rgba(21,166,255,.35);}
+  }
 </style>
 </head>
 <body>
@@ -179,19 +209,22 @@
       <div class="brand-sub">ALGO + PRECISION + PROFITS</div>
     </div>
   </a>
-  <nav class="nav-links">
+  <nav class="nav-links" id="navLinks">
     <a href="index.html" class="current">Home</a>
     <a href="bots.html">Bots</a>
     <a href="indicators.html">Indicators</a>
     <a href="#brokers">Brokers</a>
-    <a href="javascript:void(0)" onclick="openContact()">Contact</a>
+    <a href="javascript:void(0)" onclick="openContact();closeMenu();">Contact</a>
   </nav>
   <div style="display:flex;align-items:center;gap:10px;">
     <a class="btn-ghost" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;padding:9px 15px;border-radius:9px;border:1px solid var(--border-2);display:inline-flex;align-items:center;gap:7px;" href="https://t.me/+4xYcTjLd0-Y2MTA1" target="_blank" rel="noopener">✈️ Telegram</a>
     <button class="nav-cta" onclick="openContact()">Get Free Access</button>
   </div>
-  <button class="burger" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')" aria-label="Menu">☰</button>
+  <button class="burger" id="burgerBtn" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+    <span class="bx"><span></span><span></span><span></span></span>
+  </button>
 </header>
+<div class="nav-backdrop" id="navBackdrop" onclick="closeMenu()"></div>
 
 <main class="wrap hero">
   <div class="hero-grid">
@@ -358,21 +391,21 @@
   <p style="color:var(--text-dim);margin-top:10px;max-width:560px;">Use one of our official referral links so your account qualifies for free bot setup and support.</p>
   <div class="broker-row" style="margin-top:26px;">
     <div class="panel broker">
-      <div class="blogo" style="background:linear-gradient(135deg,#0B3D91,#1A6FE0);">V</div>
+      <div class="blogo blogo-img" style="background:#fff;"><img src="https://logo.clearbit.com/vantagemarkets.com?size=80" alt="Vantage Markets logo" loading="lazy" onerror="this.parentElement.classList.remove('blogo-img');this.parentElement.style.background='linear-gradient(135deg,#0B3D91,#1A6FE0)';this.replaceWith(Object.assign(document.createElement('span'),{textContent:'V'}));"></div>
       <div class="bname">Vantage Markets</div>
       <div class="bsub">Open a live account with our referral</div>
       <div class="bmeta">IB: 16503074</div>
       <a class="bbtn" href="https://www.vantagemarkets.com/open-live-account/?affid=MTY1MDMwNzQ=&invitecode=Algovortex" target="_blank" rel="noopener">Open account →</a>
     </div>
     <div class="panel broker">
-      <div class="blogo" style="background:linear-gradient(135deg,#7A1FA2,#B347E0);">PU</div>
+      <div class="blogo blogo-img" style="background:#fff;"><img src="https://logo.clearbit.com/puprime.com?size=80" alt="PU Prime logo" loading="lazy" onerror="this.parentElement.classList.remove('blogo-img');this.parentElement.style.background='linear-gradient(135deg,#7A1FA2,#B347E0)';this.replaceWith(Object.assign(document.createElement('span'),{textContent:'PU'}));"></div>
       <div class="bname">PU Prime</div>
       <div class="bsub">Partner referral link</div>
       <div class="bmeta">Program: LA Partners</div>
       <a class="bbtn" href="https://puvip.co/la-partners/ALGOVORTEX" target="_blank" rel="noopener">Open account →</a>
     </div>
     <div class="panel broker">
-      <div class="blogo" style="background:linear-gradient(135deg,#0E7C5A,#18C990);">EC</div>
+      <div class="blogo blogo-img" style="background:#fff;"><img src="https://logo.clearbit.com/ecmarkets.com?size=80" alt="EC Markets logo" loading="lazy" onerror="this.parentElement.classList.remove('blogo-img');this.parentElement.style.background='linear-gradient(135deg,#0E7C5A,#18C990)';this.replaceWith(Object.assign(document.createElement('span'),{textContent:'EC'}));"></div>
       <div class="bname">EC Markets</div>
       <div class="bsub">Affiliate / referral</div>
       <div class="bmeta">Referral: 2FBMH</div>
@@ -418,7 +451,28 @@
 <script>
   function openContact(){document.getElementById('contactModal').classList.add('open');document.body.style.overflow='hidden';}
   function closeContact(){document.getElementById('contactModal').classList.remove('open');document.body.style.overflow='';}
-  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeContact();});
+
+  // Mobile nav menu
+  const navLinks = document.getElementById('navLinks');
+  const burgerBtn = document.getElementById('burgerBtn');
+  const navBackdrop = document.getElementById('navBackdrop');
+  function toggleMenu(){ navLinks.classList.contains('mobile-open') ? closeMenu() : openMenu(); }
+  function openMenu(){
+    navLinks.classList.add('mobile-open');
+    burgerBtn.classList.add('open');
+    burgerBtn.setAttribute('aria-expanded','true');
+    navBackdrop.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeMenu(){
+    navLinks.classList.remove('mobile-open');
+    burgerBtn.classList.remove('open');
+    burgerBtn.setAttribute('aria-expanded','false');
+    navBackdrop.classList.remove('open');
+    if(!document.getElementById('contactModal').classList.contains('open')) document.body.style.overflow='';
+  }
+  navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeContact();closeMenu();}});
 
   // Reveal process steps + counters on scroll
   const io = new IntersectionObserver((entries)=>{

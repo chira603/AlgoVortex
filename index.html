@@ -84,10 +84,14 @@
     animation:markPulse 3.4s ease-in-out infinite;
   }
   @keyframes markPulse{0%,100%{box-shadow:0 0 0 6px rgba(21,166,255,.06),0 0 24px rgba(21,166,255,.3);}50%{box-shadow:0 0 0 9px rgba(21,166,255,.1),0 0 34px rgba(21,166,255,.5);}}
+  .p-num{position:relative;}
+  .p-num-ic{position:absolute;bottom:-6px;right:-6px;width:26px;height:26px;border-radius:50%;background:var(--bg-1);border:1px solid rgba(21,166,255,.5);display:flex;align-items:center;justify-content:center;font-size:13px;box-shadow:0 0 12px rgba(21,166,255,.3);}
   .p-card{padding:28px 24px 26px;text-align:center;height:100%;}
   .p-card h3{font-size:17.5px;margin-bottom:10px;}
   .p-card p{color:var(--text-dim);font-size:13.5px;}
   .p-card .p-link{display:inline-block;margin-top:14px;font-size:12.5px;color:var(--btc);font-family:'JetBrains Mono',monospace;}
+  .p-broker-row{display:flex;justify-content:center;gap:8px;margin-top:16px;flex-wrap:wrap;}
+  .p-broker{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:11.5px;color:var(--text);background:rgba(255,255,255,.04);border:1px solid var(--border-2);padding:6px 12px;border-radius:20px;letter-spacing:.02em;}
 
   /* ============ FEATURE STRIP ============ */
   .feat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:14px;}
@@ -116,6 +120,7 @@
   /* ============ BROKERS ============ */
   .broker-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
   .broker{padding:22px 22px;display:flex;flex-direction:column;gap:10px;}
+  .broker .blogo{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:#fff;box-shadow:0 6px 18px rgba(0,0,0,.35);margin-bottom:2px;}
   .broker .bname{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:16px;}
   .broker .bsub{font-size:12px;color:var(--text-faint);}
   .broker .bmeta{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text-dim);margin-top:4px;}
@@ -181,7 +186,10 @@
     <a href="#brokers">Brokers</a>
     <a href="javascript:void(0)" onclick="openContact()">Contact</a>
   </nav>
-  <button class="nav-cta" onclick="openContact()">Get Free Access</button>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <a class="btn-ghost" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;padding:9px 15px;border-radius:9px;border:1px solid var(--border-2);display:inline-flex;align-items:center;gap:7px;" href="https://t.me/+4xYcTjLd0-Y2MTA1" target="_blank" rel="noopener">✈️ Telegram</a>
+    <button class="nav-cta" onclick="openContact()">Get Free Access</button>
+  </div>
   <button class="burger" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')" aria-label="Menu">☰</button>
 </header>
 
@@ -196,6 +204,7 @@
           Request Free Setup
         </button>
         <a class="btn btn-ghost" href="bots.html">View Bot Performance →</a>
+        <a class="btn btn-ghost" href="https://t.me/+4xYcTjLd0-Y2MTA1" target="_blank" rel="noopener">✈️ Join Telegram</a>
       </div>
       <div class="hero-stats">
         <div class="hstat"><div class="v" data-count="94.4" data-suffix="%">0%</div><div class="l">Best Win Rate</div></div>
@@ -228,33 +237,38 @@
 <section class="wrap section" id="process">
   <div class="kicker">How it works</div>
   <h2 style="font-size:clamp(24px,3vw,32px);max-width:560px;">Three steps to free, fully-managed bot access</h2>
-  <p style="color:var(--text-dim);margin-top:12px;max-width:560px;">No coding, no manual trading. Once your account is funded, our team handles the entire bot setup for you.</p>
+  <p style="color:var(--text-dim);margin-top:12px;max-width:560px;">No coding, no manual trading. Follow the three steps below and our team handles the entire bot setup for you.</p>
 
   <div class="process-wrap" data-reveal>
     <div class="process-line" data-reveal-line></div>
     <div class="process-grid">
       <div class="p-step" data-reveal-item>
-        <div class="p-num">1</div>
+        <div class="p-num">1<span class="p-num-ic">📝</span></div>
         <div class="panel p-card">
-          <h3>Open a trading account</h3>
-          <p>Sign up with one of our official broker referral links below. It takes a few minutes and keeps your account eligible for free bot access.</p>
+          <h3>Fill out the form</h3>
+          <p>Tell us a little about yourself so we know you — your name, contact info and which bot you're interested in. Takes under a minute.</p>
+          <a class="p-link" href="javascript:void(0)" onclick="openContact()">Fill the form →</a>
+        </div>
+      </div>
+      <div class="p-step" data-reveal-item>
+        <div class="p-num">2<span class="p-num-ic">🏦</span></div>
+        <div class="panel p-card">
+          <h3>Open your account with a partner</h3>
+          <p>Sign up with one of our official broker referral links so your account qualifies for free bot access.</p>
+          <div class="p-broker-row">
+            <span class="p-broker">Vantage</span>
+            <span class="p-broker">PU Prime</span>
+            <span class="p-broker">EC Markets</span>
+          </div>
           <a class="p-link" href="#brokers">See partner brokers →</a>
         </div>
       </div>
       <div class="p-step" data-reveal-item>
-        <div class="p-num">2</div>
+        <div class="p-num">3<span class="p-num-ic">✈️</span></div>
         <div class="panel p-card">
-          <h3>Complete bot setup</h3>
-          <p>Send us your account details through the contact form. Our team installs the bot on a free VPS and configures your risk settings.</p>
-          <a class="p-link" href="javascript:void(0)" onclick="openContact()">Send account details →</a>
-        </div>
-      </div>
-      <div class="p-step" data-reveal-item>
-        <div class="p-num">3</div>
-        <div class="panel p-card">
-          <h3>Free, fully-managed access</h3>
-          <p>The bot goes live on your account. Track performance any time on the bot dashboards — 100% free for referred clients.</p>
-          <a class="p-link" href="bots.html">View live dashboards →</a>
+          <h3>Contact us on Telegram</h3>
+          <p>Once your form is in and your account is open, message us on Telegram — we'll confirm your details and get your bot live, free of cost.</p>
+          <a class="p-link" href="https://t.me/+4xYcTjLd0-Y2MTA1" target="_blank" rel="noopener">Message us on Telegram →</a>
         </div>
       </div>
     </div>
@@ -291,30 +305,30 @@
     <div class="panel card">
       <div class="card-top"><span class="pair-tag">XAUUSD</span><span class="badge-live"><span class="d"></span>LIVE</span></div>
       <h3>V4 Bot</h3>
-      <div class="desc">Grid-based engine trading gold with 6,000+ logged trades.</div>
+      <div class="desc">Grid + linear martingale algorithm on XAUUSD that closes each basket at net profit to reduce floating loss.</div>
       <div class="metrics">
-        <div class="m"><div class="v green">72.5%</div><div class="l">Win rate</div></div>
-        <div class="m"><div class="v">11.43%</div><div class="l">Max drawdown</div></div>
+        <div class="m"><div class="v green">40–50%</div><div class="l">Monthly avg return</div></div>
+        <div class="m"><div class="v">Min $5,000</div><div class="l">Required fund</div></div>
       </div>
       <a class="card-link" href="bots.html#v4">View credentials &amp; report <span>→</span></a>
     </div>
     <div class="panel card">
       <div class="card-top"><span class="pair-tag">XAUUSD</span><span class="badge-live"><span class="d"></span>LIVE</span></div>
       <h3>USD Pro Bot</h3>
-      <div class="desc">Four combined strategies reporting on a $5,000 capital base.</div>
+      <div class="desc">SuperTrend-based logic on XAUUSD with a trailing SL, reading multiple timeframes for entries and exits.</div>
       <div class="metrics">
-        <div class="m"><div class="v green">+142.4%</div><div class="l">Return</div></div>
-        <div class="m"><div class="v">$1,717.92</div><div class="l">Max DD</div></div>
+        <div class="m"><div class="v green">30–40%</div><div class="l">Monthly avg return</div></div>
+        <div class="m"><div class="v">Min $500</div><div class="l">Required fund</div></div>
       </div>
       <a class="card-link" href="bots.html#usd">View credentials &amp; report <span>→</span></a>
     </div>
     <div class="panel card">
       <div class="card-top"><span class="pair-tag">BTCUSD</span><span class="badge-live"><span class="d"></span>LIVE</span></div>
       <h3>BTC Bot</h3>
-      <div class="desc">High win-rate crypto engine with tight drawdown control.</div>
+      <div class="desc">Limit SL/TP buy &amp; sell orders on H1 with a 1:2 risk-reward, trading BTCUSD 24/7.</div>
       <div class="metrics">
-        <div class="m"><div class="v green">94.4%</div><div class="l">Win rate</div></div>
-        <div class="m"><div class="v">13.15%</div><div class="l">Max drawdown</div></div>
+        <div class="m"><div class="v green">10–15%</div><div class="l">Monthly avg return</div></div>
+        <div class="m"><div class="v">Min $100</div><div class="l">Required fund</div></div>
       </div>
       <a class="card-link" href="bots.html#btc">View credentials &amp; report <span>→</span></a>
     </div>
@@ -339,23 +353,26 @@
 </section>
 
 <section class="wrap section-tight" id="brokers">
-  <div class="kicker">Step 1</div>
+  <div class="kicker">Step 2</div>
   <h2 style="font-size:clamp(22px,3vw,28px);">Open an account with a partner broker</h2>
   <p style="color:var(--text-dim);margin-top:10px;max-width:560px;">Use one of our official referral links so your account qualifies for free bot setup and support.</p>
   <div class="broker-row" style="margin-top:26px;">
     <div class="panel broker">
+      <div class="blogo" style="background:linear-gradient(135deg,#0B3D91,#1A6FE0);">V</div>
       <div class="bname">Vantage Markets</div>
       <div class="bsub">Open a live account with our referral</div>
       <div class="bmeta">IB: 16503074</div>
       <a class="bbtn" href="https://www.vantagemarkets.com/open-live-account/?affid=MTY1MDMwNzQ=&invitecode=Algovortex" target="_blank" rel="noopener">Open account →</a>
     </div>
     <div class="panel broker">
+      <div class="blogo" style="background:linear-gradient(135deg,#7A1FA2,#B347E0);">PU</div>
       <div class="bname">PU Prime</div>
       <div class="bsub">Partner referral link</div>
       <div class="bmeta">Program: LA Partners</div>
       <a class="bbtn" href="https://puvip.co/la-partners/ALGOVORTEX" target="_blank" rel="noopener">Open account →</a>
     </div>
     <div class="panel broker">
+      <div class="blogo" style="background:linear-gradient(135deg,#0E7C5A,#18C990);">EC</div>
       <div class="bname">EC Markets</div>
       <div class="bsub">Affiliate / referral</div>
       <div class="bmeta">Referral: 2FBMH</div>
@@ -367,9 +384,10 @@
 <section class="wrap section-tight">
   <div class="cta-band">
     <h2>Ready to get started?</h2>
-    <p>Open a broker account, then send us your details. We'll handle the VPS, bot install and setup — completely free for referred clients.</p>
+    <p>Fill out the form, open your account with a partner broker, then message us on Telegram. We'll handle the VPS, bot install and setup — completely free for referred clients.</p>
     <div class="cta-row">
-      <button class="btn btn-primary" onclick="openContact()">Request Free Setup</button>
+      <button class="btn btn-primary" onclick="openContact()">Fill the Form</button>
+      <a class="btn btn-ghost" href="https://t.me/+4xYcTjLd0-Y2MTA1" target="_blank" rel="noopener">✈️ Message on Telegram</a>
       <a class="btn btn-ghost" href="bots.html">View Bot Performance</a>
     </div>
     <div class="telegram-note">Prefer chat? Join our Telegram community: <a href="https://t.me/+4xYcTjLd0-Y2MTA1" target="_blank" rel="noopener">t.me/+4xYcTjLd0-Y2MTA1</a></div>
@@ -392,7 +410,7 @@
       <button class="modal-close" onclick="closeContact()" aria-label="Close">✕</button>
     </div>
     <div class="modal-body">
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSePcIQGl6onnGEYOl34PDg5glkpNa48JPurK2uollfFUHZbuA/viewform?usp=sharing&ouid=110026760683103648547" title="AlgoVortex contact form">Loading…</iframe>
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSePcIQGl6onnGEYOl34PDg5glkpNa48JPurK2uollfFUHZbuA/viewform?embedded=true" title="AlgoVortex contact form">Loading…</iframe>
     </div>
   </div>
 </div>

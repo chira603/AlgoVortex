@@ -3,32 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>GOPAL Report — USD Pro Bot</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<title>AlgoVortex Trading — USD Pro Bot · Performance Terminal</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg:#07101a;
-  --bg2:#0b1825;
-  --bg3:#0f2035;
-  --card:#0c1b2e;
-  --border:#1a3050;
-  --accent:#00d4ff;
-  --green:#00e896;
-  --red:#ff3d5a;
-  --gold:#ffd700;
-  --orange:#ff7a3d;
-  --text:#ddeeff;
-  --muted:#5a7fa0;
-  --s1:#00d4ff;
-  --s2:#00e896;
-  --s3:#ff7a3d;
-  --s4:#ffd700;
+  --bg:#02040A;
+  --bg2:#050A14;
+  --bg3:#070C18;
+  --card:#080E1A;
+  --border:rgba(21,166,255,0.22);
+  --accent:#15A6FF;
+  --green:#00E29A;
+  --red:#FF3B6E;
+  --gold:#FFC24B;
+  --orange:#FFC24B;
+  --text:#EDF3F8;
+  --muted:#5C6E8A;
+  --s1:#15A6FF;
+  --s2:#00E29A;
+  --s3:#5C8CFF;
+  --s4:#FFC24B;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{
-  background:var(--bg);
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 0%, rgba(21,166,255,.16), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 85% 15%, rgba(21,166,255,.10), transparent 60%),
+    var(--bg);
+  background-attachment:fixed;
   color:var(--text);
   font-family:'Rajdhani',sans-serif;
   font-size:15px;
@@ -280,12 +284,13 @@ body::before{
 <!-- HEADER -->
 <header class="hdr">
   <div class="hdr-glow"></div>
-  <h1>GOPAL Report</h1>
-  <div class="hdr-sub">USD Pro Bot · Combined Strategy Report · XAUUSD</div>
+  <h1>AlgoVortex Trading</h1>
+  <div class="hdr-sub">USD Pro Bot · SuperTrend Engine with Trailing SL · XAUUSD</div>
+  <p style="max-width:640px;margin:10px auto 0;color:var(--muted);font-family:'Rajdhani',sans-serif;font-size:15px;line-height:1.6;">Trades XAUUSD on SuperTrend-based logic with a trailing stop-loss, reading multiple timeframes at once to catch potential moves — entries and exits fire with a built-in SL/TP already attached.</p>
   <div class="hdr-badges">
     <span class="badge badge-b">Period: May 2025 – May 2026</span>
     <span class="badge badge-g">4 Strategies Combined</span>
-    <span class="badge badge-o">Capital: $5,000</span>
+    <span class="badge badge-o">Min Fund: $500</span>
     <span class="badge badge-b">96% Real Ticks Quality</span>
   </div>
 </header>

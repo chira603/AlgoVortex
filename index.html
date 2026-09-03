@@ -181,6 +181,21 @@
   .burger.open .bx span:nth-child(1){top:5px;transform:rotate(45deg);}
   .burger.open .bx span:nth-child(2){opacity:0;}
   .burger.open .bx span:nth-child(3){top:5px;transform:rotate(-45deg);}
+  .mobile-nav-extra{display:none;}
+  .topbar-actions{display:flex;align-items:center;gap:10px;}
+  @media (max-width:860px){
+    .topbar{gap:8px;padding:14px clamp(14px,4vw,20px);}
+    .topbar-actions{display:none !important;}
+    .brand-sub{display:none;}
+    .brand-mark{width:34px;height:34px;}
+    .brand-name{font-size:14px;white-space:nowrap;}
+    .mobile-nav-extra{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border-2);}
+    .mobile-nav-extra .btn{width:100%;justify-content:center;}
+  }
+  @media (max-width:360px){
+    .brand-name{font-size:12.5px;}
+    .brand-sub{display:none;}
+  }
   @media (max-width:860px){
     .nav-links{
       display:flex !important;flex-direction:column;align-items:stretch;gap:4px;
@@ -210,13 +225,17 @@
     </div>
   </a>
   <nav class="nav-links" id="navLinks">
+    <div class="mobile-nav-extra">
+      <button class="btn btn-primary" onclick="openContact();closeMenu();">Get Free Access</button>
+      <a class="btn btn-ghost" href="https://t.me/+4xYcTjLd0-Y2MTA1" target="_blank" rel="noopener">✈️ Join Telegram</a>
+    </div>
     <a href="index.html" class="current">Home</a>
     <a href="bots.html">Bots</a>
     <a href="indicators.html">Indicators</a>
     <a href="#brokers">Brokers</a>
     <a href="javascript:void(0)" onclick="openContact();closeMenu();">Contact</a>
   </nav>
-  <div style="display:flex;align-items:center;gap:10px;">
+  <div class="topbar-actions">
     <a class="btn-ghost" style="font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:13px;padding:9px 15px;border-radius:9px;border:1px solid var(--border-2);display:inline-flex;align-items:center;gap:7px;" href="https://t.me/+4xYcTjLd0-Y2MTA1" target="_blank" rel="noopener">✈️ Telegram</a>
     <button class="nav-cta" onclick="openContact()">Get Free Access</button>
   </div>

@@ -171,6 +171,16 @@
     .badge.flat{color:var(--text-faint);background:rgba(255,255,255,.04);border:1px solid var(--border-2);}
     .log-note{margin-top:12px;font-size:12px;color:var(--text-faint);}
 
+    .settings-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+    @media(max-width:820px){.settings-grid{grid-template-columns:1fr;}}
+    .settings-shot{
+      background:var(--panel-2);border:1px solid var(--border);border-radius:var(--radius-lg);
+      overflow:hidden;
+    }
+    .settings-shot img{width:100%;display:block;background:#12151d;}
+    .settings-shot figcaption{padding:14px 18px 16px;font-size:12.5px;color:var(--text-dim);line-height:1.6;border-top:1px solid var(--border-2);}
+    .settings-shot figcaption b{color:var(--cyan);}
+
     .note-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
     @media(max-width:820px){.note-grid{grid-template-columns:1fr;}}
     .note{background:var(--panel-2);border:1px solid var(--border);border-radius:var(--radius);padding:22px;}
@@ -341,6 +351,24 @@
       </table>
     </div>
     <p class="log-note">Per-trade PnL derived from cumulative equity series. Open trade #440 excluded.</p>
+  </section>
+
+  <section id="settings">
+    <div class="section-head">
+      <h2>Recommended Settings</h2>
+      <div class="section-tag">SESSIONKING · INPUTS PANEL</div>
+    </div>
+    <p class="panel-note" style="max-width:680px;margin-bottom:22px;">These are the exact input values used to frame the SessionKing setup — the session profile, liquidity sweep logic, and risk model are tuned for the SessionKing engine used in this report. Apply the values from the screenshots below in the indicator's Inputs tab on TradingView.</p>
+    <div class="settings-grid">
+      <figure class="settings-shot">
+        <img src="assets/SessionKing_setting1.png" alt="SessionKing indicator settings — session liquidity profile and POC inputs">
+        <figcaption><b>Session profile</b> &middot; liquidity search window &middot; POC focus &middot; session high/low filters &middot; stop-loss from session range &middot; fixed take-profit scale</figcaption>
+      </figure>
+      <figure class="settings-shot">
+        <img src="assets/SessionKing_setting2.png" alt="SessionKing indicator settings — trade management and alert configuration">
+        <figcaption><b>Trade logic</b> &middot; signal direction logic &middot; sweep confirmation &middot; session reversal control &middot; SL/TP sizing &middot; alert and dashboard settings</figcaption>
+      </figure>
+    </div>
   </section>
 
   <section id="notes">

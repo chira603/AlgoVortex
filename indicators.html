@@ -34,6 +34,11 @@
   .btn2-ghost{background:rgba(255,255,255,.02);border:1px solid var(--border-2);color:var(--text);}
   .btn2-ghost:hover{border-color:var(--btc);color:var(--btc);}
   @media (max-width:820px){.ind-grid{grid-template-columns:1fr;}}
+  @media (max-width:480px){
+    .ind-body{padding:20px 18px 20px;}
+    .ind-actions{flex-direction:column;}
+    .btn2{width:100%;text-align:center;}
+  }
 </style>
 </head>
 <body>
@@ -47,15 +52,25 @@
       <div class="brand-sub">ALGO + PRECISION + PROFITS</div>
     </div>
   </a>
-  <nav class="nav-links">
+  <nav class="nav-links" id="navLinks">
+    <div class="mobile-nav-extra">
+      <a class="btn btn-primary" href="CONTACT.html" style="text-align:center;">Get Free Access</a>
+      <a class="btn btn-ghost" href="https://t.me/+4xYcTjLd0-Y2MTA1" target="_blank" rel="noopener">✈️ Join Telegram</a>
+    </div>
     <a href="index.html">Home</a>
     <a href="bots.html">Bots</a>
     <a href="indicators.html" class="current">Indicators</a>
     <a href="index.html#brokers">Brokers</a>
     <a href="CONTACT.html">Contact</a>
   </nav>
-  <a class="nav-cta" href="CONTACT.html">Get Free Access</a>
+  <div class="topbar-actions">
+    <a class="nav-cta" href="CONTACT.html">Get Free Access</a>
+  </div>
+  <button class="burger" id="burgerBtn" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+    <span class="bx"><span></span><span></span><span></span></span>
+  </button>
 </header>
+<div class="nav-backdrop" id="navBackdrop" onclick="closeMenu()"></div>
 
 <div class="wrap page-head">
   <div class="kicker">Premium indicators</div>
@@ -98,5 +113,29 @@
     <span><a href="CONTACT.html">Contact</a> · <a href="index.html">Home</a> · <a href="bots.html">Bots</a></span>
   </footer>
 </div>
+
+<script>
+  // Mobile nav menu
+  const navLinks = document.getElementById('navLinks');
+  const burgerBtn = document.getElementById('burgerBtn');
+  const navBackdrop = document.getElementById('navBackdrop');
+  function toggleMenu(){ navLinks.classList.contains('mobile-open') ? closeMenu() : openMenu(); }
+  function openMenu(){
+    navLinks.classList.add('mobile-open');
+    burgerBtn.classList.add('open');
+    burgerBtn.setAttribute('aria-expanded','true');
+    navBackdrop.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeMenu(){
+    navLinks.classList.remove('mobile-open');
+    burgerBtn.classList.remove('open');
+    burgerBtn.setAttribute('aria-expanded','false');
+    navBackdrop.classList.remove('open');
+    document.body.style.overflow='';
+  }
+  navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
+</script>
 </body>
 </html>
